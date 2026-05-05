@@ -1,0 +1,48 @@
+{
+  "APP": {
+    "NAME": "ShopBR",
+    "TAGLINE": "Las mejores ofertas están aquí"
+  },
+  "NAV": {
+    "HOME": "Inicio",
+    "PRODUCTS": "Productos",
+    "CART": "Carrito",
+    "ORDERS": "Pedidos",
+    "PROFILE": "Perfil",
+    "LOGIN": "Ingresar",
+    "REGISTER": "Registrarse",
+    "LOGOUT": "Salir",
+    "ADMIN": "Admin"
+  },
+  "AUTH": {
+    "LOGIN": "Ingresar",
+    "REGISTER": "Crear cuenta",
+    "EMAIL": "Correo electrónico",
+    "PASSWORD": "Contraseña",
+    "FORGOT_PASSWORD": "¿Olvidaste tu contraseña?",
+    "NO_ACCOUNT": "¿No tienes cuenta?",
+    "ALREADY_ACCOUNT": "¿Ya tienes cuenta?"
+  },
+  "PRODUCT": {
+    "ADD_TO_CART": "Agregar al carrito",
+    "BUY_NOW": "Comprar ahora",
+    "IN_STOCK": "En stock",
+    "OUT_OF_STOCK": "Sin stock",
+    "REVIEWS": "reseñas"
+  },
+  "CART": {
+    "TITLE": "Mi Carrito",
+    "EMPTY": "Tu carrito está vacío",
+    "TOTAL": "Total",
+    "CHECKOUT": "Finalizar compra"
+  },
+  "ORDER": {
+    "STATUS": {
+      "PENDING": "Pendiente",
+      "PAID": "Pagado",
+      "SHIPPED": "Enviado",
+      "DELIVERED": "Entregado",
+      "CANCELLED": "Cancelado"
+    }
+  }
+}

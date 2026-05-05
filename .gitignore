@@ -1,0 +1,33 @@
+# .NET
+**/bin/
+**/obj/
+*.user
+*.suo
+.vs/
+backend/src/*/Properties/launchSettings.json
+backend/logs/
+
+# Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.env
+
+# Environment secrets
+**/appsettings.Production.json
+**/.env
+**/.env.local
+**/*.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+
+# Claude Code (local dev config — não sobe no repositório)
+CLAUDE.md
+.claude/

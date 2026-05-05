@@ -1,0 +1,78 @@
+import { Injectable, signal, computed } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+
+export interface LoginRequest { email: string; password: string; }
+export interface RegisterRequest { firstName: string; lastName: string; email: string; password: string; }
+export interface AuthResponse { accessToken: string; refreshToken: string; user: UserProfile; }
+export interface UserProfile {
+  id: string; firstName: string; lastName: string; email: string;
+  role: string; avatarUrl?: string; preferredLanguage: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private readonly _currentUser = signal<UserProfile | null>(null);
+  private readonly _isLoading = signal(false);
+
+  readonly currentUser = this._currentUser.asReadonly();
+  readonly isAuthenticated = computed(() => !!this._currentUser());
+  readonly isAdmin = computed(() => this._currentUser()?.role === 'Admin');
+  readonly isLoading = this._isLoading.asReadonly();
+
+  constructor(private http: HttpClient, private router: Router) {
+    this.loadUserFromStorage();
+  }
+
+  login(request: LoginRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, request).pipe(
+      tap(response => this.setSession(response))
+    );
+  }
+
+  register(request: RegisterRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/register`, request).pipe(
+      tap(response => this.setSession(response))
+    );
+  }
+
+  logout(): void {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+    this._currentUser.set(null);
+    this.router.navigate(['/auth/login']);
+  }
+
+  refreshToken(): Observable<AuthResponse> {
+    const refreshToken = localStorage.getItem('refresh_token');
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/refresh-token`, { refreshToken }).pipe(
+      tap(response => this.setSession(response))
+    );
+  }
+
+  getAccessToken(): string | null {
+    return localStorage.getItem('access_token');
+  }
+
+  private setSession(response: AuthResponse): void {
+    localStorage.setItem('access_token', response.accessToken);
+    localStorage.setItem('refresh_token', response.refreshToken);
+    localStorage.setItem('user', JSON.stringify(response.user));
+    this._currentUser.set(response.user);
+  }
+
+  private loadUserFromStorage(): void {
+    const userJson = localStorage.getItem('user');
+    if (userJson) {
+      try {
+        this._currentUser.set(JSON.parse(userJson));
+      } catch {
+        this.logout();
+      }
+    }
+  }
+}

@@ -21,6 +21,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideNativeDateAdapter(),
     provideTranslateService({ defaultLanguage: 'pt-BR' }),
-    ...provideTranslateHttpLoader({ prefix: './assets/i18n/', suffix: '.json' }),
+    ...provideTranslateHttpLoader(),
   ],
 };

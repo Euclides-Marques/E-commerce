@@ -14,7 +14,6 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     const savedLang = localStorage.getItem('preferred_language') ?? 'pt-BR';
     this.translate.addLangs(['pt-BR', 'en-US', 'es-ES']);
-    this.translate.setDefaultLang('pt-BR');
     this.translate.use(savedLang).subscribe();
   }
 }

@@ -9,10 +9,13 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Carregar APENAS appsettings.{Environment}.json (não carrega appsettings.json base)
+// Carregar appsettings base e arquivo de ambiente opcional
 builder.Configuration.Sources.Clear();
 var environment = builder.Environment.EnvironmentName;
-builder.Configuration.AddJsonFile($"appsettings.{environment}.json", optional: false, reloadOnChange: true);
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
 
 // Serilog
 ECommerce.Infrastructure.DependencyInjection.ConfigureSerilog(builder.Configuration);

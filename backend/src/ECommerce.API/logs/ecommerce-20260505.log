@@ -27,3 +27,14 @@
 SELECT "MigrationId", "ProductVersion"
 FROM "__EFMigrationsHistory"
 ORDER BY "MigrationId";
+2026-05-05 19:03:35.249 -03:00 [INF] User profile is available. Using 'C:\Users\Euclides Marques\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-05 19:03:35.364 -03:00 [INF] Now listening on: http://localhost:5123
+2026-05-05 19:03:35.366 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-05 19:03:35.368 -03:00 [INF] Hosting environment: Development
+2026-05-05 19:03:35.369 -03:00 [INF] Content root path: C:\Users\Euclides Marques\Documents\Gil\E-commerce\backend\src\ECommerce.API
+2026-05-05 19:03:46.173 -03:00 [INF] Application is shutting down...
+2026-05-05 19:03:58.556 -03:00 [INF] User profile is available. Using 'C:\Users\Euclides Marques\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-05 19:03:58.670 -03:00 [INF] Now listening on: http://localhost:5123
+2026-05-05 19:03:58.672 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-05 19:03:58.673 -03:00 [INF] Hosting environment: Development
+2026-05-05 19:03:58.674 -03:00 [INF] Content root path: C:\Users\Euclides Marques\Documents\Gil\E-commerce\backend\src\ECommerce.API

@@ -102,8 +102,49 @@
       "PAID": "Paid",
       "SHIPPED": "Shipped",
       "DELIVERED": "Delivered",
-      "CANCELLED": "Cancelled"
+      "CANCELLED": "Cancelled",
+      "REFUNDED": "Refunded"
     }
+  },
+  "ORDERS": {
+    "TITLE": "My Orders",
+    "EMPTY": "You have no orders yet.",
+    "VIEW_DETAIL": "View details",
+    "DETAIL_TITLE": "Order Details",
+    "CANCEL": "Cancel order"
+  },
+  "CHECKOUT": {
+    "TITLE": "Checkout",
+    "STEP_ADDRESS": "Address",
+    "STEP_REVIEW": "Review",
+    "STEP_CONFIRMATION": "Confirmation",
+    "NO_ADDRESS": "No address registered. Add one below.",
+    "NEW_ADDRESS": "New address",
+    "CANCEL_NEW_ADDRESS": "Cancel",
+    "NEXT": "Next",
+    "BACK": "Back",
+    "ORDER_SUMMARY": "Order summary",
+    "SHIPPING": "Shipping",
+    "FREE_SHIPPING": "Free",
+    "NOTES": "Notes (optional)",
+    "CONFIRM_ORDER": "Place order",
+    "SUCCESS_TITLE": "Order placed successfully!",
+    "ORDER_NUMBER": "Order number",
+    "ESTIMATED_DELIVERY": "Estimated delivery",
+    "VIEW_ORDER": "View order"
+  },
+  "ADDRESS": {
+    "LABEL": "Label",
+    "RECIPIENT": "Recipient",
+    "ZIP_CODE": "ZIP Code",
+    "STREET": "Street",
+    "NUMBER": "Number",
+    "COMPLEMENT": "Complement",
+    "NEIGHBORHOOD": "Neighborhood",
+    "CITY": "City",
+    "STATE": "State",
+    "SET_DEFAULT": "Set as default address",
+    "SAVE": "Save address"
   },
   "ADMIN": {
     "PRODUCTS": {

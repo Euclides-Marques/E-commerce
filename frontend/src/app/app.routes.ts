@@ -22,6 +22,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/orders/orders.component').then(m => m.OrdersComponent),
       },
       {
+        path: 'orders/:id',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/orders/order-detail/order-detail.component').then(m => m.OrderDetailComponent),
+      },
+      {
         path: 'profile',
         canActivate: [authGuard],
         loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent),

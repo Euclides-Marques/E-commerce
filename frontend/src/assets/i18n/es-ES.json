@@ -102,8 +102,49 @@
       "PAID": "Pagado",
       "SHIPPED": "Enviado",
       "DELIVERED": "Entregado",
-      "CANCELLED": "Cancelado"
+      "CANCELLED": "Cancelado",
+      "REFUNDED": "Reembolsado"
     }
+  },
+  "ORDERS": {
+    "TITLE": "Mis Pedidos",
+    "EMPTY": "Aún no tienes pedidos.",
+    "VIEW_DETAIL": "Ver detalles",
+    "DETAIL_TITLE": "Detalles del Pedido",
+    "CANCEL": "Cancelar pedido"
+  },
+  "CHECKOUT": {
+    "TITLE": "Finalizar Compra",
+    "STEP_ADDRESS": "Dirección",
+    "STEP_REVIEW": "Revisión",
+    "STEP_CONFIRMATION": "Confirmación",
+    "NO_ADDRESS": "No hay dirección registrada. Agrega una abajo.",
+    "NEW_ADDRESS": "Nueva dirección",
+    "CANCEL_NEW_ADDRESS": "Cancelar",
+    "NEXT": "Siguiente",
+    "BACK": "Volver",
+    "ORDER_SUMMARY": "Resumen del pedido",
+    "SHIPPING": "Envío",
+    "FREE_SHIPPING": "Gratis",
+    "NOTES": "Observaciones (opcional)",
+    "CONFIRM_ORDER": "Confirmar pedido",
+    "SUCCESS_TITLE": "¡Pedido realizado con éxito!",
+    "ORDER_NUMBER": "Número de pedido",
+    "ESTIMATED_DELIVERY": "Entrega estimada",
+    "VIEW_ORDER": "Ver pedido"
+  },
+  "ADDRESS": {
+    "LABEL": "Etiqueta",
+    "RECIPIENT": "Destinatario",
+    "ZIP_CODE": "Código postal",
+    "STREET": "Calle",
+    "NUMBER": "Número",
+    "COMPLEMENT": "Complemento",
+    "NEIGHBORHOOD": "Barrio",
+    "CITY": "Ciudad",
+    "STATE": "Estado",
+    "SET_DEFAULT": "Establecer como dirección predeterminada",
+    "SAVE": "Guardar dirección"
   },
   "ADMIN": {
     "PRODUCTS": {

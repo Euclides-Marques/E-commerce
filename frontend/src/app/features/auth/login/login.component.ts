@@ -6,34 +6,49 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    TranslatePipe,
+  ],
   template: `
     <div class="bg-white rounded-xl shadow-lg p-8">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Entrar na conta</h2>
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+        {{ 'AUTH.LOGIN_TITLE' | translate }}
+      </h2>
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>E-mail</mat-label>
+          <mat-label>{{ 'AUTH.EMAIL' | translate }}</mat-label>
           <input matInput type="email" formControlName="email" autocomplete="email" />
           <mat-icon matSuffix>email</mat-icon>
           @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
-            <mat-error>E-mail é obrigatório</mat-error>
+            <mat-error>{{ 'AUTH.VALIDATION.EMAIL_REQUIRED' | translate }}</mat-error>
+          }
+          @if (form.get('email')?.hasError('email') && form.get('email')?.touched) {
+            <mat-error>{{ 'AUTH.VALIDATION.EMAIL_INVALID' | translate }}</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Senha</mat-label>
+          <mat-label>{{ 'AUTH.PASSWORD' | translate }}</mat-label>
           <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" autocomplete="current-password" />
           <button mat-icon-button matSuffix type="button" (click)="hidePassword.set(!hidePassword())">
             <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
           @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
-            <mat-error>Senha é obrigatória</mat-error>
+            <mat-error>{{ 'AUTH.VALIDATION.PASSWORD_REQUIRED' | translate }}</mat-error>
           }
         </mat-form-field>
 
@@ -45,27 +60,29 @@ import { AuthService } from '../../../core/services/auth.service';
           @if (isLoading()) {
             <mat-spinner diameter="20" class="inline-block" />
           } @else {
-            Entrar
+            {{ 'AUTH.LOGIN' | translate }}
           }
         </button>
       </form>
 
       <div class="mt-4 text-center space-y-2">
         <a routerLink="/auth/forgot-password" class="text-sm text-primary-500 hover:underline">
-          Esqueceu a senha?
+          {{ 'AUTH.FORGOT_PASSWORD' | translate }}
         </a>
         <p class="text-sm text-gray-500">
-          Não tem conta?
-          <a routerLink="/auth/register" class="text-primary-500 hover:underline font-medium">Cadastre-se</a>
+          {{ 'AUTH.NO_ACCOUNT' | translate }}
+          <a routerLink="/auth/register" class="text-primary-500 hover:underline font-medium">
+            {{ 'AUTH.SIGN_UP' | translate }}
+          </a>
         </p>
       </div>
     </div>
   `,
 })
 export class LoginComponent {
-  private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly hidePassword = signal(true);
   readonly isLoading = signal(false);

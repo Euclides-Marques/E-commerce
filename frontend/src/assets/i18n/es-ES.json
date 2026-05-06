@@ -16,12 +16,33 @@
   },
   "AUTH": {
     "LOGIN": "Ingresar",
+    "LOGIN_TITLE": "Iniciar sesión",
     "REGISTER": "Crear cuenta",
     "EMAIL": "Correo electrónico",
     "PASSWORD": "Contraseña",
+    "FIRST_NAME": "Nombre",
+    "LAST_NAME": "Apellido",
     "FORGOT_PASSWORD": "¿Olvidaste tu contraseña?",
+    "FORGOT_PASSWORD_TITLE": "Recuperar contraseña",
+    "FORGOT_PASSWORD_SUBTITLE": "Ingresa tu correo para recibir las instrucciones de recuperación.",
+    "FORGOT_PASSWORD_SUCCESS": "Revisa tu correo para restablecer tu contraseña.",
+    "SEND_INSTRUCTIONS": "Enviar instrucciones",
+    "BACK_TO_LOGIN": "Volver al inicio de sesión",
     "NO_ACCOUNT": "¿No tienes cuenta?",
-    "ALREADY_ACCOUNT": "¿Ya tienes cuenta?"
+    "ALREADY_ACCOUNT": "¿Ya tienes cuenta?",
+    "SIGN_UP": "Regístrate",
+    "VALIDATION": {
+      "EMAIL_REQUIRED": "El correo es obligatorio",
+      "EMAIL_INVALID": "Correo inválido",
+      "PASSWORD_REQUIRED": "La contraseña es obligatoria",
+      "PASSWORD_MIN_LENGTH": "La contraseña debe tener al menos 6 caracteres",
+      "FIRST_NAME_REQUIRED": "El nombre es obligatorio",
+      "LAST_NAME_REQUIRED": "El apellido es obligatorio"
+    },
+    "ERROR": {
+      "INVALID_CREDENTIALS": "Credenciales inválidas.",
+      "REGISTER_FAILED": "Error al registrarse."
+    }
   },
   "PRODUCT": {
     "ADD_TO_CART": "Agregar al carrito",

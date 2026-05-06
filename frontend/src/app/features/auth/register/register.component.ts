@@ -6,40 +6,70 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    TranslatePipe,
+  ],
   template: `
     <div class="bg-white rounded-xl shadow-lg p-8">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Criar conta</h2>
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+        {{ 'AUTH.REGISTER' | translate }}
+      </h2>
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
         <div class="grid grid-cols-2 gap-3">
           <mat-form-field appearance="outline">
-            <mat-label>Nome</mat-label>
-            <input matInput formControlName="firstName" />
+            <mat-label>{{ 'AUTH.FIRST_NAME' | translate }}</mat-label>
+            <input matInput formControlName="firstName" autocomplete="given-name" />
+            @if (form.get('firstName')?.hasError('required') && form.get('firstName')?.touched) {
+              <mat-error>{{ 'AUTH.VALIDATION.FIRST_NAME_REQUIRED' | translate }}</mat-error>
+            }
           </mat-form-field>
           <mat-form-field appearance="outline">
-            <mat-label>Sobrenome</mat-label>
-            <input matInput formControlName="lastName" />
+            <mat-label>{{ 'AUTH.LAST_NAME' | translate }}</mat-label>
+            <input matInput formControlName="lastName" autocomplete="family-name" />
+            @if (form.get('lastName')?.hasError('required') && form.get('lastName')?.touched) {
+              <mat-error>{{ 'AUTH.VALIDATION.LAST_NAME_REQUIRED' | translate }}</mat-error>
+            }
           </mat-form-field>
         </div>
 
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>E-mail</mat-label>
-          <input matInput type="email" formControlName="email" />
+          <mat-label>{{ 'AUTH.EMAIL' | translate }}</mat-label>
+          <input matInput type="email" formControlName="email" autocomplete="email" />
           <mat-icon matSuffix>email</mat-icon>
+          @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+            <mat-error>{{ 'AUTH.VALIDATION.EMAIL_REQUIRED' | translate }}</mat-error>
+          }
+          @if (form.get('email')?.hasError('email') && form.get('email')?.touched) {
+            <mat-error>{{ 'AUTH.VALIDATION.EMAIL_INVALID' | translate }}</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Senha</mat-label>
-          <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" />
+          <mat-label>{{ 'AUTH.PASSWORD' | translate }}</mat-label>
+          <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" autocomplete="new-password" />
           <button mat-icon-button matSuffix type="button" (click)="hidePassword.set(!hidePassword())">
             <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
+          @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+            <mat-error>{{ 'AUTH.VALIDATION.PASSWORD_REQUIRED' | translate }}</mat-error>
+          }
+          @if (form.get('password')?.hasError('minlength') && form.get('password')?.touched) {
+            <mat-error>{{ 'AUTH.VALIDATION.PASSWORD_MIN_LENGTH' | translate }}</mat-error>
+          }
         </mat-form-field>
 
         @if (errorMessage()) {
@@ -47,21 +77,27 @@ import { AuthService } from '../../../core/services/auth.service';
         }
 
         <button mat-raised-button color="primary" type="submit" class="w-full py-3" [disabled]="isLoading()">
-          @if (isLoading()) { <mat-spinner diameter="20" /> } @else { Criar conta }
+          @if (isLoading()) {
+            <mat-spinner diameter="20" />
+          } @else {
+            {{ 'AUTH.REGISTER' | translate }}
+          }
         </button>
       </form>
 
       <p class="mt-4 text-center text-sm text-gray-500">
-        Já tem conta?
-        <a routerLink="/auth/login" class="text-primary-500 hover:underline font-medium">Entrar</a>
+        {{ 'AUTH.ALREADY_ACCOUNT' | translate }}
+        <a routerLink="/auth/login" class="text-primary-500 hover:underline font-medium">
+          {{ 'AUTH.LOGIN' | translate }}
+        </a>
       </p>
     </div>
   `,
 })
 export class RegisterComponent {
-  private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly hidePassword = signal(true);
   readonly isLoading = signal(false);

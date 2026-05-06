@@ -1,12 +1,14 @@
 import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ProductService } from '../../../core/services/product.service';
+import { CartService } from '../../../core/services/cart.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { ProductImageDto } from '../../../core/models/product.model';
 
 @Component({
@@ -140,7 +142,7 @@ import { ProductImageDto } from '../../../core/models/product.model';
                 mat-flat-button
                 color="primary"
                 class="py-3 text-base font-semibold"
-                [disabled]="!product()!.stockQuantity"
+                [disabled]="!product()!.stockQuantity || addingToCart()"
                 (click)="onAddToCart()">
                 <mat-icon>shopping_cart</mat-icon>
                 {{ 'PRODUCT.ADD_TO_CART' | translate }}
@@ -186,11 +188,15 @@ import { ProductImageDto } from '../../../core/models/product.model';
 })
 export class ProductDetailComponent implements OnInit, OnDestroy {
   private readonly productService = inject(ProductService);
+  private readonly cartService = inject(CartService);
+  private readonly authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
 
   readonly product = this.productService.currentProduct;
   readonly loading = signal(false);
+  readonly addingToCart = signal(false);
   readonly selectedImage = signal<ProductImageDto | null>(null);
 
   readonly stars = [1, 2, 3, 4, 5];
@@ -209,11 +215,28 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   onAddToCart(): void {
     const p = this.product();
     if (!p) return;
-    this.snackBar.open(
-      `"${p.name}" adicionado ao carrinho`,
-      'Ver carrinho',
-      { duration: 3000, panelClass: 'snackbar-success' }
-    );
+
+    if (!this.authService.isAuthenticated()) {
+      this.snackBar.open('CART.LOGIN_REQUIRED', 'Fazer login', { duration: 4000 })
+        .onAction().subscribe(() => this.router.navigate(['/auth/login']));
+      return;
+    }
+
+    this.addingToCart.set(true);
+    this.cartService.addToCart(p.id).subscribe({
+      next: () => {
+        this.addingToCart.set(false);
+        this.snackBar.open(`"${p.name}" ${'adicionado ao carrinho'}`, 'Ver carrinho', {
+          duration: 3000,
+          panelClass: 'snackbar-success',
+        }).onAction().subscribe(() => this.router.navigate(['/cart']));
+      },
+      error: (err) => {
+        this.addingToCart.set(false);
+        const msg = err?.error?.errors?.[0] ?? 'Erro ao adicionar ao carrinho';
+        this.snackBar.open(msg, 'Fechar', { duration: 3000 });
+      },
+    });
   }
 
   private loadProduct(slug: string): void {

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,6 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
+import { CartService } from '../../../core/services/cart.service';
 
 @Component({
   selector: 'app-navbar',
@@ -39,7 +40,7 @@ import { AuthService } from '../../../core/services/auth.service';
         <div class="flex items-center gap-2">
           @if (authService.isAuthenticated()) {
             <a routerLink="/cart" mat-icon-button>
-              <mat-icon [matBadge]="cartCount()" matBadgeColor="warn" [matBadgeHidden]="cartCount() === 0">
+              <mat-icon [matBadge]="cartService.totalItems()" matBadgeColor="warn" [matBadgeHidden]="cartService.totalItems() === 0">
                 shopping_cart
               </mat-icon>
             </a>
@@ -74,7 +75,7 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class NavbarComponent {
   readonly authService = inject(AuthService);
-  readonly cartCount = signal(0);
+  readonly cartService = inject(CartService);
 
   onSearch(event: Event): void {
     const value = (event.target as HTMLInputElement).value;

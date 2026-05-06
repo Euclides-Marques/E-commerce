@@ -44,6 +44,8 @@ public static class DependencyInjection
             services.AddScoped<ICacheService, CacheService>();
         }
 
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUser, CurrentUserService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();

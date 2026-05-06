@@ -79,8 +79,22 @@
   "CART": {
     "TITLE": "My Cart",
     "EMPTY": "Your cart is empty",
+    "EMPTY_CTA": "Browse products",
     "TOTAL": "Total",
-    "CHECKOUT": "Checkout"
+    "TOTAL_ITEMS": "{{count}} item(s)",
+    "CHECKOUT": "Checkout",
+    "CONTINUE_SHOPPING": "Continue Shopping",
+    "CLEAR": "Clear cart",
+    "REMOVE": "Remove",
+    "QUANTITY": "Quantity",
+    "UNIT_PRICE": "Unit price",
+    "SUBTOTAL": "Subtotal",
+    "ADDED": "added to cart",
+    "VIEW_CART": "View cart",
+    "LOGIN_REQUIRED": "Please log in to add to cart",
+    "ERROR_ADD": "Error adding to cart",
+    "ERROR_UPDATE": "Error updating item",
+    "ERROR_REMOVE": "Error removing item"
   },
   "ORDER": {
     "STATUS": {

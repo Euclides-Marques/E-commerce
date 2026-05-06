@@ -28,6 +28,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
             <mat-icon matListItemIcon class="text-white">receipt_long</mat-icon>
             <span matListItemTitle class="text-white">Pedidos</span>
           </a>
+          <a mat-list-item routerLink="/admin/categories" routerLinkActive="bg-gray-700">
+            <mat-icon matListItemIcon class="text-white">category</mat-icon>
+            <span matListItemTitle class="text-white">Categorias</span>
+          </a>
           <a mat-list-item routerLink="/admin/users" routerLinkActive="bg-gray-700">
             <mat-icon matListItemIcon class="text-white">people</mat-icon>
             <span matListItemTitle class="text-white">Usuários</span>

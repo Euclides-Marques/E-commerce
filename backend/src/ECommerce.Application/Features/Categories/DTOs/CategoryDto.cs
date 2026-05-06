@@ -8,5 +8,6 @@ public record CategoryDto(
     string? ImageUrl,
     Guid? ParentId,
     bool IsActive,
-    int DisplayOrder
+    int DisplayOrder,
+    List<CategoryDto> Children
 );

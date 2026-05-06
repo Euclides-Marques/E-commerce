@@ -9,12 +9,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ProductService } from '../../../core/services/product.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 import { ProductSummaryDto, GetProductsParams } from '../../../core/models/product.model';
+import { CategoryDto } from '../../../core/models/category.model';
 
 @Component({
   selector: 'app-product-list',
@@ -29,6 +32,8 @@ import { ProductSummaryDto, GetProductsParams } from '../../../core/models/produ
     MatSelectModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatCheckboxModule,
+    MatDividerModule,
     MatSnackBarModule,
     TranslatePipe,
     ProductCardComponent,
@@ -37,29 +42,114 @@ import { ProductSummaryDto, GetProductsParams } from '../../../core/models/produ
     <div class="flex gap-6 animate-fade-in">
       <!-- Filtros -->
       <aside class="w-64 hidden md:block shrink-0">
-        <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
-          <h3 class="font-semibold text-gray-800 mb-4">{{ 'PRODUCT.LIST.FILTERS' | translate }}</h3>
+        <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-semibold text-gray-800">{{ 'PRODUCT.LIST.FILTERS' | translate }}</h3>
+            @if (hasActiveFilters()) {
+              <button mat-button color="warn" class="text-xs" (click)="clearFilters()">
+                {{ 'PRODUCT.LIST.CLEAR_FILTERS' | translate }}
+              </button>
+            }
+          </div>
 
-          <mat-form-field class="w-full" appearance="outline">
-            <mat-label>{{ 'PRODUCT.LIST.CATEGORY' | translate }}</mat-label>
-            <mat-select [(ngModel)]="selectedCategory" (ngModelChange)="onFilterChange()">
-              <mat-option value="">{{ 'PRODUCT.LIST.ALL_CATEGORIES' | translate }}</mat-option>
-              @for (cat of categories(); track cat.id) {
-                <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+          <!-- Categoria hierárquica -->
+          <div>
+            <p class="text-sm font-medium text-gray-600 mb-2">{{ 'PRODUCT.LIST.CATEGORY' | translate }}</p>
+            <div class="space-y-1 max-h-64 overflow-y-auto">
+              <button
+                class="w-full text-left text-sm px-2 py-1 rounded transition-colors"
+                [class.bg-orange-100]="selectedCategory === ''"
+                [class.text-orange-700]="selectedCategory === ''"
+                [class.font-medium]="selectedCategory === ''"
+                [class.hover:bg-gray-100]="selectedCategory !== ''"
+                (click)="selectCategory('')">
+                {{ 'PRODUCT.LIST.ALL_CATEGORIES' | translate }}
+              </button>
+              @for (cat of hierarchy(); track cat.id) {
+                <button
+                  class="w-full text-left text-sm px-2 py-1 rounded transition-colors"
+                  [class.bg-orange-100]="selectedCategory === cat.id"
+                  [class.text-orange-700]="selectedCategory === cat.id"
+                  [class.font-medium]="selectedCategory === cat.id"
+                  [class.hover:bg-gray-100]="selectedCategory !== cat.id"
+                  (click)="selectCategory(cat.id)">
+                  {{ cat.name }}
+                </button>
+                @for (sub of cat.children; track sub.id) {
+                  <button
+                    class="w-full text-left text-sm pl-6 pr-2 py-1 rounded transition-colors"
+                    [class.bg-orange-100]="selectedCategory === sub.id"
+                    [class.text-orange-700]="selectedCategory === sub.id"
+                    [class.font-medium]="selectedCategory === sub.id"
+                    [class.hover:bg-gray-100]="selectedCategory !== sub.id"
+                    (click)="selectCategory(sub.id)">
+                    {{ sub.name }}
+                  </button>
+                }
               }
-            </mat-select>
-          </mat-form-field>
+            </div>
+          </div>
 
-          <mat-form-field class="w-full mt-2" appearance="outline">
-            <mat-label>{{ 'PRODUCT.LIST.SORT_BY' | translate }}</mat-label>
-            <mat-select [(ngModel)]="sortBy" (ngModelChange)="onFilterChange()">
-              <mat-option value="">{{ 'PRODUCT.LIST.RELEVANCE' | translate }}</mat-option>
-              <mat-option value="price">{{ 'PRODUCT.LIST.PRICE_ASC' | translate }}</mat-option>
-              <mat-option value="price_desc">{{ 'PRODUCT.LIST.PRICE_DESC' | translate }}</mat-option>
-              <mat-option value="sold">{{ 'PRODUCT.LIST.BEST_SELLING' | translate }}</mat-option>
-              <mat-option value="rating">{{ 'PRODUCT.LIST.TOP_RATED' | translate }}</mat-option>
-            </mat-select>
-          </mat-form-field>
+          <mat-divider />
+
+          <!-- Faixa de preço -->
+          <div>
+            <p class="text-sm font-medium text-gray-600 mb-2">{{ 'PRODUCT.LIST.PRICE_RANGE' | translate }}</p>
+            <div class="flex gap-2">
+              <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+                <mat-label>{{ 'PRODUCT.LIST.PRICE_MIN' | translate }}</mat-label>
+                <input matInput type="number" min="0" [(ngModel)]="priceMin" (change)="onFilterChange()" />
+              </mat-form-field>
+              <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+                <mat-label>{{ 'PRODUCT.LIST.PRICE_MAX' | translate }}</mat-label>
+                <input matInput type="number" min="0" [(ngModel)]="priceMax" (change)="onFilterChange()" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <mat-divider />
+
+          <!-- Avaliação mínima -->
+          <div>
+            <p class="text-sm font-medium text-gray-600 mb-2">{{ 'PRODUCT.LIST.MIN_RATING' | translate }}</p>
+            <div class="flex gap-1">
+              @for (star of [1,2,3,4,5]; track star) {
+                <button
+                  class="flex items-center gap-0.5 px-2 py-1 rounded border text-xs transition-colors"
+                  [class.bg-orange-500]="ratingMin === star"
+                  [class.text-white]="ratingMin === star"
+                  [class.border-orange-500]="ratingMin === star"
+                  [class.border-gray-200]="ratingMin !== star"
+                  [class.hover:border-orange-300]="ratingMin !== star"
+                  (click)="selectRating(star)">
+                  {{ star }}★
+                </button>
+              }
+            </div>
+          </div>
+
+          <mat-divider />
+
+          <!-- Em estoque -->
+          <mat-checkbox [(ngModel)]="inStockOnly" (change)="onFilterChange()" color="primary">
+            {{ 'PRODUCT.LIST.IN_STOCK_ONLY' | translate }}
+          </mat-checkbox>
+
+          <mat-divider />
+
+          <!-- Ordenação -->
+          <div>
+            <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ 'PRODUCT.LIST.SORT_BY' | translate }}</mat-label>
+              <mat-select [(ngModel)]="sortBy" (ngModelChange)="onFilterChange()">
+                <mat-option value="">{{ 'PRODUCT.LIST.RELEVANCE' | translate }}</mat-option>
+                <mat-option value="price">{{ 'PRODUCT.LIST.PRICE_ASC' | translate }}</mat-option>
+                <mat-option value="price_desc">{{ 'PRODUCT.LIST.PRICE_DESC' | translate }}</mat-option>
+                <mat-option value="sold">{{ 'PRODUCT.LIST.BEST_SELLING' | translate }}</mat-option>
+                <mat-option value="rating">{{ 'PRODUCT.LIST.TOP_RATED' | translate }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
         </div>
       </aside>
 
@@ -67,7 +157,7 @@ import { ProductSummaryDto, GetProductsParams } from '../../../core/models/produ
       <div class="flex-1 min-w-0">
         <!-- Barra de busca -->
         <div class="flex items-center gap-3 mb-4">
-          <mat-form-field class="flex-1" appearance="outline">
+          <mat-form-field class="flex-1" appearance="outline" subscriptSizing="dynamic">
             <mat-label>{{ 'PRODUCT.LIST.SEARCH_PLACEHOLDER' | translate }}</mat-label>
             <input matInput [(ngModel)]="searchQuery" (keyup.enter)="onSearch()" />
             <button matSuffix mat-icon-button (click)="onSearch()">
@@ -79,7 +169,7 @@ import { ProductSummaryDto, GetProductsParams } from '../../../core/models/produ
         <!-- Cabeçalho de resultados -->
         <div class="flex items-center justify-between mb-4">
           <h1 class="text-xl font-bold text-gray-800">
-            {{ 'PRODUCT.LIST.TITLE' | translate }}
+            {{ selectedCategoryName() || ('PRODUCT.LIST.TITLE' | translate) }}
           </h1>
           @if (!loading()) {
             <span class="text-sm text-gray-500">
@@ -144,7 +234,19 @@ export class ProductListComponent implements OnInit {
   readonly loading = this.productService.loading;
   readonly totalCount = this.productService.totalCount;
   readonly items = computed(() => this.productService.products()?.items ?? []);
-  readonly categories = this.categoryService.categories;
+  readonly hierarchy = this.categoryService.hierarchy;
+
+  readonly selectedCategoryName = computed(() => {
+    if (!this.selectedCategory) return '';
+    const all = this.flattenCategories(this.hierarchy());
+    return all.find(c => c.id === this.selectedCategory)?.name ?? '';
+  });
+
+  readonly hasActiveFilters = computed(() =>
+    !!this.selectedCategory || !!this.searchQuery ||
+    this.priceMin !== null || this.priceMax !== null ||
+    this.ratingMin !== null || this.inStockOnly
+  );
 
   readonly skeletons = [1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -153,9 +255,13 @@ export class ProductListComponent implements OnInit {
   sortBy = '';
   currentPage = 1;
   pageSize = 20;
+  priceMin: number | null = null;
+  priceMax: number | null = null;
+  ratingMin: number | null = null;
+  inStockOnly = false;
 
   ngOnInit(): void {
-    this.categoryService.getCategories(true).subscribe();
+    this.categoryService.getCategoriesHierarchy(true).subscribe();
 
     this.route.queryParams.subscribe(params => {
       this.searchQuery = params['search'] ?? '';
@@ -163,8 +269,24 @@ export class ProductListComponent implements OnInit {
       this.sortBy = params['sortBy'] ?? '';
       this.currentPage = Number(params['page'] ?? 1);
       this.pageSize = Number(params['pageSize'] ?? 20);
+      this.priceMin = params['priceMin'] ? Number(params['priceMin']) : null;
+      this.priceMax = params['priceMax'] ? Number(params['priceMax']) : null;
+      this.ratingMin = params['ratingMin'] ? Number(params['ratingMin']) : null;
+      this.inStockOnly = params['inStockOnly'] === 'true';
       this.loadProducts();
     });
+  }
+
+  selectCategory(id: string): void {
+    this.selectedCategory = id;
+    this.currentPage = 1;
+    this.updateQueryParams();
+  }
+
+  selectRating(star: number): void {
+    this.ratingMin = this.ratingMin === star ? null : star;
+    this.currentPage = 1;
+    this.updateQueryParams();
   }
 
   onSearch(): void {
@@ -180,6 +302,18 @@ export class ProductListComponent implements OnInit {
   onPageChange(event: PageEvent): void {
     this.currentPage = event.pageIndex + 1;
     this.pageSize = event.pageSize;
+    this.updateQueryParams();
+  }
+
+  clearFilters(): void {
+    this.selectedCategory = '';
+    this.searchQuery = '';
+    this.priceMin = null;
+    this.priceMax = null;
+    this.ratingMin = null;
+    this.inStockOnly = false;
+    this.sortBy = '';
+    this.currentPage = 1;
     this.updateQueryParams();
   }
 
@@ -203,6 +337,10 @@ export class ProductListComponent implements OnInit {
       isActive: true,
       sortBy: sortByField,
       sortDescending,
+      priceMin: this.priceMin ?? undefined,
+      priceMax: this.priceMax ?? undefined,
+      ratingMin: this.ratingMin ?? undefined,
+      inStockOnly: this.inStockOnly || undefined,
     };
 
     this.productService.getProducts(params).subscribe({
@@ -219,8 +357,23 @@ export class ProductListComponent implements OnInit {
         sortBy: this.sortBy || null,
         page: this.currentPage > 1 ? this.currentPage : null,
         pageSize: this.pageSize !== 20 ? this.pageSize : null,
+        priceMin: this.priceMin ?? null,
+        priceMax: this.priceMax ?? null,
+        ratingMin: this.ratingMin ?? null,
+        inStockOnly: this.inStockOnly || null,
       },
       queryParamsHandling: 'merge',
     });
+  }
+
+  private flattenCategories(categories: CategoryDto[]): CategoryDto[] {
+    const result: CategoryDto[] = [];
+    for (const cat of categories) {
+      result.push(cat);
+      if (cat.children?.length) {
+        result.push(...this.flattenCategories(cat.children));
+      }
+    }
+    return result;
   }
 }

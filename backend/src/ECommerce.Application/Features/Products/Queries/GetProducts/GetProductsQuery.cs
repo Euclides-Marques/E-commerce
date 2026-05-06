@@ -12,5 +12,9 @@ public record GetProductsQuery(
     bool? IsActive = null,
     bool? IsFeatured = null,
     string? SortBy = null,
-    bool SortDescending = false
+    bool SortDescending = false,
+    decimal? PriceMin = null,
+    decimal? PriceMax = null,
+    double? RatingMin = null,
+    bool? InStockOnly = null
 ) : IRequest<Result<PaginatedResult<ProductSummaryDto>>>;

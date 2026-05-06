@@ -79,4 +79,8 @@ export interface GetProductsParams {
   isFeatured?: boolean;
   sortBy?: string;
   sortDescending?: boolean;
+  priceMin?: number;
+  priceMax?: number;
+  ratingMin?: number;
+  inStockOnly?: boolean;
 }

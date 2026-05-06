@@ -53,8 +53,14 @@
     "LIST": {
       "TITLE": "All Products",
       "FILTERS": "Filters",
+      "CLEAR_FILTERS": "Clear filters",
       "CATEGORY": "Category",
       "ALL_CATEGORIES": "All categories",
+      "PRICE_RANGE": "Price range",
+      "PRICE_MIN": "Min.",
+      "PRICE_MAX": "Max.",
+      "MIN_RATING": "Minimum rating",
+      "IN_STOCK_ONLY": "In stock only",
       "SORT_BY": "Sort by",
       "RELEVANCE": "Relevance",
       "PRICE_ASC": "Lowest price",
@@ -138,6 +144,37 @@
         "DELETE": "Delete image",
         "EMPTY": "No images registered.",
         "CLOSE": "Close"
+      }
+    },
+    "CATEGORIES": {
+      "TITLE": "Category Management",
+      "TOTAL": "registered categories",
+      "NEW": "New Category",
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "EMPTY": "No categories registered.",
+      "EDIT": "Edit",
+      "DELETE": "Delete",
+      "EDIT_TITLE": "Edit Category",
+      "CREATE_TITLE": "New Category",
+      "COLUMNS": {
+        "NAME": "Name",
+        "PARENT": "Parent category",
+        "ORDER": "Order",
+        "STATUS": "Status",
+        "ACTIONS": "Actions"
+      },
+      "FORM": {
+        "NAME": "Category name",
+        "NAME_REQUIRED": "Name is required",
+        "DESCRIPTION": "Description",
+        "PARENT": "Parent category",
+        "NO_PARENT": "None (root)",
+        "DISPLAY_ORDER": "Display order",
+        "IS_ACTIVE": "Active category",
+        "CANCEL": "Cancel",
+        "SAVE": "Save changes",
+        "CREATE": "Create category"
       }
     }
   }

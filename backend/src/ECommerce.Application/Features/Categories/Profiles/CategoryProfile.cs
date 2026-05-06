@@ -8,6 +8,7 @@ public class CategoryProfile : Profile
 {
     public CategoryProfile()
     {
-        CreateMap<Category, CategoryDto>();
+        CreateMap<Category, CategoryDto>()
+            .ForMember(dest => dest.Children, opt => opt.MapFrom(src => src.Children));
     }
 }

@@ -53,8 +53,14 @@
     "LIST": {
       "TITLE": "Todos los Productos",
       "FILTERS": "Filtros",
+      "CLEAR_FILTERS": "Limpiar filtros",
       "CATEGORY": "Categoría",
       "ALL_CATEGORIES": "Todas las categorías",
+      "PRICE_RANGE": "Rango de precio",
+      "PRICE_MIN": "Mín.",
+      "PRICE_MAX": "Máx.",
+      "MIN_RATING": "Calificación mínima",
+      "IN_STOCK_ONLY": "Solo en stock",
       "SORT_BY": "Ordenar por",
       "RELEVANCE": "Relevancia",
       "PRICE_ASC": "Menor precio",
@@ -138,6 +144,37 @@
         "DELETE": "Eliminar imagen",
         "EMPTY": "No hay imágenes registradas.",
         "CLOSE": "Cerrar"
+      }
+    },
+    "CATEGORIES": {
+      "TITLE": "Gestión de Categorías",
+      "TOTAL": "categorías registradas",
+      "NEW": "Nueva Categoría",
+      "ACTIVE": "Activa",
+      "INACTIVE": "Inactiva",
+      "EMPTY": "No hay categorías registradas.",
+      "EDIT": "Editar",
+      "DELETE": "Eliminar",
+      "EDIT_TITLE": "Editar Categoría",
+      "CREATE_TITLE": "Nueva Categoría",
+      "COLUMNS": {
+        "NAME": "Nombre",
+        "PARENT": "Categoría padre",
+        "ORDER": "Orden",
+        "STATUS": "Estado",
+        "ACTIONS": "Acciones"
+      },
+      "FORM": {
+        "NAME": "Nombre de la categoría",
+        "NAME_REQUIRED": "El nombre es obligatorio",
+        "DESCRIPTION": "Descripción",
+        "PARENT": "Categoría padre",
+        "NO_PARENT": "Ninguna (raíz)",
+        "DISPLAY_ORDER": "Orden de visualización",
+        "IS_ACTIVE": "Categoría activa",
+        "CANCEL": "Cancelar",
+        "SAVE": "Guardar cambios",
+        "CREATE": "Crear categoría"
       }
     }
   }

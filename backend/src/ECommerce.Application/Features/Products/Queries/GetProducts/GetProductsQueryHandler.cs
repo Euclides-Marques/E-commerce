@@ -1,5 +1,4 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using ECommerce.Application.Common.Interfaces;
 using ECommerce.Application.Common.Models;
 using ECommerce.Application.Features.Products.DTOs;
@@ -37,13 +36,28 @@ public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, Result<
         }
 
         if (request.CategoryId.HasValue)
-            query = query.Where(p => p.CategoryId == request.CategoryId.Value);
+        {
+            var categoryIds = await GetDescendantCategoryIdsAsync(request.CategoryId.Value, cancellationToken);
+            query = query.Where(p => categoryIds.Contains(p.CategoryId));
+        }
 
         if (request.IsActive.HasValue)
             query = query.Where(p => p.IsActive == request.IsActive.Value);
 
         if (request.IsFeatured.HasValue)
             query = query.Where(p => p.IsFeatured == request.IsFeatured.Value);
+
+        if (request.PriceMin.HasValue)
+            query = query.Where(p => p.Price >= request.PriceMin.Value);
+
+        if (request.PriceMax.HasValue)
+            query = query.Where(p => p.Price <= request.PriceMax.Value);
+
+        if (request.RatingMin.HasValue)
+            query = query.Where(p => p.AverageRating >= request.RatingMin.Value);
+
+        if (request.InStockOnly.HasValue && request.InStockOnly.Value)
+            query = query.Where(p => p.StockQuantity > 0);
 
         query = request.SortBy?.ToLower() switch
         {
@@ -68,5 +82,29 @@ public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, Result<
 
         return Result<PaginatedResult<ProductSummaryDto>>.Success(
             new PaginatedResult<ProductSummaryDto>(dtos, totalCount, page, pageSize, totalPages));
+    }
+
+    private async Task<List<Guid>> GetDescendantCategoryIdsAsync(Guid categoryId, CancellationToken cancellationToken)
+    {
+        var allCategories = await _context.Categories
+            .Select(c => new { c.Id, c.ParentId })
+            .ToListAsync(cancellationToken);
+
+        var result = new HashSet<Guid> { categoryId };
+        var queue = new Queue<Guid>();
+        queue.Enqueue(categoryId);
+
+        while (queue.Count > 0)
+        {
+            var current = queue.Dequeue();
+            var children = allCategories.Where(c => c.ParentId == current).Select(c => c.Id);
+            foreach (var child in children)
+            {
+                if (result.Add(child))
+                    queue.Enqueue(child);
+            }
+        }
+
+        return result.ToList();
     }
 }

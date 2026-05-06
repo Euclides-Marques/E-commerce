@@ -49,7 +49,26 @@
     "BUY_NOW": "Buy now",
     "IN_STOCK": "In stock",
     "OUT_OF_STOCK": "Out of stock",
-    "REVIEWS": "reviews"
+    "REVIEWS": "reviews",
+    "LIST": {
+      "TITLE": "All Products",
+      "FILTERS": "Filters",
+      "CATEGORY": "Category",
+      "ALL_CATEGORIES": "All categories",
+      "SORT_BY": "Sort by",
+      "RELEVANCE": "Relevance",
+      "PRICE_ASC": "Lowest price",
+      "PRICE_DESC": "Highest price",
+      "BEST_SELLING": "Best selling",
+      "TOP_RATED": "Top rated",
+      "SEARCH_PLACEHOLDER": "Search products...",
+      "RESULTS": "results",
+      "NO_RESULTS": "No products found."
+    },
+    "DETAIL": {
+      "DESCRIPTION": "Product description",
+      "NOT_FOUND": "Product not found."
+    }
   },
   "CART": {
     "TITLE": "My Cart",
@@ -64,6 +83,62 @@
       "SHIPPED": "Shipped",
       "DELIVERED": "Delivered",
       "CANCELLED": "Cancelled"
+    }
+  },
+  "ADMIN": {
+    "PRODUCTS": {
+      "TITLE": "Product Management",
+      "TOTAL": "registered products",
+      "NEW": "New Product",
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "EMPTY": "No products registered.",
+      "EDIT": "Edit",
+      "DELETE": "Delete",
+      "MANAGE_IMAGES": "Manage images",
+      "COLUMNS": {
+        "NAME": "Name",
+        "CATEGORY": "Category",
+        "PRICE": "Price",
+        "STOCK": "Stock",
+        "STATUS": "Status",
+        "ACTIONS": "Actions"
+      },
+      "FORM": {
+        "NAME": "Product name",
+        "NAME_REQUIRED": "Name is required",
+        "DESCRIPTION": "Description",
+        "DESCRIPTION_REQUIRED": "Description is required",
+        "SHORT_DESCRIPTION": "Short description",
+        "SKU": "SKU",
+        "SKU_REQUIRED": "SKU is required",
+        "CATEGORY": "Category",
+        "CATEGORY_REQUIRED": "Category is required",
+        "PRICE": "Price (R$)",
+        "PRICE_REQUIRED": "Price is required",
+        "ORIGINAL_PRICE": "Original price (R$)",
+        "STOCK": "Stock",
+        "STOCK_REQUIRED": "Stock is required",
+        "WEIGHT": "Weight",
+        "IS_ACTIVE": "Active product",
+        "IS_FEATURED": "Featured product",
+        "CANCEL": "Cancel",
+        "SAVE": "Save changes",
+        "CREATE": "Create product"
+      },
+      "EDIT_TITLE": "Edit Product",
+      "CREATE_TITLE": "New Product",
+      "IMAGES": {
+        "TITLE": "Product images",
+        "DRAG_DROP": "Drag images here or click to select",
+        "SELECT": "Select images",
+        "UPLOADING": "Uploading...",
+        "MAIN": "Main",
+        "SET_MAIN": "Set as main",
+        "DELETE": "Delete image",
+        "EMPTY": "No images registered.",
+        "CLOSE": "Close"
+      }
     }
   }
 }

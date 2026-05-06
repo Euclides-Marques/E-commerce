@@ -49,7 +49,26 @@
     "BUY_NOW": "Comprar agora",
     "IN_STOCK": "Em estoque",
     "OUT_OF_STOCK": "Sem estoque",
-    "REVIEWS": "avaliações"
+    "REVIEWS": "avaliações",
+    "LIST": {
+      "TITLE": "Todos os Produtos",
+      "FILTERS": "Filtros",
+      "CATEGORY": "Categoria",
+      "ALL_CATEGORIES": "Todas as categorias",
+      "SORT_BY": "Ordenar por",
+      "RELEVANCE": "Relevância",
+      "PRICE_ASC": "Menor preço",
+      "PRICE_DESC": "Maior preço",
+      "BEST_SELLING": "Mais vendidos",
+      "TOP_RATED": "Melhor avaliados",
+      "SEARCH_PLACEHOLDER": "Buscar produtos...",
+      "RESULTS": "resultados",
+      "NO_RESULTS": "Nenhum produto encontrado."
+    },
+    "DETAIL": {
+      "DESCRIPTION": "Descrição do produto",
+      "NOT_FOUND": "Produto não encontrado."
+    }
   },
   "CART": {
     "TITLE": "Meu Carrinho",
@@ -64,6 +83,62 @@
       "SHIPPED": "Enviado",
       "DELIVERED": "Entregue",
       "CANCELLED": "Cancelado"
+    }
+  },
+  "ADMIN": {
+    "PRODUCTS": {
+      "TITLE": "Gestão de Produtos",
+      "TOTAL": "produtos cadastrados",
+      "NEW": "Novo Produto",
+      "ACTIVE": "Ativo",
+      "INACTIVE": "Inativo",
+      "EMPTY": "Nenhum produto cadastrado.",
+      "EDIT": "Editar",
+      "DELETE": "Excluir",
+      "MANAGE_IMAGES": "Gerenciar imagens",
+      "COLUMNS": {
+        "NAME": "Nome",
+        "CATEGORY": "Categoria",
+        "PRICE": "Preço",
+        "STOCK": "Estoque",
+        "STATUS": "Status",
+        "ACTIONS": "Ações"
+      },
+      "FORM": {
+        "NAME": "Nome do produto",
+        "NAME_REQUIRED": "Nome é obrigatório",
+        "DESCRIPTION": "Descrição",
+        "DESCRIPTION_REQUIRED": "Descrição é obrigatória",
+        "SHORT_DESCRIPTION": "Descrição curta",
+        "SKU": "SKU",
+        "SKU_REQUIRED": "SKU é obrigatório",
+        "CATEGORY": "Categoria",
+        "CATEGORY_REQUIRED": "Categoria é obrigatória",
+        "PRICE": "Preço (R$)",
+        "PRICE_REQUIRED": "Preço é obrigatório",
+        "ORIGINAL_PRICE": "Preço original (R$)",
+        "STOCK": "Estoque",
+        "STOCK_REQUIRED": "Estoque é obrigatório",
+        "WEIGHT": "Peso",
+        "IS_ACTIVE": "Produto ativo",
+        "IS_FEATURED": "Produto em destaque",
+        "CANCEL": "Cancelar",
+        "SAVE": "Salvar alterações",
+        "CREATE": "Criar produto"
+      },
+      "EDIT_TITLE": "Editar Produto",
+      "CREATE_TITLE": "Novo Produto",
+      "IMAGES": {
+        "TITLE": "Imagens do produto",
+        "DRAG_DROP": "Arraste imagens aqui ou clique para selecionar",
+        "SELECT": "Selecionar imagens",
+        "UPLOADING": "Enviando...",
+        "MAIN": "Principal",
+        "SET_MAIN": "Definir como principal",
+        "DELETE": "Excluir imagem",
+        "EMPTY": "Nenhuma imagem cadastrada.",
+        "CLOSE": "Fechar"
+      }
     }
   }
 }

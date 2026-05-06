@@ -49,7 +49,26 @@
     "BUY_NOW": "Comprar ahora",
     "IN_STOCK": "En stock",
     "OUT_OF_STOCK": "Sin stock",
-    "REVIEWS": "reseñas"
+    "REVIEWS": "reseñas",
+    "LIST": {
+      "TITLE": "Todos los Productos",
+      "FILTERS": "Filtros",
+      "CATEGORY": "Categoría",
+      "ALL_CATEGORIES": "Todas las categorías",
+      "SORT_BY": "Ordenar por",
+      "RELEVANCE": "Relevancia",
+      "PRICE_ASC": "Menor precio",
+      "PRICE_DESC": "Mayor precio",
+      "BEST_SELLING": "Más vendidos",
+      "TOP_RATED": "Mejor valorados",
+      "SEARCH_PLACEHOLDER": "Buscar productos...",
+      "RESULTS": "resultados",
+      "NO_RESULTS": "No se encontraron productos."
+    },
+    "DETAIL": {
+      "DESCRIPTION": "Descripción del producto",
+      "NOT_FOUND": "Producto no encontrado."
+    }
   },
   "CART": {
     "TITLE": "Mi Carrito",
@@ -64,6 +83,62 @@
       "SHIPPED": "Enviado",
       "DELIVERED": "Entregado",
       "CANCELLED": "Cancelado"
+    }
+  },
+  "ADMIN": {
+    "PRODUCTS": {
+      "TITLE": "Gestión de Productos",
+      "TOTAL": "productos registrados",
+      "NEW": "Nuevo Producto",
+      "ACTIVE": "Activo",
+      "INACTIVE": "Inactivo",
+      "EMPTY": "No hay productos registrados.",
+      "EDIT": "Editar",
+      "DELETE": "Eliminar",
+      "MANAGE_IMAGES": "Gestionar imágenes",
+      "COLUMNS": {
+        "NAME": "Nombre",
+        "CATEGORY": "Categoría",
+        "PRICE": "Precio",
+        "STOCK": "Stock",
+        "STATUS": "Estado",
+        "ACTIONS": "Acciones"
+      },
+      "FORM": {
+        "NAME": "Nombre del producto",
+        "NAME_REQUIRED": "El nombre es obligatorio",
+        "DESCRIPTION": "Descripción",
+        "DESCRIPTION_REQUIRED": "La descripción es obligatoria",
+        "SHORT_DESCRIPTION": "Descripción corta",
+        "SKU": "SKU",
+        "SKU_REQUIRED": "El SKU es obligatorio",
+        "CATEGORY": "Categoría",
+        "CATEGORY_REQUIRED": "La categoría es obligatoria",
+        "PRICE": "Precio (R$)",
+        "PRICE_REQUIRED": "El precio es obligatorio",
+        "ORIGINAL_PRICE": "Precio original (R$)",
+        "STOCK": "Stock",
+        "STOCK_REQUIRED": "El stock es obligatorio",
+        "WEIGHT": "Peso",
+        "IS_ACTIVE": "Producto activo",
+        "IS_FEATURED": "Producto destacado",
+        "CANCEL": "Cancelar",
+        "SAVE": "Guardar cambios",
+        "CREATE": "Crear producto"
+      },
+      "EDIT_TITLE": "Editar Producto",
+      "CREATE_TITLE": "Nuevo Producto",
+      "IMAGES": {
+        "TITLE": "Imágenes del producto",
+        "DRAG_DROP": "Arrastra imágenes aquí o haz clic para seleccionar",
+        "SELECT": "Seleccionar imágenes",
+        "UPLOADING": "Subiendo...",
+        "MAIN": "Principal",
+        "SET_MAIN": "Definir como principal",
+        "DELETE": "Eliminar imagen",
+        "EMPTY": "No hay imágenes registradas.",
+        "CLOSE": "Cerrar"
+      }
     }
   }
 }

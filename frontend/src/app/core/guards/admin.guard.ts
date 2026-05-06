@@ -10,6 +10,5 @@ export const adminGuard: CanActivateFn = () => {
     return true;
   }
 
-  router.navigate(['/']);
-  return false;
+  return router.createUrlTree(['/']);
 };

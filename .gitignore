@@ -15,7 +15,6 @@ frontend/.angular/
 frontend/.env
 
 # Environment secrets
-**/appsettings.Production.json
 **/.env
 **/.env.local
 **/*.env

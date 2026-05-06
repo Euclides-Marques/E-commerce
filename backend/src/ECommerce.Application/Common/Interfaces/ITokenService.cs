@@ -6,5 +6,5 @@ public interface ITokenService
 {
     string GenerateAccessToken(User user);
     string GenerateRefreshToken();
-    Guid? ValidateRefreshToken(string token);
+    int RefreshTokenExpirationDays { get; }
 }

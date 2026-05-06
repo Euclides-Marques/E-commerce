@@ -6,6 +6,7 @@
 .vs/
 backend/src/*/Properties/launchSettings.json
 backend/logs/
+**/logs/
 
 # Angular
 frontend/node_modules/

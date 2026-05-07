@@ -7,6 +7,7 @@
     "HOME": "Home",
     "PRODUCTS": "Products",
     "CART": "Cart",
+    "WISHLIST": "Wishlist",
     "ORDERS": "Orders",
     "PROFILE": "Profile",
     "LOGIN": "Login",
@@ -156,6 +157,34 @@
     "STATE": "State",
     "SET_DEFAULT": "Set as default address",
     "SAVE": "Save address"
+  },
+  "REVIEW": {
+    "TITLE": "Customer reviews",
+    "NO_REVIEWS": "No reviews yet. Be the first to review!",
+    "WRITE_REVIEW": "Write a review",
+    "RATING": "Your rating",
+    "TITLE_LABEL": "Title (optional)",
+    "COMMENT_LABEL": "Comment (optional)",
+    "SUBMIT": "Submit review",
+    "SUCCESS": "Review submitted successfully!",
+    "ERROR": "Error submitting review.",
+    "DELETE": "Delete review",
+    "DELETE_SUCCESS": "Review deleted.",
+    "HELPFUL": "Helpful",
+    "VERIFIED_PURCHASE": "Verified purchase",
+    "LOGIN_REQUIRED": "Log in",
+    "LOGIN_TO_REVIEW": "to review this product."
+  },
+  "WISHLIST": {
+    "TITLE": "Wishlist",
+    "EMPTY": "Your wishlist is empty.",
+    "EMPTY_CTA": "Browse products",
+    "ADD": "Add to wishlist",
+    "REMOVE": "Remove from wishlist",
+    "ADDED": "Added to wishlist",
+    "REMOVED": "Removed from wishlist",
+    "LOGIN_REQUIRED": "Log in to use the wishlist",
+    "VIEW": "View wishlist"
   },
   "ADMIN": {
     "PRODUCTS": {

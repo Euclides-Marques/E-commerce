@@ -7,6 +7,7 @@
     "HOME": "Inicio",
     "PRODUCTS": "Productos",
     "CART": "Carrito",
+    "WISHLIST": "Lista de deseos",
     "ORDERS": "Pedidos",
     "PROFILE": "Perfil",
     "LOGIN": "Ingresar",
@@ -156,6 +157,34 @@
     "STATE": "Estado",
     "SET_DEFAULT": "Establecer como dirección predeterminada",
     "SAVE": "Guardar dirección"
+  },
+  "REVIEW": {
+    "TITLE": "Reseñas de clientes",
+    "NO_REVIEWS": "Aún no hay reseñas. ¡Sé el primero en reseñar!",
+    "WRITE_REVIEW": "Escribir reseña",
+    "RATING": "Tu calificación",
+    "TITLE_LABEL": "Título (opcional)",
+    "COMMENT_LABEL": "Comentario (opcional)",
+    "SUBMIT": "Publicar reseña",
+    "SUCCESS": "¡Reseña publicada con éxito!",
+    "ERROR": "Error al publicar reseña.",
+    "DELETE": "Eliminar reseña",
+    "DELETE_SUCCESS": "Reseña eliminada.",
+    "HELPFUL": "Útil",
+    "VERIFIED_PURCHASE": "Compra verificada",
+    "LOGIN_REQUIRED": "Inicia sesión",
+    "LOGIN_TO_REVIEW": "para reseñar este producto."
+  },
+  "WISHLIST": {
+    "TITLE": "Lista de deseos",
+    "EMPTY": "Tu lista de deseos está vacía.",
+    "EMPTY_CTA": "Ver productos",
+    "ADD": "Agregar a lista de deseos",
+    "REMOVE": "Quitar de lista de deseos",
+    "ADDED": "Agregado a la lista de deseos",
+    "REMOVED": "Eliminado de la lista de deseos",
+    "LOGIN_REQUIRED": "Inicia sesión para usar la lista de deseos",
+    "VIEW": "Ver lista de deseos"
   },
   "ADMIN": {
     "PRODUCTS": {

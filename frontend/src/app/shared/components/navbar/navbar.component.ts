@@ -8,6 +8,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { CartService } from '../../../core/services/cart.service';
+import { WishlistService } from '../../../core/services/wishlist.service';
 
 @Component({
   selector: 'app-navbar',
@@ -39,6 +40,17 @@ import { CartService } from '../../../core/services/cart.service';
         <!-- Actions -->
         <div class="flex items-center gap-2">
           @if (authService.isAuthenticated()) {
+            <!-- Wishlist -->
+            <a routerLink="/wishlist" mat-icon-button>
+              <mat-icon
+                [matBadge]="wishlistService.count()"
+                matBadgeColor="accent"
+                [matBadgeHidden]="wishlistService.count() === 0">
+                favorite_border
+              </mat-icon>
+            </a>
+
+            <!-- Cart -->
             <a routerLink="/cart" mat-icon-button>
               <mat-icon [matBadge]="cartService.totalItems()" matBadgeColor="warn" [matBadgeHidden]="cartService.totalItems() === 0">
                 shopping_cart
@@ -54,6 +66,9 @@ import { CartService } from '../../../core/services/cart.service';
               </a>
               <a mat-menu-item routerLink="/orders">
                 <mat-icon>receipt</mat-icon> Meus Pedidos
+              </a>
+              <a mat-menu-item routerLink="/wishlist">
+                <mat-icon>favorite_border</mat-icon> Lista de Desejos
               </a>
               @if (authService.isAdmin()) {
                 <a mat-menu-item routerLink="/admin">
@@ -76,6 +91,7 @@ import { CartService } from '../../../core/services/cart.service';
 export class NavbarComponent {
   readonly authService = inject(AuthService);
   readonly cartService = inject(CartService);
+  readonly wishlistService = inject(WishlistService);
 
   onSearch(event: Event): void {
     const value = (event.target as HTMLInputElement).value;

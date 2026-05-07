@@ -11,15 +11,23 @@ public class GetCategoriesHierarchyQueryHandler : IRequestHandler<GetCategoriesH
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly ICacheService _cache;
 
-    public GetCategoriesHierarchyQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetCategoriesHierarchyQueryHandler(IApplicationDbContext context, IMapper mapper, ICacheService cache)
     {
         _context = context;
         _mapper = mapper;
+        _cache = cache;
     }
 
     public async Task<Result<List<CategoryDto>>> Handle(GetCategoriesHierarchyQuery request, CancellationToken cancellationToken)
     {
+        var cacheKey = $"categories:hierarchy:{request.IsActive?.ToString() ?? "all"}";
+
+        var cached = await _cache.GetAsync<List<CategoryDto>>(cacheKey, cancellationToken);
+        if (cached is not null)
+            return Result<List<CategoryDto>>.Success(cached);
+
         var query = _context.Categories
             .Include(c => c.Children.OrderBy(ch => ch.DisplayOrder).ThenBy(ch => ch.Name))
             .AsNoTracking()
@@ -33,6 +41,9 @@ public class GetCategoriesHierarchyQueryHandler : IRequestHandler<GetCategoriesH
             .ThenBy(c => c.Name)
             .ToListAsync(cancellationToken);
 
-        return Result<List<CategoryDto>>.Success(_mapper.Map<List<CategoryDto>>(categories));
+        var dtos = _mapper.Map<List<CategoryDto>>(categories);
+        await _cache.SetAsync(cacheKey, dtos, TimeSpan.FromMinutes(60), cancellationToken);
+
+        return Result<List<CategoryDto>>.Success(dtos);
     }
 }

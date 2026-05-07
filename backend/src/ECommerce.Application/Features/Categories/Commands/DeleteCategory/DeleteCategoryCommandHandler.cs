@@ -8,10 +8,12 @@ namespace ECommerce.Application.Features.Categories.Commands.DeleteCategory;
 public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand, Result>
 {
     private readonly IApplicationDbContext _context;
+    private readonly ICacheService _cache;
 
-    public DeleteCategoryCommandHandler(IApplicationDbContext context)
+    public DeleteCategoryCommandHandler(IApplicationDbContext context, ICacheService cache)
     {
         _context = context;
+        _cache = cache;
     }
 
     public async Task<Result> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
@@ -34,6 +36,8 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
         category.DeletedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        await _cache.RemoveByPatternAsync("categories:hierarchy:", cancellationToken);
 
         return Result.Success();
     }

@@ -20,6 +20,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Document).HasMaxLength(20);
         builder.Property(u => u.Role).HasConversion<int>();
 
+        // Índice de performance para paginação admin
+        builder.HasIndex(u => u.CreatedAt);
+
         builder.HasMany(u => u.Addresses).WithOne(a => a.User).HasForeignKey(a => a.UserId).OnDelete(DeleteBehavior.Cascade);
         builder.HasMany(u => u.CartItems).WithOne(c => c.User).HasForeignKey(c => c.UserId).OnDelete(DeleteBehavior.Cascade);
         builder.HasMany(u => u.Wishlists).WithOne(w => w.User).HasForeignKey(w => w.UserId).OnDelete(DeleteBehavior.Cascade);

@@ -10,7 +10,7 @@ import {
   UpdateProductDto,
   GetProductsParams,
 } from '../models/product.model';
-import { PaginatedResult } from '../models/paginated-result.model';
+import { PaginatedResult, CursorPaginatedResult, GetProductsCursorParams } from '../models/paginated-result.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
@@ -21,10 +21,21 @@ export class ProductService {
   private readonly _currentProduct = signal<ProductDto | null>(null);
   private readonly _loading = signal(false);
 
+  // Cursor pagination state
+  private readonly _cursorItems = signal<ProductSummaryDto[]>([]);
+  private readonly _nextCursor = signal<string | null>(null);
+  private readonly _cursorHasMore = signal(false);
+  private readonly _cursorLoading = signal(false);
+
   readonly products = this._products.asReadonly();
   readonly currentProduct = this._currentProduct.asReadonly();
   readonly loading = this._loading.asReadonly();
   readonly totalCount = computed(() => this._products()?.totalCount ?? 0);
+
+  // Cursor pagination readonly signals
+  readonly cursorItems = this._cursorItems.asReadonly();
+  readonly cursorHasMore = this._cursorHasMore.asReadonly();
+  readonly cursorLoading = this._cursorLoading.asReadonly();
 
   getProducts(params: GetProductsParams = {}): Observable<PaginatedResult<ProductSummaryDto>> {
     let httpParams = new HttpParams();
@@ -47,6 +58,46 @@ export class ProductService {
         error: () => this._loading.set(false),
       })
     );
+  }
+
+  resetCursor(): void {
+    this._cursorItems.set([]);
+    this._nextCursor.set(null);
+    this._cursorHasMore.set(false);
+  }
+
+  getProductsCursor(params: GetProductsCursorParams = {}): Observable<CursorPaginatedResult<ProductSummaryDto>> {
+    let httpParams = new HttpParams();
+    if (params.cursor) httpParams = httpParams.set('cursor', params.cursor);
+    if (params.pageSize) httpParams = httpParams.set('pageSize', params.pageSize);
+    if (params.search) httpParams = httpParams.set('search', params.search);
+    if (params.categoryId) httpParams = httpParams.set('categoryId', params.categoryId);
+    if (params.priceMin !== undefined) httpParams = httpParams.set('priceMin', params.priceMin);
+    if (params.priceMax !== undefined) httpParams = httpParams.set('priceMax', params.priceMax);
+    if (params.ratingMin !== undefined) httpParams = httpParams.set('ratingMin', params.ratingMin);
+    if (params.inStockOnly) httpParams = httpParams.set('inStockOnly', params.inStockOnly);
+
+    this._cursorLoading.set(true);
+    return this.http.get<CursorPaginatedResult<ProductSummaryDto>>(`${this.baseUrl}/cursor`, { params: httpParams }).pipe(
+      tap({
+        next: result => {
+          // Primeiro carregamento (sem cursor) substitui; com cursor faz append
+          if (!params.cursor) {
+            this._cursorItems.set(result.items);
+          } else {
+            this._cursorItems.update(items => [...items, ...result.items]);
+          }
+          this._nextCursor.set(result.nextCursor);
+          this._cursorHasMore.set(result.hasMore);
+          this._cursorLoading.set(false);
+        },
+        error: () => this._cursorLoading.set(false),
+      })
+    );
+  }
+
+  loadMoreCursor(params: Omit<GetProductsCursorParams, 'cursor'> = {}): Observable<CursorPaginatedResult<ProductSummaryDto>> {
+    return this.getProductsCursor({ ...params, cursor: this._nextCursor() ?? undefined });
   }
 
   getProductById(id: string): Observable<ProductDto> {

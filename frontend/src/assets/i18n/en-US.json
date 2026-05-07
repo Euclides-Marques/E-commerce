@@ -70,7 +70,10 @@
       "TOP_RATED": "Top rated",
       "SEARCH_PLACEHOLDER": "Search products...",
       "RESULTS": "results",
-      "NO_RESULTS": "No products found."
+      "NO_RESULTS": "No products found.",
+      "LOAD_MORE": "Load more",
+      "NO_MORE": "All products have been loaded.",
+      "LOADING": "Loading..."
     },
     "DETAIL": {
       "DESCRIPTION": "Product description",

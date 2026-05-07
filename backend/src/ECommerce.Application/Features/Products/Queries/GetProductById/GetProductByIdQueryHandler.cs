@@ -11,15 +11,23 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, R
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly ICacheService _cache;
 
-    public GetProductByIdQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetProductByIdQueryHandler(IApplicationDbContext context, IMapper mapper, ICacheService cache)
     {
         _context = context;
         _mapper = mapper;
+        _cache = cache;
     }
 
     public async Task<Result<ProductDto>> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
     {
+        var cacheKey = $"products:id:{request.Id}";
+
+        var cached = await _cache.GetAsync<ProductDto>(cacheKey, cancellationToken);
+        if (cached is not null)
+            return Result<ProductDto>.Success(cached);
+
         var product = await _context.Products
             .Include(p => p.Category)
             .Include(p => p.Images.OrderBy(i => i.DisplayOrder))
@@ -29,6 +37,9 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, R
         if (product is null)
             return Result<ProductDto>.Failure("Produto não encontrado.");
 
-        return Result<ProductDto>.Success(_mapper.Map<ProductDto>(product));
+        var dto = _mapper.Map<ProductDto>(product);
+        await _cache.SetAsync(cacheKey, dto, TimeSpan.FromMinutes(15), cancellationToken);
+
+        return Result<ProductDto>.Success(dto);
     }
 }

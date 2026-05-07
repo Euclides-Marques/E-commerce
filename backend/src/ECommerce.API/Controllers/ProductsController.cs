@@ -9,6 +9,7 @@ using ECommerce.Application.Features.Products.DTOs;
 using ECommerce.Application.Features.Products.Queries.GetProductById;
 using ECommerce.Application.Features.Products.Queries.GetProductBySlug;
 using ECommerce.Application.Features.Products.Queries.GetProducts;
+using ECommerce.Application.Features.Products.Queries.GetProductsCursor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +32,29 @@ public class ProductsController : BaseController
     {
         var result = await Mediator.Send(
             new GetProductsQuery(page, pageSize, search, categoryId, isActive, isFeatured, sortBy, sortDescending),
+            cancellationToken);
+
+        if (!result.Succeeded)
+            return BadRequest(new { errors = result.Errors });
+
+        return Ok(result.Data);
+    }
+
+    [HttpGet("cursor")]
+    [AllowAnonymous]
+    public async Task<ActionResult<CursorPaginatedResult<ProductSummaryDto>>> GetCursor(
+        [FromQuery] string? cursor = null,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? search = null,
+        [FromQuery] Guid? categoryId = null,
+        [FromQuery] decimal? priceMin = null,
+        [FromQuery] decimal? priceMax = null,
+        [FromQuery] double? ratingMin = null,
+        [FromQuery] bool? inStockOnly = null,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await Mediator.Send(
+            new GetProductsCursorQuery(cursor, pageSize, search, categoryId, priceMin, priceMax, ratingMin, inStockOnly),
             cancellationToken);
 
         if (!result.Succeeded)

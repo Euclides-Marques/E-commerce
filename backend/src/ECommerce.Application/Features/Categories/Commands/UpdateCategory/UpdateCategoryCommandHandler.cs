@@ -11,11 +11,13 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly ICacheService _cache;
 
-    public UpdateCategoryCommandHandler(IApplicationDbContext context, IMapper mapper)
+    public UpdateCategoryCommandHandler(IApplicationDbContext context, IMapper mapper, ICacheService cache)
     {
         _context = context;
         _mapper = mapper;
+        _cache = cache;
     }
 
     public async Task<Result<CategoryDto>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
@@ -48,6 +50,8 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
         category.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        await _cache.RemoveByPatternAsync("categories:hierarchy:", cancellationToken);
 
         var updated = await _context.Categories
             .Include(c => c.Children)

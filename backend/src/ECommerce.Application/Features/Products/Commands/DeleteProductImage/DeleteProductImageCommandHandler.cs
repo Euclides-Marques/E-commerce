@@ -9,16 +9,19 @@ public class DeleteProductImageCommandHandler : IRequestHandler<DeleteProductIma
 {
     private readonly IApplicationDbContext _context;
     private readonly IFileUploadService _fileUploadService;
+    private readonly ICacheService _cache;
 
-    public DeleteProductImageCommandHandler(IApplicationDbContext context, IFileUploadService fileUploadService)
+    public DeleteProductImageCommandHandler(IApplicationDbContext context, IFileUploadService fileUploadService, ICacheService cache)
     {
         _context = context;
         _fileUploadService = fileUploadService;
+        _cache = cache;
     }
 
     public async Task<Result> Handle(DeleteProductImageCommand request, CancellationToken cancellationToken)
     {
         var image = await _context.ProductImages
+            .Include(i => i.Product)
             .FirstOrDefaultAsync(i => i.Id == request.ImageId, cancellationToken);
 
         if (image is null)
@@ -32,6 +35,7 @@ public class DeleteProductImageCommandHandler : IRequestHandler<DeleteProductIma
 
         var wasMain = image.IsMain;
         var productId = image.ProductId;
+        var productSlug = image.Product.Slug;
 
         _context.ProductImages.Remove(image);
         await _context.SaveChangesAsync(cancellationToken);
@@ -49,6 +53,9 @@ public class DeleteProductImageCommandHandler : IRequestHandler<DeleteProductIma
                 await _context.SaveChangesAsync(cancellationToken);
             }
         }
+
+        await _cache.RemoveAsync($"products:id:{productId}", cancellationToken);
+        await _cache.RemoveAsync($"products:slug:{productSlug}", cancellationToken);
 
         return Result.Success();
     }

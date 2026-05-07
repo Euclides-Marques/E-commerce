@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
@@ -18,6 +17,7 @@ import { CategoryService } from '../../../core/services/category.service';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 import { ProductSummaryDto, GetProductsParams } from '../../../core/models/product.model';
 import { CategoryDto } from '../../../core/models/category.model';
+import { GetProductsCursorParams } from '../../../core/models/paginated-result.model';
 
 @Component({
   selector: 'app-product-list',
@@ -30,7 +30,6 @@ import { CategoryDto } from '../../../core/models/category.model';
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatPaginatorModule,
     MatProgressSpinnerModule,
     MatCheckboxModule,
     MatDividerModule,
@@ -137,7 +136,7 @@ import { CategoryDto } from '../../../core/models/category.model';
 
           <mat-divider />
 
-          <!-- Ordenação -->
+          <!-- Ordenação (desativa cursor quando ordenação custom) -->
           <div>
             <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
               <mat-label>{{ 'PRODUCT.LIST.SORT_BY' | translate }}</mat-label>
@@ -171,15 +170,19 @@ import { CategoryDto } from '../../../core/models/category.model';
           <h1 class="text-xl font-bold text-gray-800">
             {{ selectedCategoryName() || ('PRODUCT.LIST.TITLE' | translate) }}
           </h1>
-          @if (!loading()) {
+          @if (!isLoading()) {
             <span class="text-sm text-gray-500">
-              {{ totalCount() }} {{ 'PRODUCT.LIST.RESULTS' | translate }}
+              @if (useCursor()) {
+                {{ items().length }} {{ 'PRODUCT.LIST.RESULTS' | translate }}
+              } @else {
+                {{ totalCount() }} {{ 'PRODUCT.LIST.RESULTS' | translate }}
+              }
             </span>
           }
         </div>
 
-        <!-- Loading -->
-        @if (loading()) {
+        <!-- Loading inicial -->
+        @if (isLoading() && items().length === 0) {
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             @for (i of skeletons; track i) {
               <div class="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -194,31 +197,63 @@ import { CategoryDto } from '../../../core/models/category.model';
           </div>
         }
 
-        <!-- Produtos -->
-        @if (!loading()) {
-          @if (items().length > 0) {
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              @for (product of items(); track product.id) {
-                <app-product-card [product]="product" (addToCart)="onAddToCart($event)" />
+        <!-- Grid de produtos -->
+        @if (items().length > 0) {
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            @for (product of items(); track product.id) {
+              <app-product-card [product]="product" (addToCart)="onAddToCart($event)" />
+            }
+          </div>
+
+          <!-- Paginação offset (quando ordenação custom) -->
+          @if (!useCursor()) {
+            <div class="flex justify-center mt-6 gap-2">
+              @if (currentPage > 1) {
+                <button mat-stroked-button (click)="changePage(currentPage - 1)">
+                  <mat-icon>chevron_left</mat-icon>
+                </button>
+              }
+              <span class="flex items-center px-4 text-sm text-gray-600">
+                {{ currentPage }} / {{ totalPages() }}
+              </span>
+              @if (currentPage < totalPages()) {
+                <button mat-stroked-button (click)="changePage(currentPage + 1)">
+                  <mat-icon>chevron_right</mat-icon>
+                </button>
               }
             </div>
+          }
 
-            <!-- Paginação -->
-            <mat-paginator
-              class="mt-6 bg-white rounded-lg shadow-sm"
-              [length]="totalCount()"
-              [pageSize]="pageSize"
-              [pageIndex]="currentPage - 1"
-              [pageSizeOptions]="[20, 40, 60]"
-              (page)="onPageChange($event)"
-              showFirstLastButtons>
-            </mat-paginator>
-          } @else {
-            <div class="text-center py-16 text-gray-400">
-              <mat-icon class="text-6xl mb-4">search_off</mat-icon>
-              <p class="text-lg">{{ 'PRODUCT.LIST.NO_RESULTS' | translate }}</p>
+          <!-- Carregar mais (cursor) -->
+          @if (useCursor()) {
+            <div class="flex justify-center mt-8">
+              @if (hasMore()) {
+                <button
+                  mat-flat-button
+                  color="primary"
+                  class="px-8"
+                  [disabled]="isLoading()"
+                  (click)="loadMore()">
+                  @if (isLoading()) {
+                    <mat-spinner diameter="20" class="inline-block mr-2"></mat-spinner>
+                    {{ 'PRODUCT.LIST.LOADING' | translate }}
+                  } @else {
+                    {{ 'PRODUCT.LIST.LOAD_MORE' | translate }}
+                  }
+                </button>
+              } @else {
+                <p class="text-sm text-gray-400">{{ 'PRODUCT.LIST.NO_MORE' | translate }}</p>
+              }
             </div>
           }
+        }
+
+        <!-- Sem resultados -->
+        @if (!isLoading() && items().length === 0) {
+          <div class="text-center py-16 text-gray-400">
+            <mat-icon class="text-6xl mb-4">search_off</mat-icon>
+            <p class="text-lg">{{ 'PRODUCT.LIST.NO_RESULTS' | translate }}</p>
+          </div>
         }
       </div>
     </div>
@@ -231,9 +266,23 @@ export class ProductListComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
 
-  readonly loading = this.productService.loading;
+  // Cursor mode: ativo quando não há sortBy custom
+  readonly useCursor = computed(() => !this.sortBy);
+
+  readonly isLoading = computed(() =>
+    this.useCursor() ? this.productService.cursorLoading() : this.productService.loading()
+  );
+  readonly items = computed<ProductSummaryDto[]>(() =>
+    this.useCursor()
+      ? this.productService.cursorItems()
+      : (this.productService.products()?.items ?? [])
+  );
+  readonly hasMore = this.productService.cursorHasMore;
   readonly totalCount = this.productService.totalCount;
-  readonly items = computed(() => this.productService.products()?.items ?? []);
+  readonly totalPages = computed(() => {
+    const p = this.productService.products();
+    return p ? p.totalPages : 1;
+  });
   readonly hierarchy = this.categoryService.hierarchy;
 
   readonly selectedCategoryName = computed(() => {
@@ -299,10 +348,17 @@ export class ProductListComponent implements OnInit {
     this.updateQueryParams();
   }
 
-  onPageChange(event: PageEvent): void {
-    this.currentPage = event.pageIndex + 1;
-    this.pageSize = event.pageSize;
+  changePage(page: number): void {
+    this.currentPage = page;
     this.updateQueryParams();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  loadMore(): void {
+    const params = this.buildCursorParams();
+    this.productService.loadMoreCursor(params).subscribe({
+      error: () => this.snackBar.open('Erro ao carregar mais produtos.', 'Fechar', { duration: 3000 }),
+    });
   }
 
   clearFilters(): void {
@@ -326,6 +382,29 @@ export class ProductListComponent implements OnInit {
   }
 
   private loadProducts(): void {
+    if (this.useCursor()) {
+      this.productService.resetCursor();
+      this.productService.getProductsCursor(this.buildCursorParams()).subscribe({
+        error: () => this.snackBar.open('Erro ao carregar produtos.', 'Fechar', { duration: 3000 }),
+      });
+    } else {
+      this.loadProductsOffset();
+    }
+  }
+
+  private buildCursorParams(): Omit<GetProductsCursorParams, 'cursor'> {
+    return {
+      pageSize: 20,
+      search: this.searchQuery || undefined,
+      categoryId: this.selectedCategory || undefined,
+      priceMin: this.priceMin ?? undefined,
+      priceMax: this.priceMax ?? undefined,
+      ratingMin: this.ratingMin ?? undefined,
+      inStockOnly: this.inStockOnly || undefined,
+    };
+  }
+
+  private loadProductsOffset(): void {
     const sortDescending = this.sortBy === 'price_desc';
     const sortByField = this.sortBy === 'price_desc' ? 'price' : (this.sortBy || undefined);
 
@@ -355,7 +434,7 @@ export class ProductListComponent implements OnInit {
         search: this.searchQuery || null,
         categoryId: this.selectedCategory || null,
         sortBy: this.sortBy || null,
-        page: this.currentPage > 1 ? this.currentPage : null,
+        page: (!this.sortBy && this.currentPage > 1) ? this.currentPage : null,
         pageSize: this.pageSize !== 20 ? this.pageSize : null,
         priceMin: this.priceMin ?? null,
         priceMax: this.priceMax ?? null,

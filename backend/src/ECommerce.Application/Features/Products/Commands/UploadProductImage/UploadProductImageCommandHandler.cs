@@ -11,11 +11,13 @@ public class UploadProductImageCommandHandler : IRequestHandler<UploadProductIma
 {
     private readonly IApplicationDbContext _context;
     private readonly IFileUploadService _fileUploadService;
+    private readonly ICacheService _cache;
 
-    public UploadProductImageCommandHandler(IApplicationDbContext context, IFileUploadService fileUploadService)
+    public UploadProductImageCommandHandler(IApplicationDbContext context, IFileUploadService fileUploadService, ICacheService cache)
     {
         _context = context;
         _fileUploadService = fileUploadService;
+        _cache = cache;
     }
 
     public async Task<Result<ProductImageDto>> Handle(UploadProductImageCommand request, CancellationToken cancellationToken)
@@ -54,6 +56,9 @@ public class UploadProductImageCommandHandler : IRequestHandler<UploadProductIma
 
         _context.ProductImages.Add(image);
         await _context.SaveChangesAsync(cancellationToken);
+
+        await _cache.RemoveAsync($"products:id:{product.Id}", cancellationToken);
+        await _cache.RemoveAsync($"products:slug:{product.Slug}", cancellationToken);
 
         return Result<ProductImageDto>.Success(
             new ProductImageDto(image.Id, image.Url, image.AltText, image.IsMain, image.DisplayOrder));

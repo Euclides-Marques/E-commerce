@@ -13,11 +13,13 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly ICacheService _cache;
 
-    public CreateCategoryCommandHandler(IApplicationDbContext context, IMapper mapper)
+    public CreateCategoryCommandHandler(IApplicationDbContext context, IMapper mapper, ICacheService cache)
     {
         _context = context;
         _mapper = mapper;
+        _cache = cache;
     }
 
     public async Task<Result<CategoryDto>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
@@ -50,6 +52,8 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
 
         _context.Categories.Add(category);
         await _context.SaveChangesAsync(cancellationToken);
+
+        await _cache.RemoveByPatternAsync("categories:hierarchy:", cancellationToken);
 
         var created = await _context.Categories
             .Include(c => c.Children)

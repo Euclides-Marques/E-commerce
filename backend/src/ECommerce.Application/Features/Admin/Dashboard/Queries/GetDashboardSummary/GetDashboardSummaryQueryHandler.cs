@@ -10,14 +10,22 @@ namespace ECommerce.Application.Features.Admin.Dashboard.Queries.GetDashboardSum
 public class GetDashboardSummaryQueryHandler : IRequestHandler<GetDashboardSummaryQuery, Result<DashboardSummaryDto>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly ICacheService _cache;
 
-    public GetDashboardSummaryQueryHandler(IApplicationDbContext context)
+    public GetDashboardSummaryQueryHandler(IApplicationDbContext context, ICacheService cache)
     {
         _context = context;
+        _cache = cache;
     }
 
     public async Task<Result<DashboardSummaryDto>> Handle(GetDashboardSummaryQuery request, CancellationToken cancellationToken)
     {
+        var cacheKey = $"admin:dashboard:{request.DaysBack}";
+
+        var cached = await _cache.GetAsync<DashboardSummaryDto>(cacheKey, cancellationToken);
+        if (cached is not null)
+            return Result<DashboardSummaryDto>.Success(cached);
+
         var now = DateTime.UtcNow;
         var cutoff = now.AddDays(-request.DaysBack);
         var last7Days = now.AddDays(-7);
@@ -94,6 +102,8 @@ public class GetDashboardSummaryQueryHandler : IRequestHandler<GetDashboardSumma
             RecentOrders: recentOrders,
             DailySales: dailySales
         );
+
+        await _cache.SetAsync(cacheKey, summary, TimeSpan.FromMinutes(5), cancellationToken);
 
         return Result<DashboardSummaryDto>.Success(summary);
     }

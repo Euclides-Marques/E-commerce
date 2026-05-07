@@ -19,6 +19,11 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(o => o.CouponCode).HasMaxLength(50);
         builder.Property(o => o.TrackingCode).HasMaxLength(100);
 
+        // Índices de performance para listagem e filtros admin
+        builder.HasIndex(o => new { o.UserId, o.IsDeleted });
+        builder.HasIndex(o => new { o.Status, o.IsDeleted });
+        builder.HasIndex(o => o.CreatedAt);
+
         builder.HasMany(o => o.Items).WithOne(i => i.Order).HasForeignKey(i => i.OrderId).OnDelete(DeleteBehavior.Cascade);
         builder.HasMany(o => o.Payments).WithOne(p => p.Order).HasForeignKey(p => p.OrderId).OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(o => o.User).WithMany(u => u.Orders).HasForeignKey(o => o.UserId).OnDelete(DeleteBehavior.Restrict);

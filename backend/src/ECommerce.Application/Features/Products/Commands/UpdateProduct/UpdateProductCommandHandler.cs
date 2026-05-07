@@ -12,11 +12,13 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly ICacheService _cache;
 
-    public UpdateProductCommandHandler(IApplicationDbContext context, IMapper mapper)
+    public UpdateProductCommandHandler(IApplicationDbContext context, IMapper mapper, ICacheService cache)
     {
         _context = context;
         _mapper = mapper;
+        _cache = cache;
     }
 
     public async Task<Result<ProductDto>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
@@ -41,6 +43,8 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         if (skuExists)
             return Result<ProductDto>.Failure("Já existe um produto com este SKU.");
 
+        var oldSlug = product.Slug;
+
         if (!product.Name.Equals(request.Name, StringComparison.OrdinalIgnoreCase))
         {
             var newSlug = GenerateSlug(request.Name);
@@ -62,6 +66,12 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         product.Weight = request.Weight;
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        // Invalidar caches do produto
+        await _cache.RemoveAsync($"products:id:{product.Id}", cancellationToken);
+        await _cache.RemoveAsync($"products:slug:{oldSlug}", cancellationToken);
+        if (product.Slug != oldSlug)
+            await _cache.RemoveAsync($"products:slug:{product.Slug}", cancellationToken);
 
         var updated = await _context.Products
             .Include(p => p.Category)

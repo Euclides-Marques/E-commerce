@@ -22,6 +22,13 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Height).HasColumnType("decimal(10,2)");
         builder.Property(p => p.Length).HasColumnType("decimal(10,2)");
 
+        // Índices de performance para listagem e filtros
+        builder.HasIndex(p => new { p.IsActive, p.CategoryId });
+        builder.HasIndex(p => new { p.IsActive, p.Price });
+        builder.HasIndex(p => new { p.IsActive, p.SoldCount });
+        builder.HasIndex(p => new { p.IsActive, p.AverageRating });
+        builder.HasIndex(p => p.CreatedAt);
+
         builder.HasMany(p => p.Images).WithOne(i => i.Product).HasForeignKey(i => i.ProductId).OnDelete(DeleteBehavior.Cascade);
         builder.HasMany(p => p.Variants).WithOne(v => v.Product).HasForeignKey(v => v.ProductId).OnDelete(DeleteBehavior.Cascade);
         builder.HasMany(p => p.Reviews).WithOne(r => r.Product).HasForeignKey(r => r.ProductId).OnDelete(DeleteBehavior.Cascade);

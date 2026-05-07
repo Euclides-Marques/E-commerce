@@ -95,9 +95,8 @@ import { PaginatedResult } from '../../../core/models/paginated-result.model';
                   [value]="u.role"
                   class="text-sm"
                   (selectionChange)="updateRole(u, $event.value)">
-                  <mat-option value="Customer">Cliente</mat-option>
-                  <mat-option value="Seller">Vendedor</mat-option>
                   <mat-option value="Admin">Admin</mat-option>
+                  <mat-option value="Customer">Cliente</mat-option>
                 </mat-select>
               </td>
             </ng-container>

@@ -113,10 +113,21 @@
     "DETAIL_TITLE": "Order Details",
     "CANCEL": "Cancel order"
   },
+  "PAYMENT": {
+    "SELECT_METHOD": "Payment method",
+    "STRIPE": "Credit/debit card (Stripe)",
+    "MERCADOPAGO": "MercadoPago",
+    "PAY_NOW": "Pay now",
+    "REDIRECT_MP": "Go to MercadoPago",
+    "MP_RETURN": "After paying, close the tab and click 'View order' to check the status.",
+    "PROCESSING": "Processing...",
+    "ERROR": "Payment error"
+  },
   "CHECKOUT": {
     "TITLE": "Checkout",
     "STEP_ADDRESS": "Address",
     "STEP_REVIEW": "Review",
+    "STEP_PAYMENT": "Payment",
     "STEP_CONFIRMATION": "Confirmation",
     "NO_ADDRESS": "No address registered. Add one below.",
     "NEW_ADDRESS": "New address",

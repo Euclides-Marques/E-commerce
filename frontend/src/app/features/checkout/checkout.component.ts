@@ -1,8 +1,10 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { MatStepperModule } from '@angular/material/stepper';
+import { ReactiveFormsModule, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { firstValueFrom } from 'rxjs';
+import { loadStripe, Stripe, StripeElements } from '@stripe/stripe-js';
+import { MatStepperModule, MatStepper } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
@@ -16,8 +18,11 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { AddressService } from '../../core/services/address.service';
 import { OrderService } from '../../core/services/order.service';
 import { CartService } from '../../core/services/cart.service';
+import { PaymentService } from '../../core/services/payment.service';
 import { AddressDto } from '../../core/models/address.model';
 import { OrderDto } from '../../core/models/order.model';
+import { PaymentMethod } from '../../core/models/payment.model';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-checkout',
@@ -80,7 +85,6 @@ import { OrderDto } from '../../core/models/order.model';
                 </div>
               }
 
-              <!-- Formulário novo endereço -->
               <button mat-stroked-button color="primary" (click)="showAddressForm.set(!showAddressForm())">
                 <mat-icon>{{ showAddressForm() ? 'close' : 'add' }}</mat-icon>
                 {{ showAddressForm() ? ('CHECKOUT.CANCEL_NEW_ADDRESS' | translate) : ('CHECKOUT.NEW_ADDRESS' | translate) }}
@@ -144,7 +148,7 @@ import { OrderDto } from '../../core/models/order.model';
             </div>
           </mat-step>
 
-          <!-- STEP 2: Resumo -->
+          <!-- STEP 2: Revisão + método de pagamento -->
           <mat-step label="{{ 'CHECKOUT.STEP_REVIEW' | translate }}">
             <div class="py-6 space-y-4">
               <h3 class="font-semibold text-gray-800">{{ 'CHECKOUT.ORDER_SUMMARY' | translate }}</h3>
@@ -167,35 +171,119 @@ import { OrderDto } from '../../core/models/order.model';
                   <span>{{ 'CART.TOTAL' | translate }}</span>
                   <span class="text-primary-500">{{ cart.totalPrice | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
                 </div>
-
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>{{ 'CHECKOUT.NOTES' | translate }}</mat-label>
-                  <textarea matInput [formControl]="notesCtrl" rows="2"></textarea>
-                </mat-form-field>
               }
+
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>{{ 'CHECKOUT.NOTES' | translate }}</mat-label>
+                <textarea matInput [formControl]="notesCtrl" rows="2"></textarea>
+              </mat-form-field>
+
+              <!-- Seleção de método de pagamento -->
+              <div class="border border-gray-200 rounded-xl p-4 space-y-3 bg-gray-50">
+                <p class="font-semibold text-gray-800">{{ 'PAYMENT.SELECT_METHOD' | translate }}</p>
+                <div class="space-y-2">
+                  <div
+                    class="flex items-center gap-3 border-2 rounded-lg p-3 cursor-pointer transition-all"
+                    [class.border-primary-500]="paymentMethod() === 'stripe'"
+                    [class.border-gray-200]="paymentMethod() !== 'stripe'"
+                    (click)="paymentMethod.set('stripe')">
+                    <mat-icon [class.text-primary-500]="paymentMethod() === 'stripe'" [class.text-gray-300]="paymentMethod() !== 'stripe'">
+                      {{ paymentMethod() === 'stripe' ? 'radio_button_checked' : 'radio_button_unchecked' }}
+                    </mat-icon>
+                    <mat-icon class="text-blue-500">credit_card</mat-icon>
+                    <span class="text-sm font-medium text-gray-700">{{ 'PAYMENT.STRIPE' | translate }}</span>
+                  </div>
+                  <div
+                    class="flex items-center gap-3 border-2 rounded-lg p-3 cursor-pointer transition-all"
+                    [class.border-primary-500]="paymentMethod() === 'mercadopago'"
+                    [class.border-gray-200]="paymentMethod() !== 'mercadopago'"
+                    (click)="paymentMethod.set('mercadopago')">
+                    <mat-icon [class.text-primary-500]="paymentMethod() === 'mercadopago'" [class.text-gray-300]="paymentMethod() !== 'mercadopago'">
+                      {{ paymentMethod() === 'mercadopago' ? 'radio_button_checked' : 'radio_button_unchecked' }}
+                    </mat-icon>
+                    <mat-icon class="text-yellow-500">account_balance_wallet</mat-icon>
+                    <span class="text-sm font-medium text-gray-700">{{ 'PAYMENT.MERCADOPAGO' | translate }}</span>
+                  </div>
+                </div>
+              </div>
 
               <div class="flex gap-3 pt-2">
                 <button mat-stroked-button matStepperPrevious>{{ 'CHECKOUT.BACK' | translate }}</button>
-                <button mat-raised-button color="primary" [disabled]="placing()" (click)="onPlaceOrder()">
+                <button mat-raised-button color="primary"
+                  [disabled]="placing() || !paymentMethod()"
+                  (click)="onProceedToPayment(stepper)">
                   @if (placing()) { <mat-spinner diameter="20" class="inline-block mr-2"></mat-spinner> }
-                  {{ 'CHECKOUT.CONFIRM_ORDER' | translate }}
+                  {{ 'CHECKOUT.NEXT' | translate }}
                 </button>
               </div>
             </div>
           </mat-step>
 
-          <!-- STEP 3: Confirmação -->
+          <!-- STEP 3: Pagamento -->
+          <mat-step label="{{ 'CHECKOUT.STEP_PAYMENT' | translate }}">
+            <div class="py-6 space-y-6">
+
+              @if (paymentMethod() === 'stripe') {
+                <div>
+                  <h3 class="font-semibold text-gray-800 mb-4">{{ 'PAYMENT.STRIPE' | translate }}</h3>
+                  @if (loadingPayment()) {
+                    <div class="flex justify-center py-6"><mat-spinner diameter="36"></mat-spinner></div>
+                  } @else {
+                    <div id="stripe-payment-element" class="border border-gray-200 rounded-xl p-4 bg-white min-h-16"></div>
+                    @if (paymentError()) {
+                      <p class="text-red-500 text-sm mt-2">{{ paymentError() }}</p>
+                    }
+                  }
+                </div>
+              }
+
+              @if (paymentMethod() === 'mercadopago') {
+                <div class="text-center space-y-4">
+                  <mat-icon class="text-yellow-500" style="font-size:48px;width:48px;height:48px;">account_balance_wallet</mat-icon>
+                  <h3 class="font-semibold text-gray-800">{{ 'PAYMENT.MERCADOPAGO' | translate }}</h3>
+                  <p class="text-sm text-gray-500">{{ 'PAYMENT.MP_RETURN' | translate }}</p>
+                  @if (mpInitPoint()) {
+                    <a [href]="mpInitPoint()" target="_blank" mat-raised-button color="primary" class="w-full" (click)="onMercadoPagoPaid(stepper)">
+                      {{ 'PAYMENT.REDIRECT_MP' | translate }}
+                    </a>
+                  } @else if (loadingPayment()) {
+                    <mat-spinner diameter="36" class="mx-auto"></mat-spinner>
+                  }
+                </div>
+              }
+
+              <mat-divider></mat-divider>
+              <div class="flex justify-between font-bold text-lg">
+                <span>{{ 'CART.TOTAL' | translate }}</span>
+                @if (placedOrderForPayment(); as order) {
+                  <span class="text-primary-500">{{ order.total | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+                }
+              </div>
+
+              <div class="flex gap-3 pt-2">
+                <button mat-stroked-button matStepperPrevious [disabled]="paying()">{{ 'CHECKOUT.BACK' | translate }}</button>
+                @if (paymentMethod() === 'stripe') {
+                  <button mat-raised-button color="primary" [disabled]="paying() || loadingPayment()" (click)="onStripeConfirmPayment(stepper)">
+                    @if (paying()) { <mat-spinner diameter="20" class="inline-block mr-2"></mat-spinner> }
+                    {{ 'PAYMENT.PAY_NOW' | translate }}
+                  </button>
+                }
+              </div>
+            </div>
+          </mat-step>
+
+          <!-- STEP 4: Confirmação -->
           <mat-step label="{{ 'CHECKOUT.STEP_CONFIRMATION' | translate }}">
-            @if (placedOrder()) {
+            @if (placedOrderForPayment()) {
               <div class="py-8 text-center space-y-4">
                 <mat-icon class="text-green-500" style="font-size:64px;width:64px;height:64px;">check_circle</mat-icon>
                 <h2 class="text-xl font-bold text-gray-800">{{ 'CHECKOUT.SUCCESS_TITLE' | translate }}</h2>
-                <p class="text-gray-600">{{ 'CHECKOUT.ORDER_NUMBER' | translate }}: <strong>{{ placedOrder()!.orderNumber }}</strong></p>
+                <p class="text-gray-600">{{ 'CHECKOUT.ORDER_NUMBER' | translate }}: <strong>{{ placedOrderForPayment()!.orderNumber }}</strong></p>
                 <p class="text-sm text-gray-500">{{ 'CHECKOUT.ESTIMATED_DELIVERY' | translate }}:
-                  {{ placedOrder()!.estimatedDelivery | date:'dd/MM/yyyy' }}
+                  {{ placedOrderForPayment()!.estimatedDelivery | date:'dd/MM/yyyy' }}
                 </p>
                 <div class="flex justify-center gap-4 pt-4">
-                  <a [routerLink]="['/orders', placedOrder()!.id]" mat-raised-button color="primary">
+                  <a [routerLink]="['/orders', placedOrderForPayment()!.id]" mat-raised-button color="primary">
                     {{ 'CHECKOUT.VIEW_ORDER' | translate }}
                   </a>
                   <a routerLink="/products" mat-stroked-button color="primary">
@@ -211,12 +299,12 @@ import { OrderDto } from '../../core/models/order.model';
     </div>
   `,
 })
-export class CheckoutComponent implements OnInit {
+export class CheckoutComponent implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   readonly addressService = inject(AddressService);
   readonly orderService = inject(OrderService);
   readonly cartService = inject(CartService);
-  private readonly router = inject(Router);
+  private readonly paymentService = inject(PaymentService);
   private readonly snackBar = inject(MatSnackBar);
 
   readonly addresses = this.addressService.addresses;
@@ -225,9 +313,14 @@ export class CheckoutComponent implements OnInit {
   readonly showAddressForm = signal(false);
   readonly savingAddress = signal(false);
   readonly placing = signal(false);
-  readonly placedOrder = signal<OrderDto | null>(null);
+  readonly loadingPayment = signal(false);
+  readonly paying = signal(false);
+  readonly paymentMethod = signal<PaymentMethod | null>(null);
+  readonly placedOrderForPayment = signal<OrderDto | null>(null);
+  readonly mpInitPoint = signal<string | null>(null);
+  readonly paymentError = signal<string | null>(null);
 
-  readonly notesCtrl = this.fb.control('');
+  readonly notesCtrl = new FormControl('');
 
   readonly addressForm = this.fb.group({
     label: ['', Validators.required],
@@ -242,6 +335,9 @@ export class CheckoutComponent implements OnInit {
     country: ['Brasil'],
     isDefault: [false],
   });
+
+  private stripe: Stripe | null = null;
+  private stripeElements: StripeElements | null = null;
 
   ngOnInit(): void {
     this.loadingAddresses.set(true);
@@ -262,6 +358,11 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.stripeElements = null;
+    this.stripe = null;
+  }
+
   onSaveAddress(): void {
     if (this.addressForm.invalid) return;
     this.savingAddress.set(true);
@@ -280,21 +381,80 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-  onPlaceOrder(): void {
+  async onProceedToPayment(stepper: MatStepper): Promise<void> {
     const addressId = this.selectedAddressId();
     if (!addressId) return;
+
     this.placing.set(true);
-    this.orderService.placeOrder(addressId, this.notesCtrl.value ?? undefined).subscribe({
-      next: order => {
-        this.placing.set(false);
-        this.placedOrder.set(order);
-        this.cartService.clearLocal();
-      },
-      error: (err) => {
-        this.placing.set(false);
-        const msg = err?.error?.errors?.[0] ?? 'Erro ao finalizar pedido.';
-        this.snackBar.open(msg, 'Fechar', { duration: 4000 });
-      },
+    try {
+      const order = await firstValueFrom(
+        this.orderService.placeOrder(addressId, this.notesCtrl.value ?? undefined)
+      );
+      this.placedOrderForPayment.set(order);
+      this.cartService.clearLocal();
+      this.placing.set(false);
+      stepper.next();
+
+      await new Promise(r => setTimeout(r, 80));
+      await this.initPayment(order.id);
+    } catch (err: any) {
+      this.placing.set(false);
+      const msg = err?.error?.errors?.[0] ?? 'Erro ao criar pedido.';
+      this.snackBar.open(msg, 'Fechar', { duration: 4000 });
+    }
+  }
+
+  private async initPayment(orderId: string): Promise<void> {
+    const method = this.paymentMethod();
+    this.loadingPayment.set(true);
+    this.paymentError.set(null);
+
+    try {
+      if (method === 'stripe') {
+        const res = await firstValueFrom(this.paymentService.createStripePaymentIntent(orderId));
+        await this.mountStripeElements(res.clientSecret);
+      } else if (method === 'mercadopago') {
+        const res = await firstValueFrom(this.paymentService.createMercadoPagoPreference(orderId));
+        this.mpInitPoint.set(res.initPoint);
+      }
+    } catch {
+      this.snackBar.open('Erro ao inicializar pagamento.', 'Fechar', { duration: 4000 });
+    } finally {
+      this.loadingPayment.set(false);
+    }
+  }
+
+  private async mountStripeElements(clientSecret: string): Promise<void> {
+    this.stripe = await loadStripe((environment as any).stripePublishableKey ?? '');
+    if (!this.stripe) return;
+
+    this.stripeElements = this.stripe.elements({ clientSecret });
+    const paymentElement = this.stripeElements.create('payment');
+    paymentElement.mount('#stripe-payment-element');
+  }
+
+  async onStripeConfirmPayment(stepper: MatStepper): Promise<void> {
+    if (!this.stripe || !this.stripeElements) return;
+
+    this.paying.set(true);
+    this.paymentError.set(null);
+
+    const { error } = await this.stripe.confirmPayment({
+      elements: this.stripeElements,
+      redirect: 'if_required',
     });
+
+    this.paying.set(false);
+
+    if (error) {
+      this.paymentError.set(error.message ?? 'Erro no pagamento.');
+      return;
+    }
+
+    stepper.next();
+  }
+
+  onMercadoPagoPaid(stepper: MatStepper): void {
+    setTimeout(() => stepper.next(), 500);
   }
 }

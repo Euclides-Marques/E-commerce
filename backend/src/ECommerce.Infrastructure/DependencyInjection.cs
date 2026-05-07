@@ -51,6 +51,9 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IFileUploadService, CloudinaryService>();
 
+        services.AddScoped<IStripeService, StripeService>();
+        services.AddHttpClient<IMercadoPagoService, MercadoPagoService>();
+
         return services;
     }
 

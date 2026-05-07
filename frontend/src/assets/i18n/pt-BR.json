@@ -113,10 +113,21 @@
     "DETAIL_TITLE": "Detalhes do Pedido",
     "CANCEL": "Cancelar pedido"
   },
+  "PAYMENT": {
+    "SELECT_METHOD": "Forma de pagamento",
+    "STRIPE": "Cartão de crédito/débito (Stripe)",
+    "MERCADOPAGO": "MercadoPago",
+    "PAY_NOW": "Pagar agora",
+    "REDIRECT_MP": "Ir para o MercadoPago",
+    "MP_RETURN": "Após pagar, feche a aba e clique em 'Ver pedido' para verificar o status.",
+    "PROCESSING": "Processando...",
+    "ERROR": "Erro no pagamento"
+  },
   "CHECKOUT": {
     "TITLE": "Finalizar Compra",
     "STEP_ADDRESS": "Endereço",
     "STEP_REVIEW": "Revisão",
+    "STEP_PAYMENT": "Pagamento",
     "STEP_CONFIRMATION": "Confirmação",
     "NO_ADDRESS": "Nenhum endereço cadastrado. Adicione um abaixo.",
     "NEW_ADDRESS": "Novo endereço",

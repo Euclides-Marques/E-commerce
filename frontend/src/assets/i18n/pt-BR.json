@@ -187,6 +187,68 @@
     "VIEW": "Ver lista de desejos"
   },
   "ADMIN": {
+    "DASHBOARD": {
+      "TITLE": "Dashboard",
+      "SUBTITLE": "Visão geral da loja",
+      "PERIOD": "Período",
+      "LAST_7": "Últimos 7 dias",
+      "LAST_30": "Últimos 30 dias",
+      "LAST_90": "Últimos 90 dias",
+      "TOTAL_REVENUE": "Receita Total",
+      "RECENT_REVENUE": "Receita no período",
+      "TOTAL_ORDERS": "Total de Pedidos",
+      "PENDING": "pendentes",
+      "TOTAL_PRODUCTS": "Produtos Ativos",
+      "TOTAL_USERS": "Usuários",
+      "ORDER_STATUS": "Distribuição de Pedidos",
+      "DAILY_SALES": "Vendas dos Últimos 7 Dias",
+      "TOP_PRODUCTS": "Top 5 Produtos",
+      "RECENT_ORDERS": "Pedidos Recentes",
+      "SOLD": "vendidos",
+      "NO_DATA": "Nenhum dado disponível."
+    },
+    "ORDERS": {
+      "TITLE": "Gestão de Pedidos",
+      "TOTAL": "pedidos no total",
+      "SEARCH": "Buscar por pedido, cliente ou e-mail",
+      "STATUS": "Status",
+      "ALL_STATUSES": "Todos os status",
+      "DATE_FROM": "De",
+      "DATE_TO": "Até",
+      "CLEAR_FILTERS": "Limpar filtros",
+      "EMPTY": "Nenhum pedido encontrado.",
+      "UPDATE_STATUS": "Alterar status",
+      "CANCEL": "Cancelar",
+      "CONFIRM": "Confirmar",
+      "COLUMNS": {
+        "NUMBER": "Nº do Pedido",
+        "CUSTOMER": "Cliente",
+        "STATUS": "Status",
+        "ITEMS": "Itens",
+        "TOTAL": "Total",
+        "DATE": "Data",
+        "ACTIONS": "Ações"
+      }
+    },
+    "USERS": {
+      "TITLE": "Gestão de Usuários",
+      "TOTAL": "usuários cadastrados",
+      "SEARCH": "Buscar por nome ou e-mail",
+      "CLEAR": "Limpar",
+      "ACTIVE": "Ativo",
+      "INACTIVE": "Inativo",
+      "ACTIVATE": "Ativar usuário",
+      "DEACTIVATE": "Desativar usuário",
+      "EMPTY": "Nenhum usuário encontrado.",
+      "COLUMNS": {
+        "NAME": "Usuário",
+        "ROLE": "Papel",
+        "STATUS": "Status",
+        "ORDERS": "Pedidos",
+        "CREATED_AT": "Cadastro",
+        "ACTIONS": "Ativo"
+      }
+    },
     "PRODUCTS": {
       "TITLE": "Gestão de Produtos",
       "TOTAL": "produtos cadastrados",

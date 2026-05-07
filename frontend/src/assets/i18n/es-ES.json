@@ -187,6 +187,68 @@
     "VIEW": "Ver lista de deseos"
   },
   "ADMIN": {
+    "DASHBOARD": {
+      "TITLE": "Dashboard",
+      "SUBTITLE": "Resumen de la tienda",
+      "PERIOD": "Período",
+      "LAST_7": "Últimos 7 días",
+      "LAST_30": "Últimos 30 días",
+      "LAST_90": "Últimos 90 días",
+      "TOTAL_REVENUE": "Ingresos Totales",
+      "RECENT_REVENUE": "Ingresos en el período",
+      "TOTAL_ORDERS": "Total de Pedidos",
+      "PENDING": "pendientes",
+      "TOTAL_PRODUCTS": "Productos Activos",
+      "TOTAL_USERS": "Usuarios",
+      "ORDER_STATUS": "Distribución de Pedidos",
+      "DAILY_SALES": "Ventas Últimos 7 Días",
+      "TOP_PRODUCTS": "Top 5 Productos",
+      "RECENT_ORDERS": "Pedidos Recientes",
+      "SOLD": "vendidos",
+      "NO_DATA": "Sin datos disponibles."
+    },
+    "ORDERS": {
+      "TITLE": "Gestión de Pedidos",
+      "TOTAL": "pedidos en total",
+      "SEARCH": "Buscar por pedido, cliente o correo",
+      "STATUS": "Estado",
+      "ALL_STATUSES": "Todos los estados",
+      "DATE_FROM": "Desde",
+      "DATE_TO": "Hasta",
+      "CLEAR_FILTERS": "Limpiar filtros",
+      "EMPTY": "No se encontraron pedidos.",
+      "UPDATE_STATUS": "Actualizar estado",
+      "CANCEL": "Cancelar",
+      "CONFIRM": "Confirmar",
+      "COLUMNS": {
+        "NUMBER": "Nº de Pedido",
+        "CUSTOMER": "Cliente",
+        "STATUS": "Estado",
+        "ITEMS": "Artículos",
+        "TOTAL": "Total",
+        "DATE": "Fecha",
+        "ACTIONS": "Acciones"
+      }
+    },
+    "USERS": {
+      "TITLE": "Gestión de Usuarios",
+      "TOTAL": "usuarios registrados",
+      "SEARCH": "Buscar por nombre o correo",
+      "CLEAR": "Limpiar",
+      "ACTIVE": "Activo",
+      "INACTIVE": "Inactivo",
+      "ACTIVATE": "Activar usuario",
+      "DEACTIVATE": "Desactivar usuario",
+      "EMPTY": "No se encontraron usuarios.",
+      "COLUMNS": {
+        "NAME": "Usuario",
+        "ROLE": "Rol",
+        "STATUS": "Estado",
+        "ORDERS": "Pedidos",
+        "CREATED_AT": "Registro",
+        "ACTIONS": "Activo"
+      }
+    },
     "PRODUCTS": {
       "TITLE": "Gestión de Productos",
       "TOTAL": "productos registrados",

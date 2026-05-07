@@ -187,6 +187,68 @@
     "VIEW": "View wishlist"
   },
   "ADMIN": {
+    "DASHBOARD": {
+      "TITLE": "Dashboard",
+      "SUBTITLE": "Store overview",
+      "PERIOD": "Period",
+      "LAST_7": "Last 7 days",
+      "LAST_30": "Last 30 days",
+      "LAST_90": "Last 90 days",
+      "TOTAL_REVENUE": "Total Revenue",
+      "RECENT_REVENUE": "Revenue in period",
+      "TOTAL_ORDERS": "Total Orders",
+      "PENDING": "pending",
+      "TOTAL_PRODUCTS": "Active Products",
+      "TOTAL_USERS": "Users",
+      "ORDER_STATUS": "Order Distribution",
+      "DAILY_SALES": "Sales Last 7 Days",
+      "TOP_PRODUCTS": "Top 5 Products",
+      "RECENT_ORDERS": "Recent Orders",
+      "SOLD": "sold",
+      "NO_DATA": "No data available."
+    },
+    "ORDERS": {
+      "TITLE": "Order Management",
+      "TOTAL": "total orders",
+      "SEARCH": "Search by order, customer or email",
+      "STATUS": "Status",
+      "ALL_STATUSES": "All statuses",
+      "DATE_FROM": "From",
+      "DATE_TO": "To",
+      "CLEAR_FILTERS": "Clear filters",
+      "EMPTY": "No orders found.",
+      "UPDATE_STATUS": "Update status",
+      "CANCEL": "Cancel",
+      "CONFIRM": "Confirm",
+      "COLUMNS": {
+        "NUMBER": "Order #",
+        "CUSTOMER": "Customer",
+        "STATUS": "Status",
+        "ITEMS": "Items",
+        "TOTAL": "Total",
+        "DATE": "Date",
+        "ACTIONS": "Actions"
+      }
+    },
+    "USERS": {
+      "TITLE": "User Management",
+      "TOTAL": "registered users",
+      "SEARCH": "Search by name or email",
+      "CLEAR": "Clear",
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "ACTIVATE": "Activate user",
+      "DEACTIVATE": "Deactivate user",
+      "EMPTY": "No users found.",
+      "COLUMNS": {
+        "NAME": "User",
+        "ROLE": "Role",
+        "STATUS": "Status",
+        "ORDERS": "Orders",
+        "CREATED_AT": "Registered",
+        "ACTIONS": "Active"
+      }
+    },
     "PRODUCTS": {
       "TITLE": "Product Management",
       "TOTAL": "registered products",

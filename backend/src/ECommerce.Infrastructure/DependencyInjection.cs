@@ -33,18 +33,17 @@ public static class DependencyInjection
         var redisConnection = configuration.GetConnectionString("Redis");
         if (!string.IsNullOrEmpty(redisConnection))
         {
-            // IDistributedCache para cache
+            var redisOptions = BuildRedisOptions(redisConnection);
+
             services.AddStackExchangeRedisCache(options =>
             {
-                options.Configuration = redisConnection;
+                options.ConfigurationOptions = redisOptions;
                 options.InstanceName = "ECommerce:";
             });
 
-            // IConnectionMultiplexer para pub/sub
             services.AddSingleton<IConnectionMultiplexer>(
-                ConnectionMultiplexer.Connect(redisConnection));
+                ConnectionMultiplexer.Connect(redisOptions));
 
-            // BackgroundService: subscribe ao canal de notificações
             services.AddHostedService<NotificationBackgroundService>();
         }
         else
@@ -66,6 +65,33 @@ public static class DependencyInjection
         services.AddHttpClient<IMercadoPagoService, MercadoPagoService>();
 
         return services;
+    }
+
+    private static ConfigurationOptions BuildRedisOptions(string connectionString)
+    {
+        if (connectionString.StartsWith("redis://") || connectionString.StartsWith("rediss://"))
+        {
+            var uri = new Uri(connectionString);
+            var options = new ConfigurationOptions
+            {
+                Ssl = connectionString.StartsWith("rediss://"),
+                AbortOnConnectFail = false,
+                ConnectTimeout = 5000,
+                SyncTimeout = 5000,
+            };
+            options.EndPoints.Add(uri.Host, uri.Port);
+            if (!string.IsNullOrEmpty(uri.UserInfo))
+            {
+                var parts = uri.UserInfo.Split(':', 2);
+                if (parts.Length == 2)
+                    options.Password = Uri.UnescapeDataString(parts[1]);
+            }
+            return options;
+        }
+
+        var parsed = ConfigurationOptions.Parse(connectionString);
+        parsed.AbortOnConnectFail = false;
+        return parsed;
     }
 
     public static void ConfigureSerilog(IConfiguration configuration)

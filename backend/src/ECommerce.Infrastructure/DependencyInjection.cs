@@ -1,10 +1,12 @@
 using ECommerce.Application.Common.Interfaces;
+using ECommerce.Infrastructure.BackgroundServices;
 using ECommerce.Infrastructure.Persistence;
 using ECommerce.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using StackExchange.Redis;
 
 namespace ECommerce.Infrastructure;
 
@@ -31,22 +33,31 @@ public static class DependencyInjection
         var redisConnection = configuration.GetConnectionString("Redis");
         if (!string.IsNullOrEmpty(redisConnection))
         {
+            // IDistributedCache para cache
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = redisConnection;
                 options.InstanceName = "ECommerce:";
             });
-            services.AddScoped<ICacheService, CacheService>();
+
+            // IConnectionMultiplexer para pub/sub
+            services.AddSingleton<IConnectionMultiplexer>(
+                ConnectionMultiplexer.Connect(redisConnection));
+
+            // BackgroundService: subscribe ao canal de notificações
+            services.AddHostedService<NotificationBackgroundService>();
         }
         else
         {
             services.AddDistributedMemoryCache();
-            services.AddScoped<ICacheService, CacheService>();
         }
+
+        services.AddScoped<ICacheService, CacheService>();
 
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, CurrentUserService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IFileUploadService, CloudinaryService>();

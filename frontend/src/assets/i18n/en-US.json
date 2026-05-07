@@ -186,6 +186,17 @@
     "LOGIN_REQUIRED": "Log in to use the wishlist",
     "VIEW": "View wishlist"
   },
+  "NOTIFICATIONS": {
+    "TITLE": "Notifications",
+    "EMPTY": "No notifications.",
+    "MARK_ALL": "Mark all as read",
+    "TYPES": {
+      "Welcome": "Welcome",
+      "OrderPlaced": "Order placed",
+      "OrderStatusChanged": "Order status",
+      "PaymentConfirmed": "Payment confirmed"
+    }
+  },
   "ADMIN": {
     "DASHBOARD": {
       "TITLE": "Dashboard",

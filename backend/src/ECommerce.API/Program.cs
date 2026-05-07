@@ -2,6 +2,8 @@ using System.Text;
 using ECommerce.Application;
 using ECommerce.Infrastructure;
 using ECommerce.API.Middleware;
+using ECommerce.API.Hubs;
+using ECommerce.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -22,6 +24,10 @@ builder.Host.UseSerilog();
 // Application + Infrastructure
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+
+// SignalR
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<INotificationPusher, SignalRNotificationPusher>();
 
 // Controllers
 builder.Services.AddControllers();
@@ -81,6 +87,20 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
         ClockSkew = TimeSpan.Zero
     };
+    // WebSocket não suporta header Authorization — aceitar token via query string
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+            if (!string.IsNullOrEmpty(accessToken) &&
+                context.HttpContext.Request.Path.StartsWithSegments("/hubs"))
+            {
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
 
 builder.Services.AddAuthorization();
@@ -121,6 +141,7 @@ app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<NotificationHub>("/hubs/notifications");
 app.MapHealthChecks("/health");
 
 app.Run();

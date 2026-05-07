@@ -5,6 +5,7 @@ using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace ECommerce.Application.Features.Auth.Commands.Register;
 
@@ -13,12 +14,24 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
     private readonly IApplicationDbContext _context;
     private readonly ITokenService _tokenService;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly IEmailService _emailService;
+    private readonly INotificationService _notificationService;
+    private readonly ILogger<RegisterCommandHandler> _logger;
 
-    public RegisterCommandHandler(IApplicationDbContext context, ITokenService tokenService, IPasswordHasher passwordHasher)
+    public RegisterCommandHandler(
+        IApplicationDbContext context,
+        ITokenService tokenService,
+        IPasswordHasher passwordHasher,
+        IEmailService emailService,
+        INotificationService notificationService,
+        ILogger<RegisterCommandHandler> logger)
     {
         _context = context;
         _tokenService = tokenService;
         _passwordHasher = passwordHasher;
+        _emailService = emailService;
+        _notificationService = notificationService;
+        _logger = logger;
     }
 
     public async Task<Result<AuthResponseDto>> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -52,6 +65,25 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
 
         var userDto = new UserDto(user.Id, user.FirstName, user.LastName, user.Email,
             user.Role.ToString(), user.AvatarUrl, user.PreferredLanguage);
+
+        // Disparar email de boas-vindas e notificação in-app (fire-and-forget seguro)
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await _emailService.SendWelcomeAsync(user.Email, user.FirstName, CancellationToken.None);
+                await _notificationService.CreateAsync(
+                    user.Id,
+                    "Bem-vindo ao ShopBR!",
+                    $"Olá {user.FirstName}, sua conta foi criada com sucesso. Aproveite as melhores ofertas!",
+                    NotificationType.Welcome,
+                    cancellationToken: CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao enviar boas-vindas para {Email}", user.Email);
+            }
+        });
 
         return Result<AuthResponseDto>.Success(new AuthResponseDto(accessToken, refreshToken, userDto));
     }

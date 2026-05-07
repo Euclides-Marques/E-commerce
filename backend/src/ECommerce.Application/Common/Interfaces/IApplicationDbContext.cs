@@ -6,6 +6,7 @@ namespace ECommerce.Application.Common.Interfaces;
 public interface IApplicationDbContext
 {
     DbSet<User> Users { get; }
+    DbSet<Notification> Notifications { get; }
     DbSet<Address> Addresses { get; }
     DbSet<Category> Categories { get; }
     DbSet<Product> Products { get; }

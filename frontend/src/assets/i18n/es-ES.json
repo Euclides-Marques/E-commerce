@@ -186,6 +186,17 @@
     "LOGIN_REQUIRED": "Inicia sesión para usar la lista de deseos",
     "VIEW": "Ver lista de deseos"
   },
+  "NOTIFICATIONS": {
+    "TITLE": "Notificaciones",
+    "EMPTY": "Sin notificaciones.",
+    "MARK_ALL": "Marcar todas como leídas",
+    "TYPES": {
+      "Welcome": "Bienvenida",
+      "OrderPlaced": "Pedido realizado",
+      "OrderStatusChanged": "Estado del pedido",
+      "PaymentConfirmed": "Pago confirmado"
+    }
+  },
   "ADMIN": {
     "DASHBOARD": {
       "TITLE": "Dashboard",

@@ -3,8 +3,10 @@ using ECommerce.Application.Common.Models;
 using ECommerce.Application.Features.Orders.DTOs;
 using ECommerce.Application.Features.Orders.Queries.GetOrderById;
 using ECommerce.Domain.Entities;
+using ECommerce.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace ECommerce.Application.Features.Orders.Commands.PlaceOrder;
 
@@ -13,12 +15,24 @@ public class PlaceOrderCommandHandler : IRequestHandler<PlaceOrderCommand, Resul
     private readonly IApplicationDbContext _context;
     private readonly ICurrentUser _currentUser;
     private readonly ISender _sender;
+    private readonly IEmailService _emailService;
+    private readonly INotificationService _notificationService;
+    private readonly ILogger<PlaceOrderCommandHandler> _logger;
 
-    public PlaceOrderCommandHandler(IApplicationDbContext context, ICurrentUser currentUser, ISender sender)
+    public PlaceOrderCommandHandler(
+        IApplicationDbContext context,
+        ICurrentUser currentUser,
+        ISender sender,
+        IEmailService emailService,
+        INotificationService notificationService,
+        ILogger<PlaceOrderCommandHandler> logger)
     {
         _context = context;
         _currentUser = currentUser;
         _sender = sender;
+        _emailService = emailService;
+        _notificationService = notificationService;
+        _logger = logger;
     }
 
     public async Task<Result<OrderDto>> Handle(PlaceOrderCommand request, CancellationToken cancellationToken)
@@ -86,6 +100,33 @@ public class PlaceOrderCommandHandler : IRequestHandler<PlaceOrderCommand, Resul
         await _context.Orders.AddAsync(order, cancellationToken);
         _context.CartItems.RemoveRange(cartItems);
         await _context.SaveChangesAsync(cancellationToken);
+
+        var user = await _context.Users.AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == _currentUser.UserId.Value, cancellationToken);
+
+        if (user is not null)
+        {
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await _emailService.SendOrderConfirmationAsync(
+                        user.Email, user.FirstName, order.OrderNumber, order.Total, CancellationToken.None);
+                    await _notificationService.CreateAsync(
+                        user.Id,
+                        "Pedido realizado com sucesso!",
+                        $"Seu pedido {order.OrderNumber} foi confirmado. Total: R$ {order.Total:N2}",
+                        NotificationType.OrderPlaced,
+                        orderId: order.Id,
+                        relatedUrl: $"/orders/{order.Id}",
+                        cancellationToken: CancellationToken.None);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Erro ao enviar notificação de pedido {OrderNumber}", order.OrderNumber);
+                }
+            });
+        }
 
         return await _sender.Send(new GetOrderByIdQuery(order.Id), cancellationToken);
     }

@@ -4,4 +4,5 @@ export const environment = {
   defaultLanguage: 'pt-BR',
   supportedLanguages: ['pt-BR', 'en-US', 'es-ES'],
   stripePublishableKey: 'pk_test_PLACEHOLDER',
+  cloudinaryCloudName: 'dkzzyfr85',
 };

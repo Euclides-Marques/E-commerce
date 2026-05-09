@@ -22,13 +22,83 @@ import { AuthService } from '../../../core/services/auth.service';
     MatProgressSpinnerModule,
     TranslatePipe,
   ],
-  template: `
-    <div class="bg-white rounded-xl shadow-lg p-8">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
-        {{ 'AUTH.LOGIN_TITLE' | translate }}
-      </h2>
+  styles: [`
+    .login-header {
+      margin-bottom: 28px;
+    }
+    .login-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #0F172A;
+      letter-spacing: -0.3px;
+      margin: 0 0 6px;
+      line-height: 1.25;
+    }
+    .login-subtitle {
+      font-size: 14px;
+      color: #64748B;
+      margin: 0;
+      line-height: 1.5;
+    }
+    .form-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .field-error {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #EF4444;
+      text-align: center;
+      justify-content: center;
+      margin: 2px 0 6px;
+    }
+    .field-error .mat-icon {
+      font-size: 15px;
+      width: 15px;
+      height: 15px;
+    }
 
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+    /* Footer links */
+    .login-footer {
+      margin-top: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .link-muted {
+      font-size: 14px;
+      color: #64748B;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.15s ease;
+    }
+    .link-muted:hover { color: #F04E23; }
+    .register-text {
+      font-size: 14px;
+      color: #64748B;
+      margin: 0;
+      line-height: 1.5;
+    }
+    .link-brand {
+      color: #F04E23;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.15s ease;
+    }
+    .link-brand:hover { opacity: 0.75; text-decoration: underline; }
+  `],
+  template: `
+    <div>
+      <div class="login-header">
+        <h2 class="login-title">{{ 'AUTH.LOGIN_TITLE' | translate }}</h2>
+        <p class="login-subtitle">Bem-vindo de volta. Insira seus dados abaixo.</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-fields">
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>{{ 'AUTH.EMAIL' | translate }}</mat-label>
           <input matInput type="email" formControlName="email" autocomplete="email" />
@@ -53,10 +123,13 @@ import { AuthService } from '../../../core/services/auth.service';
         </mat-form-field>
 
         @if (errorMessage()) {
-          <p class="text-red-500 text-sm text-center">{{ errorMessage() }}</p>
+          <div class="field-error">
+            <mat-icon>error_outline</mat-icon>
+            {{ errorMessage() }}
+          </div>
         }
 
-        <button mat-raised-button color="primary" type="submit" class="w-full py-3" [disabled]="isLoading()">
+        <button mat-flat-button color="primary" type="submit" class="w-full auth-submit" [disabled]="isLoading()">
           @if (isLoading()) {
             <mat-spinner diameter="20" class="inline-block" />
           } @else {
@@ -65,15 +138,13 @@ import { AuthService } from '../../../core/services/auth.service';
         </button>
       </form>
 
-      <div class="mt-4 text-center space-y-2">
-        <a routerLink="/auth/forgot-password" class="text-sm text-primary-500 hover:underline">
+      <div class="login-footer">
+        <a routerLink="/auth/forgot-password" class="link-muted">
           {{ 'AUTH.FORGOT_PASSWORD' | translate }}
         </a>
-        <p class="text-sm text-gray-500">
+        <p class="register-text">
           {{ 'AUTH.NO_ACCOUNT' | translate }}
-          <a routerLink="/auth/register" class="text-primary-500 hover:underline font-medium">
-            {{ 'AUTH.SIGN_UP' | translate }}
-          </a>
+          <a routerLink="/auth/register" class="link-brand">{{ 'AUTH.SIGN_UP' | translate }}</a>
         </p>
       </div>
     </div>

@@ -23,13 +23,14 @@ import { AuthService } from '../../../core/services/auth.service';
     TranslatePipe,
   ],
   template: `
-    <div class="bg-white rounded-xl shadow-lg p-8">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
-        {{ 'AUTH.REGISTER' | translate }}
-      </h2>
+    <div>
+      <div class="auth-header">
+        <h2 class="auth-title">Criar conta</h2>
+        <p class="auth-subtitle">Preencha os dados para começar gratuitamente.</p>
+      </div>
 
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
-        <div class="grid grid-cols-2 gap-3">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form-fields">
+        <div class="auth-name-grid">
           <mat-form-field appearance="outline">
             <mat-label>{{ 'AUTH.FIRST_NAME' | translate }}</mat-label>
             <input matInput formControlName="firstName" autocomplete="given-name" />
@@ -73,10 +74,13 @@ import { AuthService } from '../../../core/services/auth.service';
         </mat-form-field>
 
         @if (errorMessage()) {
-          <p class="text-red-500 text-sm text-center">{{ errorMessage() }}</p>
+          <div class="auth-field-error">
+            <mat-icon>error_outline</mat-icon>
+            {{ errorMessage() }}
+          </div>
         }
 
-        <button mat-raised-button color="primary" type="submit" class="w-full py-3" [disabled]="isLoading()">
+        <button mat-flat-button color="primary" type="submit" class="w-full auth-submit" [disabled]="isLoading()">
           @if (isLoading()) {
             <mat-spinner diameter="20" />
           } @else {
@@ -85,12 +89,12 @@ import { AuthService } from '../../../core/services/auth.service';
         </button>
       </form>
 
-      <p class="mt-4 text-center text-sm text-gray-500">
-        {{ 'AUTH.ALREADY_ACCOUNT' | translate }}
-        <a routerLink="/auth/login" class="text-primary-500 hover:underline font-medium">
-          {{ 'AUTH.LOGIN' | translate }}
-        </a>
-      </p>
+      <div class="auth-footer">
+        <p class="auth-footer-text">
+          {{ 'AUTH.ALREADY_ACCOUNT' | translate }}
+          <a routerLink="/auth/login" class="auth-link-brand">{{ 'AUTH.LOGIN' | translate }}</a>
+        </p>
+      </div>
     </div>
   `,
 })

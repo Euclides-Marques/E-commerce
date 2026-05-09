@@ -4,26 +4,34 @@ import { RouterLink } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, MatFormFieldModule, MatInputModule, MatButtonModule, TranslatePipe],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    TranslatePipe,
+  ],
   template: `
-    <div class="bg-white rounded-xl shadow-lg p-8">
-      <h2 class="text-2xl font-bold text-gray-800 mb-2 text-center">
-        {{ 'AUTH.FORGOT_PASSWORD_TITLE' | translate }}
-      </h2>
-      <p class="text-gray-500 text-sm text-center mb-6">
-        {{ 'AUTH.FORGOT_PASSWORD_SUBTITLE' | translate }}
-      </p>
+    <div>
+      <div class="auth-header">
+        <h2 class="auth-title">{{ 'AUTH.FORGOT_PASSWORD_TITLE' | translate }}</h2>
+        <p class="auth-subtitle">{{ 'AUTH.FORGOT_PASSWORD_SUBTITLE' | translate }}</p>
+      </div>
 
       @if (!sent()) {
-        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form-fields">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>{{ 'AUTH.EMAIL' | translate }}</mat-label>
             <input matInput type="email" formControlName="email" autocomplete="email" />
+            <mat-icon matSuffix>email</mat-icon>
             @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
               <mat-error>{{ 'AUTH.VALIDATION.EMAIL_REQUIRED' | translate }}</mat-error>
             }
@@ -31,22 +39,25 @@ import { TranslatePipe } from '@ngx-translate/core';
               <mat-error>{{ 'AUTH.VALIDATION.EMAIL_INVALID' | translate }}</mat-error>
             }
           </mat-form-field>
-          <button mat-raised-button color="primary" type="submit" class="w-full">
+
+          <button mat-flat-button color="primary" type="submit" class="w-full auth-submit">
             {{ 'AUTH.SEND_INSTRUCTIONS' | translate }}
           </button>
         </form>
       } @else {
-        <div class="text-center py-4">
-          <div class="text-green-500 text-5xl mb-4">✓</div>
-          <p class="text-gray-600">{{ 'AUTH.FORGOT_PASSWORD_SUCCESS' | translate }}</p>
+        <div class="auth-success">
+          <div class="auth-success-icon">
+            <mat-icon>mark_email_read</mat-icon>
+          </div>
+          <p class="auth-success-text">{{ 'AUTH.FORGOT_PASSWORD_SUCCESS' | translate }}</p>
         </div>
       }
 
-      <p class="mt-4 text-center text-sm">
-        <a routerLink="/auth/login" class="text-primary-500 hover:underline">
-          {{ 'AUTH.BACK_TO_LOGIN' | translate }}
+      <div class="auth-footer">
+        <a routerLink="/auth/login" class="auth-link-muted">
+          ← {{ 'AUTH.BACK_TO_LOGIN' | translate }}
         </a>
-      </p>
+      </div>
     </div>
   `,
 })

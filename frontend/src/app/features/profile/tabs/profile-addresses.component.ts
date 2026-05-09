@@ -1,11 +1,22 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { debounceTime, distinctUntilChanged, filter, switchMap, catchError, of, map } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AddressService } from '../../../core/services/address.service';
 import { AddressDto } from '../../../core/models/address.model';
+
+interface ViaCepResponse {
+  logradouro: string;
+  bairro: string;
+  localidade: string;
+  uf: string;
+  erro?: boolean;
+}
 
 @Component({
   selector: 'app-profile-addresses',
@@ -173,9 +184,15 @@ import { AddressDto } from '../../../core/models/address.model';
                   {{ 'PROFILE.ADDRESSES.FIELD_ZIP' | translate }}
                   <span class="form-req">*</span>
                 </label>
-                <input formControlName="zipCode" class="form-input"
-                       [placeholder]="'PROFILE.ADDRESSES.PH_ZIP' | translate"
-                       maxlength="9" />
+                <div class="cep-wrap">
+                  <input formControlName="zipCode" class="form-input"
+                         placeholder="00000-000"
+                         maxlength="9"
+                         (input)="onCepInput($event)" />
+                  @if (loadingCep()) {
+                    <mat-spinner class="cep-spin" diameter="14"></mat-spinner>
+                  }
+                </div>
                 @if (f['zipCode'].invalid && f['zipCode'].touched) {
                   <span class="form-error">{{ 'PROFILE.ADDRESSES.REQUIRED' | translate }}</span>
                 }
@@ -259,12 +276,9 @@ import { AddressDto } from '../../../core/models/address.model';
               </div>
             </div>
 
-            <label class="form-checkbox">
-              <input type="checkbox" formControlName="isDefault" class="form-checkbox__input" />
-              <span class="form-checkbox__box"></span>
-              <span class="form-checkbox__text">
-                {{ 'PROFILE.ADDRESSES.SET_DEFAULT_CHECK' | translate }}
-              </span>
+            <label class="form-checkbox" (click)="$event.preventDefault(); toggleDefault()">
+              <span class="form-checkbox__box" [class.form-checkbox__box--on]="f['isDefault'].value"></span>
+              <span class="form-checkbox__text">{{ 'PROFILE.ADDRESSES.SET_DEFAULT_CHECK' | translate }}</span>
             </label>
 
             <div class="addr-form__footer">
@@ -640,33 +654,55 @@ import { AddressDto } from '../../../core/models/address.model';
       font-weight: 500;
     }
 
+    /* ── CEP wrap ────────────────────────────────────────────────── */
+    .cep-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .cep-wrap .form-input { padding-right: 32px; }
+    .cep-spin {
+      position: absolute;
+      right: 10px;
+      --mdc-circular-progress-active-indicator-color: var(--brand-primary);
+    }
+
     /* ── Checkbox ────────────────────────────────────────────────── */
     .form-checkbox {
-      display: inline-flex;
+      display: flex;
+      flex-direction: row;
       align-items: center;
+      flex-wrap: nowrap;
       gap: 10px;
       cursor: pointer;
       user-select: none;
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 0;
+      margin: 0;
     }
-    .form-checkbox__input { display: none; }
     .form-checkbox__box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       width: 18px;
+      min-width: 18px;
       height: 18px;
       border-radius: 5px;
       border: 2px solid var(--border-subtle);
       background: var(--bg-surface);
       flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       transition: border-color .15s, background .15s;
     }
-    .form-checkbox__input:checked ~ .form-checkbox__box {
+    .form-checkbox__box--on {
       background: var(--brand-primary);
       border-color: var(--brand-primary);
     }
-    .form-checkbox__input:checked ~ .form-checkbox__box::after {
+    .form-checkbox__box--on::after {
       content: '';
+      display: block;
       width: 4px;
       height: 8px;
       border: 2px solid #fff;
@@ -674,12 +710,12 @@ import { AddressDto } from '../../../core/models/address.model';
       border-left: none;
       transform: rotate(45deg);
       margin-top: -2px;
-      display: block;
     }
     .form-checkbox__text {
       font-size: 13px;
       font-weight: 500;
       color: var(--text-primary);
+      white-space: nowrap;
     }
 
     /* ── Form footer ─────────────────────────────────────────────── */
@@ -746,14 +782,17 @@ import { AddressDto } from '../../../core/models/address.model';
 export class ProfileAddressesComponent implements OnInit {
   readonly svc = inject(AddressService);
   private readonly fb = inject(FormBuilder);
+  private readonly http = inject(HttpClient);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
 
-  readonly loading  = signal(false);
-  readonly saving   = signal(false);
-  readonly busy     = signal<string | null>(null);
-  readonly showForm = signal(false);
-  readonly editId   = signal<string | null>(null);
+  readonly loading    = signal(false);
+  readonly saving     = signal(false);
+  readonly busy       = signal<string | null>(null);
+  readonly showForm   = signal(false);
+  readonly editId     = signal<string | null>(null);
+  readonly loadingCep = signal(false);
 
   readonly form = this.fb.group({
     label:        ['', Validators.required],
@@ -785,6 +824,44 @@ export class ProfileAddressesComponent implements OnInit {
       next: () => this.loading.set(false),
       error: () => this.loading.set(false),
     });
+
+    this.f['zipCode'].valueChanges.pipe(
+      takeUntilDestroyed(this.destroyRef),
+      debounceTime(500),
+      map(v => (v ?? '').replace(/\D/g, '')),
+      distinctUntilChanged(),
+      filter(digits => digits.length === 8),
+      switchMap(cep => {
+        this.loadingCep.set(true);
+        return this.http.get<ViaCepResponse>(`https://viacep.com.br/ws/${cep}/json/`).pipe(
+          catchError(() => of(null))
+        );
+      }),
+    ).subscribe(data => {
+      this.loadingCep.set(false);
+      if (data && !data.erro) {
+        this.form.patchValue({
+          street:       data.logradouro,
+          neighborhood: data.bairro,
+          city:         data.localidade,
+          state:        data.uf,
+        });
+      }
+    });
+  }
+
+  toggleDefault(): void {
+    this.f['isDefault'].setValue(!this.f['isDefault'].value);
+  }
+
+  onCepInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const digits = input.value.replace(/\D/g, '').slice(0, 8);
+    const formatted = digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
+    if (input.value !== formatted) {
+      input.value = formatted;
+      this.f['zipCode'].setValue(formatted, { emitEvent: true });
+    }
   }
 
   openAdd(): void {

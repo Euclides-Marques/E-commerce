@@ -1,27 +1,26 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, MatIconModule],
+  imports: [RouterLink, MatIconModule, TranslateModule],
   template: `
     <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
     <section class="hero-wrap -mt-6 -mx-4 mb-8">
       <div class="hero-grid">
         <div class="hero-copy">
-          <span class="hero-eyebrow">Nova coleção disponível</span>
+          <span class="hero-eyebrow">{{ 'HOME.EYEBROW' | translate }}</span>
           <h1 class="hero-title">
-            As melhores <span class="hero-accent">ofertas</span><br>estão aqui
+            {{ 'HOME.TITLE_PART1' | translate }}<span class="hero-accent">{{ 'HOME.TITLE_ACCENT' | translate }}</span>{{ 'HOME.TITLE_PART2' | translate }}
           </h1>
-          <p class="hero-body">
-            Compre com segurança, entrega rápida e os menores preços do Brasil.
-          </p>
+          <p class="hero-body">{{ 'HOME.SUBTITLE' | translate }}</p>
           <div class="hero-ctas">
-            <a routerLink="/products" class="cta-primary">Ver Produtos</a>
+            <a routerLink="/products" class="cta-primary">{{ 'HOME.CTA_PRIMARY' | translate }}</a>
             <a routerLink="/products" [queryParams]="{featured: true}" class="cta-ghost">
-              Em destaque <span class="ml-1">→</span>
+              {{ 'HOME.CTA_SECONDARY' | translate }} <span class="ml-1">→</span>
             </a>
           </div>
         </div>
@@ -29,7 +28,7 @@ import { MatIconModule } from '@angular/material/icon';
         <div class="hero-visual">
           <img
             src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=900&h=600&fit=crop&q=85&auto=format"
-            alt="Compras online com as melhores ofertas"
+            alt="{{ 'HOME.SUBTITLE' | translate }}"
             loading="eager"
           />
         </div>
@@ -43,8 +42,8 @@ import { MatIconModule } from '@angular/material/icon';
           <mat-icon>local_shipping</mat-icon>
         </div>
         <div>
-          <p class="trust-title">Frete grátis acima de R$199</p>
-          <p class="trust-desc">Entrega em todo o Brasil</p>
+          <p class="trust-title">{{ 'HOME.TRUST_SHIPPING_TITLE' | translate }}</p>
+          <p class="trust-desc">{{ 'HOME.TRUST_SHIPPING_DESC' | translate }}</p>
         </div>
       </div>
       <div class="trust-item">
@@ -52,8 +51,8 @@ import { MatIconModule } from '@angular/material/icon';
           <mat-icon>verified_user</mat-icon>
         </div>
         <div>
-          <p class="trust-title">Compra 100% segura</p>
-          <p class="trust-desc">Pagamento criptografado e protegido</p>
+          <p class="trust-title">{{ 'HOME.TRUST_SECURITY_TITLE' | translate }}</p>
+          <p class="trust-desc">{{ 'HOME.TRUST_SECURITY_DESC' | translate }}</p>
         </div>
       </div>
       <div class="trust-item">
@@ -61,8 +60,8 @@ import { MatIconModule } from '@angular/material/icon';
           <mat-icon>replay</mat-icon>
         </div>
         <div>
-          <p class="trust-title">Devolução facilitada</p>
-          <p class="trust-desc">Até 30 dias após a entrega</p>
+          <p class="trust-title">{{ 'HOME.TRUST_RETURN_TITLE' | translate }}</p>
+          <p class="trust-desc">{{ 'HOME.TRUST_RETURN_DESC' | translate }}</p>
         </div>
       </div>
     </section>
@@ -70,14 +69,14 @@ import { MatIconModule } from '@angular/material/icon';
     <!-- ── Categorias ─────────────────────────────────────────────────────────── -->
     <section class="mb-12">
       <div class="sect-header">
-        <p class="sect-eyebrow">Explorar por</p>
-        <h2 class="sect-title">Categorias em destaque</h2>
+        <p class="sect-eyebrow">{{ 'HOME.CATEGORIES_EYEBROW' | translate }}</p>
+        <h2 class="sect-title">{{ 'HOME.CATEGORIES_TITLE' | translate }}</h2>
       </div>
       <div class="cat-grid">
-        @for (cat of categories; track cat.name) {
+        @for (cat of categories; track cat.nameKey) {
           <a routerLink="/products" [queryParams]="{category: cat.slug}" class="cat-card">
-            <img [src]="cat.img" [alt]="cat.name" loading="lazy" />
-            <span class="cat-label">{{ cat.name }}</span>
+            <img [src]="cat.img" [alt]="cat.nameKey | translate" loading="lazy" />
+            <span class="cat-label">{{ cat.nameKey | translate }}</span>
           </a>
         }
       </div>
@@ -86,8 +85,8 @@ import { MatIconModule } from '@angular/material/icon';
     <!-- ── Produtos em Destaque ───────────────────────────────────────────────── -->
     <section class="mb-12">
       <div class="sect-header">
-        <p class="sect-eyebrow">Seleção da semana</p>
-        <h2 class="sect-title">Produtos em destaque</h2>
+        <p class="sect-eyebrow">{{ 'HOME.FEATURED_EYEBROW' | translate }}</p>
+        <h2 class="sect-title">{{ 'HOME.FEATURED_TITLE' | translate }}</h2>
       </div>
       <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5">
         @for (i of [1,2,3,4,5]; track i) {
@@ -107,32 +106,32 @@ import { MatIconModule } from '@angular/material/icon';
 export class HomeComponent {
   readonly categories = [
     {
-      name: 'Eletrônicos',
+      nameKey: 'HOME.CATEGORIES.ELETRONICOS',
       slug: 'eletronicos',
       img: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=540&fit=crop&q=80&auto=format',
     },
     {
-      name: 'Moda',
+      nameKey: 'HOME.CATEGORIES.MODA',
       slug: 'moda',
       img: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=540&fit=crop&q=80&auto=format',
     },
     {
-      name: 'Casa',
+      nameKey: 'HOME.CATEGORIES.CASA',
       slug: 'casa',
       img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=540&fit=crop&q=80&auto=format',
     },
     {
-      name: 'Esportes',
+      nameKey: 'HOME.CATEGORIES.ESPORTES',
       slug: 'esportes',
       img: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=400&h=540&fit=crop&q=80&auto=format',
     },
     {
-      name: 'Beleza',
+      nameKey: 'HOME.CATEGORIES.BELEZA',
       slug: 'beleza',
       img: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=540&fit=crop&q=80&auto=format',
     },
     {
-      name: 'Livros',
+      nameKey: 'HOME.CATEGORIES.LIVROS',
       slug: 'livros',
       img: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=540&fit=crop&q=80&auto=format',
     },

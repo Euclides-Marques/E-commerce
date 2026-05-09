@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, TranslateModule],
   template: `
     <footer class="bg-gray-950 text-gray-400 mt-16">
       <div class="container mx-auto px-4 py-12">
@@ -16,22 +17,24 @@ import { RouterLink } from '@angular/router';
               Shop<span class="text-primary-500">BR</span>
             </p>
             <p class="text-sm text-gray-500 leading-relaxed max-w-[200px]">
-              Seu marketplace de confiança com as melhores ofertas do Brasil.
+              {{ 'FOOTER.TAGLINE' | translate }}
             </p>
           </div>
 
           <!-- Comprar -->
           <div>
-            <h4 class="text-white font-semibold mb-4 text-sm tracking-wide uppercase text-xs opacity-60">Comprar</h4>
+            <h4 class="text-white font-semibold mb-4 text-xs tracking-widest uppercase opacity-60">
+              {{ 'FOOTER.SECTION_SHOP' | translate }}
+            </h4>
             <ul class="space-y-3 text-sm">
               <li>
                 <a routerLink="/products" class="text-gray-400 hover:text-white transition-colors">
-                  Todos os Produtos
+                  {{ 'FOOTER.ALL_PRODUCTS' | translate }}
                 </a>
               </li>
               <li>
                 <a routerLink="/products" [queryParams]="{featured: true}" class="text-gray-400 hover:text-white transition-colors">
-                  Em Destaque
+                  {{ 'FOOTER.FEATURED' | translate }}
                 </a>
               </li>
             </ul>
@@ -39,17 +42,33 @@ import { RouterLink } from '@angular/router';
 
           <!-- Suporte -->
           <div>
-            <h4 class="text-white font-semibold mb-4 text-sm tracking-wide uppercase text-xs opacity-60">Suporte</h4>
+            <h4 class="text-white font-semibold mb-4 text-xs tracking-widest uppercase opacity-60">
+              {{ 'FOOTER.SECTION_SUPPORT' | translate }}
+            </h4>
             <ul class="space-y-3 text-sm">
-              <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Central de Ajuda</a></li>
-              <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contato</a></li>
-              <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Política de Privacidade</a></li>
+              <li>
+                <a routerLink="/help" class="text-gray-400 hover:text-white transition-colors">
+                  {{ 'FOOTER.HELP_CENTER' | translate }}
+                </a>
+              </li>
+              <li>
+                <a routerLink="/contact" class="text-gray-400 hover:text-white transition-colors">
+                  {{ 'FOOTER.CONTACT' | translate }}
+                </a>
+              </li>
+              <li>
+                <a routerLink="/privacy" class="text-gray-400 hover:text-white transition-colors">
+                  {{ 'FOOTER.PRIVACY' | translate }}
+                </a>
+              </li>
             </ul>
           </div>
 
           <!-- Pagamento -->
           <div>
-            <h4 class="text-white font-semibold mb-4 text-sm tracking-wide uppercase text-xs opacity-60">Pagamento</h4>
+            <h4 class="text-white font-semibold mb-4 text-xs tracking-widest uppercase opacity-60">
+              {{ 'FOOTER.SECTION_PAYMENT' | translate }}
+            </h4>
             <div class="flex flex-wrap gap-2">
               <span class="bg-gray-800 border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-md font-medium">PIX</span>
               <span class="bg-gray-800 border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-md font-medium">Cartão</span>
@@ -62,10 +81,10 @@ import { RouterLink } from '@angular/router';
 
         <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-2">
           <p class="text-xs text-gray-600">
-            © {{ year }} ShopBR. Todos os direitos reservados.
+            © {{ year }} ShopBR. {{ 'FOOTER.COPYRIGHT' | translate }}
           </p>
           <p class="text-xs text-gray-700">
-            Feito com cuidado no Brasil
+            {{ 'FOOTER.MADE_IN_BRAZIL' | translate }}
           </p>
         </div>
       </div>

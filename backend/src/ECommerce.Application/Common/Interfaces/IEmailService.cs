@@ -8,4 +8,5 @@ public interface IEmailService
     Task SendOrderConfirmationAsync(string email, string name, string orderNumber, decimal total, CancellationToken cancellationToken = default);
     Task SendOrderStatusChangedAsync(string email, string name, string orderNumber, string newStatus, string statusLabel, CancellationToken cancellationToken = default);
     Task SendPaymentConfirmedAsync(string email, string name, string orderNumber, decimal total, CancellationToken cancellationToken = default);
+    Task SendContactAsync(string senderName, string senderEmail, string subject, string message, CancellationToken cancellationToken = default);
 }

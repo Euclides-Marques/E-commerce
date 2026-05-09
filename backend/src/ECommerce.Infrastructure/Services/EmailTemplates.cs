@@ -120,6 +120,26 @@ internal static class EmailTemplates
         </a>
       </div>");
 
+    public static string ContactMessage(string name, string email, string subject, string message) => Layout(
+        $"Mensagem de contato — {name}", $@"
+      <h2 style=""color:#333;margin-top:0;"">Nova mensagem de contato</h2>
+      <table width=""100%"" cellpadding=""0"" cellspacing=""0"" style=""background:{BgLight};border-radius:6px;margin:16px 0;"">
+        <tr>
+          <td style=""padding:16px;"">
+            <p style=""margin:4px 0;color:#555;""><strong>Nome:</strong> {name}</p>
+            <p style=""margin:4px 0;color:#555;""><strong>E-mail:</strong> <a href=""mailto:{email}"" style=""color:{Primary};"">{email}</a></p>
+            <p style=""margin:4px 0;color:#555;""><strong>Assunto:</strong> {subject}</p>
+          </td>
+        </tr>
+      </table>
+      <h3 style=""color:#333;margin-bottom:8px;"">Mensagem</h3>
+      <div style=""background:{BgLight};border-left:4px solid {Primary};padding:16px;border-radius:0 6px 6px 0;"">
+        <p style=""color:#555;line-height:1.6;margin:0;white-space:pre-wrap;"">{message}</p>
+      </div>
+      <p style=""color:#888;font-size:13px;margin-top:24px;"">
+        Responda diretamente para: <a href=""mailto:{email}"" style=""color:{Primary};"">{email}</a>
+      </p>");
+
     public static string PasswordReset(string name, string token) => Layout("Recuperação de senha", $@"
       <h2 style=""color:#333;margin-top:0;"">Recuperação de senha 🔒</h2>
       <p style=""color:#555;line-height:1.6;"">Olá, <strong>{name}</strong>.</p>

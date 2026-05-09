@@ -45,7 +45,7 @@ import { NotificationDto } from '../../../core/models/notification.model';
           <div class="relative">
             <input
               type="search"
-              placeholder="Buscar produtos..."
+              [placeholder]="'PRODUCT.LIST.SEARCH_PLACEHOLDER' | translate"
               class="w-full px-4 py-2 rounded-lg border border-gray-200 text-gray-800 text-sm outline-none bg-gray-50 focus:bg-white focus:border-primary-400 transition-colors"
               (keyup.enter)="onSearch($event)"
             />
@@ -168,30 +168,30 @@ import { NotificationDto } from '../../../core/models/notification.model';
             </button>
             <mat-menu #userMenu="matMenu">
               <a mat-menu-item routerLink="/profile">
-                <mat-icon>person</mat-icon> Meu Perfil
+                <mat-icon>person</mat-icon> {{ 'NAV.MY_PROFILE' | translate }}
               </a>
               <a mat-menu-item routerLink="/orders">
-                <mat-icon>receipt</mat-icon> Meus Pedidos
+                <mat-icon>receipt</mat-icon> {{ 'ORDERS.TITLE' | translate }}
               </a>
               <a mat-menu-item routerLink="/wishlist">
-                <mat-icon>favorite_border</mat-icon> Lista de Desejos
+                <mat-icon>favorite_border</mat-icon> {{ 'WISHLIST.TITLE' | translate }}
               </a>
               @if (authService.isAdmin()) {
                 <a mat-menu-item routerLink="/admin">
-                  <mat-icon>admin_panel_settings</mat-icon> Admin
+                  <mat-icon>admin_panel_settings</mat-icon> {{ 'NAV.ADMIN' | translate }}
                 </a>
               }
               <mat-divider></mat-divider>
               <button mat-menu-item (click)="authService.logout()">
-                <mat-icon>logout</mat-icon> Sair
+                <mat-icon>logout</mat-icon> {{ 'NAV.LOGOUT' | translate }}
               </button>
             </mat-menu>
 
           } @else {
-            <a routerLink="/auth/login" mat-button class="text-gray-700 font-medium">Entrar</a>
+            <a routerLink="/auth/login" mat-button class="text-gray-700 font-medium">{{ 'NAV.LOGIN' | translate }}</a>
             <a routerLink="/auth/register" mat-flat-button
                style="background:#EE4D2D; color:#fff; border-radius:8px; font-size:13px; font-weight:600;">
-              Cadastrar
+              {{ 'NAV.REGISTER' | translate }}
             </a>
           }
         </div>

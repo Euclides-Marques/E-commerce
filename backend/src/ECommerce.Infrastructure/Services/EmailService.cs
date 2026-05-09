@@ -93,4 +93,9 @@ public class EmailService : IEmailService
         CancellationToken cancellationToken = default)
         => SendAsync(email, name, $"Pagamento aprovado — {orderNumber} — ShopBR",
             EmailTemplates.PaymentConfirmed(name, orderNumber, total), cancellationToken);
+
+    public Task SendContactAsync(string senderName, string senderEmail, string subject, string message,
+        CancellationToken cancellationToken = default)
+        => SendAsync(_fromEmail, _fromName, $"[Contato] {subject} — de {senderName}",
+            EmailTemplates.ContactMessage(senderName, senderEmail, subject, message), cancellationToken);
 }

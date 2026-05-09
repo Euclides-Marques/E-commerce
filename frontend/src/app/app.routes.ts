@@ -36,6 +36,9 @@ export const routes: Routes = [
         canActivate: [authGuard],
         loadComponent: () => import('./features/wishlist/wishlist.component').then(m => m.WishlistComponent),
       },
+      { path: 'help',    loadComponent: () => import('./features/info/help/help.component').then(m => m.HelpComponent) },
+      { path: 'contact', loadComponent: () => import('./features/info/contact/contact.component').then(m => m.ContactComponent) },
+      { path: 'privacy', loadComponent: () => import('./features/info/privacy/privacy.component').then(m => m.PrivacyComponent) },
     ],
   },
   {

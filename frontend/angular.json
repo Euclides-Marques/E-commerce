@@ -39,6 +39,9 @@
             "styles": [
               "src/styles.scss"
             ],
+            "allowedCommonJsDependencies": [
+              "apexcharts"
+            ],
             "scripts": []
           },
           "configurations": {

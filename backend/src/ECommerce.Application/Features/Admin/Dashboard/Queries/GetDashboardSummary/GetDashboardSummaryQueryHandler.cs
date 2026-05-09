@@ -28,7 +28,7 @@ public class GetDashboardSummaryQueryHandler : IRequestHandler<GetDashboardSumma
 
         var now = DateTime.UtcNow;
         var cutoff = now.AddDays(-request.DaysBack);
-        var last7Days = now.AddDays(-7);
+        var chartDays = Math.Clamp(request.DaysBack, 1, 90);
 
         var orders = await _context.Orders
             .Include(o => o.User)
@@ -77,7 +77,7 @@ public class GetDashboardSummaryQueryHandler : IRequestHandler<GetDashboardSumma
                 o.CreatedAt))
             .ToList();
 
-        var dailySales = Enumerable.Range(0, 7)
+        var dailySales = Enumerable.Range(0, chartDays)
             .Select(d => now.AddDays(-d).Date)
             .Select(date => new DailySalesDto(
                 date.ToString("yyyy-MM-dd"),

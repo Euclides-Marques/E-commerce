@@ -739,3 +739,171 @@ button.notif-panel__mark-all:hover {
   background: #F1F5F9;
   margin: 0 18px;
 }
+
+// ── User Menu Panel ───────────────────────────────────────────────────────────
+
+.user-menu-panel.mat-mdc-menu-panel {
+  min-width: 248px !important;
+  max-width: 248px !important;
+  width: 248px !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,.10), 0 2px 8px rgba(0,0,0,.06) !important;
+  border: 1px solid #E2E8F0 !important;
+}
+
+.user-menu-panel .mat-mdc-menu-content {
+  padding: 0 !important;
+}
+
+.user-menu {
+  background: #fff;
+}
+
+// ── Avatar trigger
+.user-avatar-btn.mat-mdc-icon-button {
+  width: 36px !important;
+  height: 36px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.user-avatar-chip {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #EE4D2D 0%, #F97316 100%);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: -0.2px;
+  flex-shrink: 0;
+  transition: opacity 0.15s ease;
+
+  .user-avatar-btn:hover & { opacity: 0.88; }
+}
+
+// ── Header
+.user-menu__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 16px 14px;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.user-menu__avatar-lg {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #EE4D2D 0%, #F97316 100%);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user-menu__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.user-menu__name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0F172A;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-menu__email {
+  font-size: 11.5px;
+  color: #94A3B8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ── Nav + Footer sections
+.user-menu__nav,
+.user-menu__footer {
+  padding: 6px 0;
+}
+
+// ── Items
+a.user-menu__item.mat-mdc-menu-item,
+button.user-menu__item.mat-mdc-menu-item {
+  height: 42px !important;
+  min-height: 42px !important;
+  padding: 0 12px !important;
+
+  .mat-mdc-menu-item-text {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    color: #334155 !important;
+  }
+
+  &:hover .mat-mdc-menu-item-text { color: #0F172A !important; }
+  &:hover { background: #F8FAFC !important; }
+}
+
+button.user-menu__item--danger.mat-mdc-menu-item {
+  .mat-mdc-menu-item-text { color: #EF4444 !important; }
+  &:hover { background: #FEF2F2 !important; }
+  &:hover .mat-mdc-menu-item-text { color: #DC2626 !important; }
+}
+
+// ── Icon wraps
+.user-menu__icon-wrap {
+  position: relative;
+  display: inline-block !important;
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  border-radius: 7px;
+  flex-shrink: 0;
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+mat-icon.user-menu__icon {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+}
+
+.icon-blue   { background: #EFF6FF; mat-icon.user-menu__icon { color: #3B82F6 !important; } }
+.icon-orange { background: #FFF7ED; mat-icon.user-menu__icon { color: #F97316 !important; } }
+.icon-rose   { background: #FFF1F2; mat-icon.user-menu__icon { color: #F43F5E !important; } }
+.icon-violet { background: #F5F3FF; mat-icon.user-menu__icon { color: #8B5CF6 !important; } }
+.icon-red    { background: #FEF2F2; mat-icon.user-menu__icon { color: #EF4444 !important; } }
+
+.user-menu__label { flex: 1; }
+
+// ── Divider
+.user-menu__divider {
+  height: 1px;
+  background: #F1F5F9;
+}

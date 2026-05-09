@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -163,28 +163,55 @@ import { NotificationDto } from '../../../core/models/notification.model';
             </a>
 
             <!-- Menu do usuário -->
-            <button mat-icon-button class="text-gray-600" [matMenuTriggerFor]="userMenu">
-              <mat-icon>account_circle</mat-icon>
+            <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-avatar-btn">
+              <div class="user-avatar-chip">{{ userInitial() }}</div>
             </button>
-            <mat-menu #userMenu="matMenu">
-              <a mat-menu-item routerLink="/profile">
-                <mat-icon>person</mat-icon> {{ 'NAV.MY_PROFILE' | translate }}
-              </a>
-              <a mat-menu-item routerLink="/orders">
-                <mat-icon>receipt</mat-icon> {{ 'ORDERS.TITLE' | translate }}
-              </a>
-              <a mat-menu-item routerLink="/wishlist">
-                <mat-icon>favorite_border</mat-icon> {{ 'WISHLIST.TITLE' | translate }}
-              </a>
-              @if (authService.isAdmin()) {
-                <a mat-menu-item routerLink="/admin">
-                  <mat-icon>admin_panel_settings</mat-icon> {{ 'NAV.ADMIN' | translate }}
-                </a>
-              }
-              <mat-divider></mat-divider>
-              <button mat-menu-item (click)="authService.logout()">
-                <mat-icon>logout</mat-icon> {{ 'NAV.LOGOUT' | translate }}
-              </button>
+
+            <mat-menu #userMenu="matMenu" class="user-menu-panel">
+              <div class="user-menu" (click)="$event.stopPropagation()">
+
+                <!-- Header -->
+                <div class="user-menu__header">
+                  <div class="user-menu__avatar-lg">{{ userInitial() }}</div>
+                  <div class="user-menu__meta">
+                    <span class="user-menu__name">{{ userName() }}</span>
+                    <span class="user-menu__email">{{ authService.currentUser()?.email }}</span>
+                  </div>
+                </div>
+
+                <!-- Nav -->
+                <div class="user-menu__nav">
+                  <a mat-menu-item routerLink="/profile" class="user-menu__item">
+                    <span class="user-menu__icon-wrap icon-blue"><mat-icon class="user-menu__icon">person</mat-icon></span>
+                    <span class="user-menu__label">{{ 'NAV.MY_PROFILE' | translate }}</span>
+                  </a>
+                  <a mat-menu-item routerLink="/orders" class="user-menu__item">
+                    <span class="user-menu__icon-wrap icon-orange"><mat-icon class="user-menu__icon">receipt_long</mat-icon></span>
+                    <span class="user-menu__label">{{ 'ORDERS.TITLE' | translate }}</span>
+                  </a>
+                  <a mat-menu-item routerLink="/wishlist" class="user-menu__item">
+                    <span class="user-menu__icon-wrap icon-rose"><mat-icon class="user-menu__icon">favorite</mat-icon></span>
+                    <span class="user-menu__label">{{ 'WISHLIST.TITLE' | translate }}</span>
+                  </a>
+                  @if (authService.isAdmin()) {
+                    <a mat-menu-item routerLink="/admin" class="user-menu__item">
+                      <span class="user-menu__icon-wrap icon-violet"><mat-icon class="user-menu__icon">admin_panel_settings</mat-icon></span>
+                      <span class="user-menu__label">{{ 'NAV.ADMIN' | translate }}</span>
+                    </a>
+                  }
+                </div>
+
+                <div class="user-menu__divider"></div>
+
+                <!-- Logout -->
+                <div class="user-menu__footer">
+                  <button mat-menu-item (click)="authService.logout()" class="user-menu__item user-menu__item--danger">
+                    <span class="user-menu__icon-wrap icon-red"><mat-icon class="user-menu__icon">logout</mat-icon></span>
+                    <span class="user-menu__label">{{ 'NAV.LOGOUT' | translate }}</span>
+                  </button>
+                </div>
+
+              </div>
             </mat-menu>
 
           } @else {
@@ -204,6 +231,16 @@ export class NavbarComponent {
   readonly cartService = inject(CartService);
   readonly wishlistService = inject(WishlistService);
   readonly notificationService = inject(NotificationService);
+
+  readonly userName = computed(() => {
+    const u = this.authService.currentUser();
+    return u ? `${u.firstName} ${u.lastName}` : '';
+  });
+
+  readonly userInitial = computed(() => {
+    const u = this.authService.currentUser();
+    return u?.firstName?.[0]?.toUpperCase() ?? '?';
+  });
 
   onSearch(event: Event): void {
     const value = (event.target as HTMLInputElement).value;

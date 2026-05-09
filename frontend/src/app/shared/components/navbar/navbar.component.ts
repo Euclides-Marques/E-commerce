@@ -75,68 +75,68 @@ import { NotificationDto } from '../../../core/models/notification.model';
 
             <!-- Menu de notificações -->
             <mat-menu #notificationMenu="matMenu" class="notification-panel">
-              <div class="w-80" (click)="$event.stopPropagation()">
-                <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-                  <span class="font-semibold text-gray-800 text-sm">
-                    {{ 'NOTIFICATIONS.TITLE' | translate }}
+              <div class="notif-panel" (click)="$event.stopPropagation()">
+
+                <!-- Header -->
+                <div class="notif-panel__header">
+                  <div class="notif-panel__header-left">
+                    <span class="notif-panel__title">{{ 'NOTIFICATIONS.TITLE' | translate }}</span>
                     @if (notificationService.unreadCount() > 0) {
-                      <span class="ml-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">
-                        {{ notificationService.unreadCount() }}
-                      </span>
+                      <span class="notif-panel__badge">{{ notificationService.unreadCount() }}</span>
                     }
-                  </span>
+                  </div>
                   @if (notificationService.unreadCount() > 0) {
-                    <button
-                      mat-button
-                      color="primary"
-                      class="text-xs !py-0 !min-h-0 !h-auto"
-                      (click)="markAllAsRead()">
+                    <button mat-button class="notif-panel__mark-all" (click)="markAllAsRead()">
                       {{ 'NOTIFICATIONS.MARK_ALL' | translate }}
                     </button>
                   }
                 </div>
-                <div class="max-h-96 overflow-y-auto">
+
+                <!-- Body -->
+                <div class="notif-panel__body">
                   @if (notificationService.notifications().length === 0) {
-                    <div class="flex flex-col items-center justify-center py-10 text-gray-400">
-                      <mat-icon class="!text-4xl mb-2 opacity-40">notifications_none</mat-icon>
-                      <p class="text-sm">{{ 'NOTIFICATIONS.EMPTY' | translate }}</p>
+
+                    <!-- Empty state -->
+                    <div class="notif-empty">
+                      <div class="notif-empty__icon-wrap">
+                        <mat-icon class="notif-empty__icon">notifications_none</mat-icon>
+                      </div>
+                      <p class="notif-empty__heading">Tudo em dia!</p>
+                      <p class="notif-empty__text">{{ 'NOTIFICATIONS.EMPTY' | translate }}</p>
                     </div>
+
                   } @else {
-                    @for (notif of notificationService.notifications().slice(0, 15); track notif.id) {
+                    @for (notif of notificationService.notifications().slice(0, 15); track notif.id; let last = $last) {
                       <button
                         mat-menu-item
                         (click)="onNotificationClick(notif)"
-                        class="!h-auto !py-2 !px-0 w-full">
-                        <div class="flex items-start gap-3 px-4 py-1 w-full">
-                          <div
-                            class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                            [class]="notifIconBg(notif.type)">
-                            <mat-icon class="!text-base !w-4 !h-4" [class]="notifIconColor(notif.type)">
+                        class="notif-item-btn">
+                        <div class="notif-item" [class.notif-item--unread]="!notif.isRead">
+                          <div class="notif-item__icon-wrap" [class]="notifIconBg(notif.type)">
+                            <mat-icon class="notif-item__icon" [class]="notifIconColor(notif.type)">
                               {{ notifIcon(notif.type) }}
                             </mat-icon>
                           </div>
-                          <div class="flex-1 min-w-0 text-left">
-                            <p
-                              class="text-sm truncate"
-                              [class]="notif.isRead ? 'text-gray-500 font-normal' : 'text-gray-800 font-semibold'">
+                          <div class="notif-item__body">
+                            <p class="notif-item__title"
+                               [class.notif-item__title--unread]="!notif.isRead">
                               {{ notif.title }}
                             </p>
-                            <p class="text-xs text-gray-400 line-clamp-2 leading-snug mt-0.5">
-                              {{ notif.message }}
-                            </p>
-                            <p class="text-xs text-gray-300 mt-1">
-                              {{ notif.createdAt | date:'dd/MM HH:mm' }}
-                            </p>
+                            <p class="notif-item__msg">{{ notif.message }}</p>
+                            <p class="notif-item__time">{{ notif.createdAt | date:'dd/MM HH:mm' }}</p>
                           </div>
                           @if (!notif.isRead) {
-                            <div class="w-2 h-2 bg-primary-500 rounded-full shrink-0 mt-2"></div>
+                            <span class="notif-item__dot"></span>
                           }
                         </div>
                       </button>
-                      <mat-divider></mat-divider>
+                      @if (!last) {
+                        <div class="notif-item__divider"></div>
+                      }
                     }
                   }
                 </div>
+
               </div>
             </mat-menu>
 

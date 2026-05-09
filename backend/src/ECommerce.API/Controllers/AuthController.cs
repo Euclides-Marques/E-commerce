@@ -1,3 +1,4 @@
+using ECommerce.Application.Features.Auth.Commands.ChangePassword;
 using ECommerce.Application.Features.Auth.Commands.Login;
 using ECommerce.Application.Features.Auth.Commands.RefreshToken;
 using ECommerce.Application.Features.Auth.Commands.Register;
@@ -35,5 +36,15 @@ public class AuthController : BaseController
         if (!result.Succeeded)
             return Unauthorized(new { errors = result.Errors });
         return Ok(result.Data);
+    }
+
+    [Authorize]
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command)
+    {
+        var result = await Mediator.Send(command);
+        if (!result.Succeeded)
+            return BadRequest(new { errors = result.Errors });
+        return NoContent();
     }
 }

@@ -55,6 +55,10 @@ export class AuthService {
     );
   }
 
+  changePassword(currentPassword: string, newPassword: string): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/auth/change-password`, { currentPassword, newPassword });
+  }
+
   getAccessToken(): string | null {
     return localStorage.getItem('access_token');
   }

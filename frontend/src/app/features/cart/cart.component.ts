@@ -32,25 +32,6 @@ import { CartItemDto } from '../../core/models/cart.model';
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── Empty state ── */
-    .empty-icon-ring {
-      width: 100px; height: 100px;
-      background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 24px;
-      box-shadow: 0 0 0 16px rgba(255,237,213,0.4);
-    }
-    .empty-cta {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-      color: white; border-radius: 12px;
-      padding: 13px 28px; font-weight: 600; font-size: 14px;
-      text-decoration: none; letter-spacing: 0.01em;
-      box-shadow: 0 4px 16px rgba(249,115,22,0.32);
-      transition: box-shadow 0.2s ease, transform 0.2s ease;
-    }
-    .empty-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(249,115,22,0.4); }
 
     /* ── Cart item card ── */
     .item-card {
@@ -208,17 +189,18 @@ import { CartItemDto } from '../../core/models/cart.model';
 
       <!-- Empty state -->
       @if (!loading && cartService.isEmpty()) {
-        <div style="background:white;border-radius:20px;border:1px solid #f3f4f6;padding:72px 32px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
-          <div class="empty-icon-ring">
-            <mat-icon style="font-size:46px;width:46px;height:46px;color:#f97316">shopping_cart</mat-icon>
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm text-center px-8 py-20">
+          <div class="mx-auto mb-5 w-16 h-16 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center">
+            <mat-icon class="text-orange-400" style="font-size:32px;width:32px;height:32px;">shopping_cart</mat-icon>
           </div>
-          <h2 style="font-size:18px;font-weight:700;color:#111827;margin:0 0 8px">
-            {{ 'CART.EMPTY' | translate }}
-          </h2>
-          <p style="font-size:14px;color:#9ca3af;margin:0 auto 32px;max-width:280px;line-height:1.6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-1">{{ 'CART.EMPTY' | translate }}</h2>
+          <p class="text-gray-400 text-sm max-w-xs mx-auto mb-8">
             Explore nosso catálogo e adicione produtos ao carrinho para continuar.
           </p>
-          <a routerLink="/products" class="empty-cta">
+          <a routerLink="/products"
+             style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#f97316 0%,#ea580c 100%);color:white;border-radius:12px;padding:13px 28px;font-weight:600;font-size:14px;text-decoration:none;letter-spacing:0.01em;box-shadow:0 4px 16px rgba(249,115,22,0.32);transition:box-shadow 0.2s ease,transform 0.2s ease;"
+             onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(249,115,22,0.42)'"
+             onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 16px rgba(249,115,22,0.32)'">
             <mat-icon style="font-size:18px;width:18px;height:18px">storefront</mat-icon>
             {{ 'CART.EMPTY_CTA' | translate }}
           </a>

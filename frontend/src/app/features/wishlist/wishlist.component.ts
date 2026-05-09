@@ -55,16 +55,19 @@ import { CartService } from '../../core/services/cart.service';
 
       <!-- ── Empty state ──────────────────────────────────────── -->
       @if (!loading() && wishlistService.items().length === 0) {
-        <div class="wl-empty">
-          <div class="wl-empty__icon-wrap">
-            <mat-icon class="wl-empty__icon">favorite_border</mat-icon>
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm text-center px-8 py-20">
+          <div class="mx-auto mb-5 w-16 h-16 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center">
+            <mat-icon class="text-orange-400" style="font-size:32px;width:32px;height:32px;">favorite_border</mat-icon>
           </div>
-          <h2 class="wl-empty__heading">{{ 'WISHLIST.EMPTY' | translate }}</h2>
-          <p class="wl-empty__text">
+          <h2 class="text-lg font-semibold text-gray-900 mb-1">{{ 'WISHLIST.EMPTY' | translate }}</h2>
+          <p class="text-gray-400 text-sm max-w-xs mx-auto mb-8">
             Adicione produtos que você amou para encontrá-los facilmente depois.
           </p>
-          <a routerLink="/products" class="wl-empty__cta">
-            <mat-icon>storefront</mat-icon>
+          <a routerLink="/products"
+             style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#f97316 0%,#ea580c 100%);color:white;border-radius:12px;padding:13px 28px;font-weight:600;font-size:14px;text-decoration:none;letter-spacing:0.01em;box-shadow:0 4px 16px rgba(249,115,22,0.32);transition:box-shadow 0.2s ease,transform 0.2s ease;"
+             onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(249,115,22,0.42)'"
+             onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 16px rgba(249,115,22,0.32)'">
+            <mat-icon style="font-size:18px;width:18px;height:18px">storefront</mat-icon>
             {{ 'WISHLIST.EMPTY_CTA' | translate }}
           </a>
         </div>
@@ -220,80 +223,6 @@ import { CartService } from '../../core/services/cart.service';
     .wl-skeleton__img  { height: 200px; border-radius: 0; }
     .wl-skeleton__body { padding: 14px; display: flex; flex-direction: column; gap: 0; }
 
-    /* ── Empty state ─────────────────────────────────────────── */
-    .wl-empty {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 72px 24px 80px;
-      max-width: 340px;
-      margin: 0 auto;
-    }
-    .wl-empty__icon-wrap {
-      width: 76px;
-      height: 76px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #FFF0ED 0%, #FFE4DE 100%);
-      border: 1.5px solid rgba(240,78,35,.14);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 22px;
-      box-shadow: 0 4px 20px rgba(240,78,35,.10);
-    }
-    .wl-empty__icon {
-      font-size: 34px !important;
-      width: 34px !important;
-      height: 34px !important;
-      color: var(--brand-primary) !important;
-      opacity: .75;
-    }
-    .wl-empty__heading {
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--text-primary);
-      letter-spacing: -0.3px;
-      margin: 0 0 8px;
-      line-height: 1.35;
-    }
-    .wl-empty__text {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin: 0 0 28px;
-      max-width: 268px;
-    }
-    .wl-empty__cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: var(--brand-primary);
-      color: #fff;
-      padding: 11px 22px;
-      border-radius: var(--radius-md);
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      letter-spacing: -0.1px;
-      border: none;
-      cursor: pointer;
-      transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
-    }
-    .wl-empty__cta mat-icon {
-      font-size: 18px !important;
-      width: 18px !important;
-      height: 18px !important;
-    }
-    .wl-empty__cta:hover {
-      background: var(--brand-hover);
-      box-shadow: 0 4px 18px rgba(240,78,35,.28);
-      transform: translateY(-1px);
-      color: #fff;
-      text-decoration: none;
-    }
-    .wl-empty__cta:active { transform: none; box-shadow: none; }
 
     /* ── Cards ───────────────────────────────────────────────── */
     .wl-card {

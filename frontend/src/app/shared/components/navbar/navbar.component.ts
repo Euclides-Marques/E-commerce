@@ -32,11 +32,12 @@ import { NotificationDto } from '../../../core/models/notification.model';
     TranslateModule,
   ],
   template: `
-    <mat-toolbar class="bg-primary-500 text-white sticky top-0 z-50 shadow-md">
+    <mat-toolbar class="sticky top-0 z-50">
       <div class="container mx-auto flex items-center justify-between w-full px-4">
+
         <!-- Logo -->
-        <a routerLink="/" class="text-white text-2xl font-bold no-underline">
-          🛒 ShopBR
+        <a routerLink="/" class="navbar-logo-text">
+          Shop<span class="navbar-logo-accent">BR</span>
         </a>
 
         <!-- Search Bar -->
@@ -45,10 +46,10 @@ import { NotificationDto } from '../../../core/models/notification.model';
             <input
               type="search"
               placeholder="Buscar produtos..."
-              class="w-full px-4 py-2 rounded-full text-gray-800 text-sm outline-none"
+              class="w-full px-4 py-2 rounded-lg border border-gray-200 text-gray-800 text-sm outline-none bg-gray-50 focus:bg-white focus:border-primary-400 transition-colors"
               (keyup.enter)="onSearch($event)"
             />
-            <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
+            <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
               <mat-icon class="text-lg">search</mat-icon>
             </button>
           </div>
@@ -63,7 +64,7 @@ import { NotificationDto } from '../../../core/models/notification.model';
               mat-icon-button
               [matMenuTriggerFor]="notificationMenu"
               [matTooltip]="'NOTIFICATIONS.TITLE' | translate"
-              class="text-white">
+              class="text-gray-600">
               <mat-icon
                 [matBadge]="notificationService.unreadCount() || null"
                 matBadgeColor="warn"
@@ -75,7 +76,6 @@ import { NotificationDto } from '../../../core/models/notification.model';
             <!-- Menu de notificações -->
             <mat-menu #notificationMenu="matMenu" class="notification-panel">
               <div class="w-80" (click)="$event.stopPropagation()">
-                <!-- Cabeçalho -->
                 <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
                   <span class="font-semibold text-gray-800 text-sm">
                     {{ 'NOTIFICATIONS.TITLE' | translate }}
@@ -95,8 +95,6 @@ import { NotificationDto } from '../../../core/models/notification.model';
                     </button>
                   }
                 </div>
-
-                <!-- Lista -->
                 <div class="max-h-96 overflow-y-auto">
                   @if (notificationService.notifications().length === 0) {
                     <div class="flex flex-col items-center justify-center py-10 text-gray-400">
@@ -110,7 +108,6 @@ import { NotificationDto } from '../../../core/models/notification.model';
                         (click)="onNotificationClick(notif)"
                         class="!h-auto !py-2 !px-0 w-full">
                         <div class="flex items-start gap-3 px-4 py-1 w-full">
-                          <!-- Ícone -->
                           <div
                             class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5"
                             [class]="notifIconBg(notif.type)">
@@ -118,8 +115,6 @@ import { NotificationDto } from '../../../core/models/notification.model';
                               {{ notifIcon(notif.type) }}
                             </mat-icon>
                           </div>
-
-                          <!-- Conteúdo -->
                           <div class="flex-1 min-w-0 text-left">
                             <p
                               class="text-sm truncate"
@@ -133,8 +128,6 @@ import { NotificationDto } from '../../../core/models/notification.model';
                               {{ notif.createdAt | date:'dd/MM HH:mm' }}
                             </p>
                           </div>
-
-                          <!-- Indicador não lida -->
                           @if (!notif.isRead) {
                             <div class="w-2 h-2 bg-primary-500 rounded-full shrink-0 mt-2"></div>
                           }
@@ -148,7 +141,7 @@ import { NotificationDto } from '../../../core/models/notification.model';
             </mat-menu>
 
             <!-- Wishlist -->
-            <a routerLink="/wishlist" mat-icon-button class="text-white"
+            <a routerLink="/wishlist" mat-icon-button class="text-gray-600"
                [matTooltip]="'NAV.WISHLIST' | translate">
               <mat-icon
                 [matBadge]="wishlistService.count() || null"
@@ -159,7 +152,7 @@ import { NotificationDto } from '../../../core/models/notification.model';
             </a>
 
             <!-- Cart -->
-            <a routerLink="/cart" mat-icon-button class="text-white"
+            <a routerLink="/cart" mat-icon-button class="text-gray-600"
                [matTooltip]="'NAV.CART' | translate">
               <mat-icon
                 [matBadge]="cartService.totalItems() || null"
@@ -170,7 +163,7 @@ import { NotificationDto } from '../../../core/models/notification.model';
             </a>
 
             <!-- Menu do usuário -->
-            <button mat-icon-button class="text-white" [matMenuTriggerFor]="userMenu">
+            <button mat-icon-button class="text-gray-600" [matMenuTriggerFor]="userMenu">
               <mat-icon>account_circle</mat-icon>
             </button>
             <mat-menu #userMenu="matMenu">
@@ -195,8 +188,11 @@ import { NotificationDto } from '../../../core/models/notification.model';
             </mat-menu>
 
           } @else {
-            <a routerLink="/auth/login" mat-button class="text-white">Entrar</a>
-            <a routerLink="/auth/register" mat-raised-button class="bg-white text-primary-500">Cadastrar</a>
+            <a routerLink="/auth/login" mat-button class="text-gray-700 font-medium">Entrar</a>
+            <a routerLink="/auth/register" mat-flat-button
+               style="background:#EE4D2D; color:#fff; border-radius:8px; font-size:13px; font-weight:600;">
+              Cadastrar
+            </a>
           }
         </div>
       </div>

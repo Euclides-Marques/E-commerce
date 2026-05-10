@@ -5,6 +5,7 @@ public record ProductSummaryDto
     public Guid Id { get; init; }
     public string Name { get; init; } = string.Empty;
     public string Slug { get; init; } = string.Empty;
+    public string Sku { get; init; } = string.Empty;
     public string? ShortDescription { get; init; }
     public decimal Price { get; init; }
     public decimal? OriginalPrice { get; init; }

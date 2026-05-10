@@ -11,6 +11,7 @@ public class ProductProfile : Profile
         CreateMap<ProductImage, ProductImageDto>();
 
         CreateMap<Product, ProductSummaryDto>()
+            .ForMember(d => d.Sku, o => o.MapFrom(s => s.SKU))
             .ForMember(d => d.MainImageUrl, o => o.MapFrom(s =>
                 s.Images.FirstOrDefault(i => i.IsMain) != null
                     ? s.Images.First(i => i.IsMain).Url

@@ -6,13 +6,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { OrderService } from '../../../core/services/order.service';
 import { OrderDto } from '../../../core/models/order.model';
 
 interface OrderStep {
   key: string;
-  label: string;
+  labelKey: string;
   icon: string;
 }
 
@@ -38,7 +38,7 @@ interface OrderStep {
       <a routerLink="/orders"
          class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors mb-6 no-underline">
         <mat-icon style="font-size:16px;width:16px;height:16px;line-height:1;">arrow_back</mat-icon>
-        Meus Pedidos
+        {{ 'ORDERS.TITLE' | translate }}
       </a>
 
       <!-- Page Header -->
@@ -64,7 +64,7 @@ interface OrderStep {
       @if (loading()) {
         <div class="flex flex-col items-center justify-center py-24 gap-3">
           <mat-spinner diameter="36"></mat-spinner>
-          <p class="text-sm text-gray-400">Carregando pedido...</p>
+          <p class="text-sm text-gray-400">{{ 'ORDERS.DETAIL_LOADING' | translate }}</p>
         </div>
       }
 
@@ -84,7 +84,7 @@ interface OrderStep {
                   </div>
                   <span class="text-xs whitespace-nowrap"
                         [class]="isStepReached(step.key) ? 'text-emerald-600 font-medium' : 'text-gray-400'">
-                    {{ step.label }}
+                    {{ step.labelKey | translate }}
                   </span>
                 </div>
                 @if (!last) {
@@ -106,7 +106,7 @@ interface OrderStep {
               {{ order()!.status === 'Cancelled' ? 'cancel' : 'currency_exchange' }}
             </mat-icon>
             <span class="text-sm font-medium">
-              {{ order()!.status === 'Cancelled' ? 'Este pedido foi cancelado.' : 'Este pedido foi reembolsado.' }}
+              {{ order()!.status === 'Cancelled' ? ('ORDERS.CANCELLED_BANNER' | translate) : ('ORDERS.REFUNDED_BANNER' | translate) }}
             </span>
           </div>
         }
@@ -120,7 +120,7 @@ interface OrderStep {
             <!-- Items Card -->
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
               <div class="px-5 py-4 border-b border-gray-50">
-                <h2 class="font-semibold text-gray-900 text-sm">Itens do pedido</h2>
+                <h2 class="font-semibold text-gray-900 text-sm">{{ 'ORDERS.ITEMS_TITLE' | translate }}</h2>
               </div>
               <div class="divide-y divide-gray-50">
                 @for (item of order()!.items; track item.productId) {
@@ -162,7 +162,7 @@ interface OrderStep {
                 </div>
                 @if (order()!.discount > 0) {
                   <div class="flex justify-between text-sm text-emerald-600">
-                    <span>Desconto</span>
+                    <span>{{ 'ORDERS.DISCOUNT' | translate }}</span>
                     <span>-{{ order()!.discount | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
                   </div>
                 }
@@ -216,7 +216,7 @@ interface OrderStep {
               <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-2">
                   <mat-icon class="text-gray-400" style="font-size:16px;width:16px;height:16px;line-height:1;">calendar_today</mat-icon>
-                  <h3 class="font-semibold text-gray-900 text-sm">Entrega estimada</h3>
+                  <h3 class="font-semibold text-gray-900 text-sm">{{ 'CHECKOUT.ESTIMATED_DELIVERY' | translate }}</h3>
                 </div>
                 <div class="px-5 py-4">
                   <p class="font-semibold text-emerald-600">{{ order()!.estimatedDelivery | date:'dd/MM/yyyy' }}</p>
@@ -229,7 +229,7 @@ interface OrderStep {
               <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-2">
                   <mat-icon class="text-gray-400" style="font-size:16px;width:16px;height:16px;line-height:1;">local_shipping</mat-icon>
-                  <h3 class="font-semibold text-gray-900 text-sm">Código de rastreio</h3>
+                  <h3 class="font-semibold text-gray-900 text-sm">{{ 'ORDERS.TRACKING_CODE' | translate }}</h3>
                 </div>
                 <div class="px-5 py-4">
                   <p class="font-mono text-sm text-gray-700 bg-gray-50 px-3 py-2 rounded-lg border border-gray-100 select-all">
@@ -249,16 +249,17 @@ export class OrderDetailComponent implements OnInit {
   private readonly orderService = inject(OrderService);
   private readonly route = inject(ActivatedRoute);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   readonly order = signal<OrderDto | null>(null);
   readonly loading = signal(false);
   readonly cancelling = signal(false);
 
   readonly orderSteps: OrderStep[] = [
-    { key: 'Pending', label: 'Pedido', icon: 'receipt' },
-    { key: 'Paid', label: 'Pago', icon: 'payments' },
-    { key: 'Shipped', label: 'Enviado', icon: 'local_shipping' },
-    { key: 'Delivered', label: 'Entregue', icon: 'check_circle' },
+    { key: 'Pending', labelKey: 'ORDERS.STEP_PENDING', icon: 'receipt' },
+    { key: 'Paid', labelKey: 'ORDER.STATUS.PAID', icon: 'payments' },
+    { key: 'Shipped', labelKey: 'ORDER.STATUS.SHIPPED', icon: 'local_shipping' },
+    { key: 'Delivered', labelKey: 'ORDER.STATUS.DELIVERED', icon: 'check_circle' },
   ];
 
   private readonly stepOrder: Record<string, number> = {
@@ -276,7 +277,7 @@ export class OrderDetailComponent implements OnInit {
       next: order => { this.order.set(order); this.loading.set(false); },
       error: () => {
         this.loading.set(false);
-        this.snackBar.open('Pedido não encontrado.', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('ORDERS.NOT_FOUND'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }
@@ -305,12 +306,12 @@ export class OrderDetailComponent implements OnInit {
       next: () => {
         this.cancelling.set(false);
         this.order.update(ord => ord ? { ...ord, status: 'Cancelled' } : ord);
-        this.snackBar.open('Pedido cancelado com sucesso.', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('ORDERS.CANCELLED'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
       error: (err) => {
         this.cancelling.set(false);
-        const msg = err?.error?.errors?.[0] ?? 'Erro ao cancelar pedido.';
-        this.snackBar.open(msg, 'Fechar', { duration: 3000 });
+        const msg = err?.error?.errors?.[0] ?? this.translate.instant('ORDERS.ERROR_CANCEL');
+        this.snackBar.open(msg, this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }

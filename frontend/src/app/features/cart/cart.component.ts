@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CartService } from '../../core/services/cart.service';
 import { AuthService } from '../../core/services/auth.service';
 import { CartItemDto } from '../../core/models/cart.model';
@@ -145,7 +145,7 @@ import { CartItemDto } from '../../core/models/cart.model';
       <div class="mb-8">
         <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:#9ca3af;margin-bottom:12px">
           <a routerLink="/" style="color:#9ca3af;text-decoration:none;transition:color 0.15s"
-            onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='#9ca3af'">Início</a>
+            onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='#9ca3af'">{{ 'NAV.HOME' | translate }}</a>
           <mat-icon style="font-size:14px;width:14px;height:14px;line-height:1">chevron_right</mat-icon>
           <span style="color:#374151;font-weight:500">{{ 'CART.TITLE' | translate }}</span>
         </div>
@@ -157,7 +157,7 @@ import { CartItemDto } from '../../core/models/cart.model';
           @if (!loading && !cartService.isEmpty()) {
             <span style="font-size:13px;color:#9ca3af">
               {{ cartService.cart()!.totalItems }}
-              {{ cartService.cart()!.totalItems === 1 ? 'item' : 'itens' }}
+              {{ cartService.cart()!.totalItems === 1 ? ('CART.ITEM' | translate) : ('CART.ITEMS' | translate) }}
             </span>
           }
         </div>
@@ -165,17 +165,17 @@ import { CartItemDto } from '../../core/models/cart.model';
         <div class="progress-row">
           <div class="prog-step prog-active">
             <div class="prog-dot">1</div>
-            <span class="prog-label">Carrinho</span>
+            <span class="prog-label">{{ 'CART.STEP_CART' | translate }}</span>
           </div>
           <div class="prog-line"></div>
           <div class="prog-step prog-inactive">
             <div class="prog-dot">2</div>
-            <span class="prog-label">Dados</span>
+            <span class="prog-label">{{ 'CART.STEP_DATA' | translate }}</span>
           </div>
           <div class="prog-line"></div>
           <div class="prog-step prog-inactive">
             <div class="prog-dot">3</div>
-            <span class="prog-label">Pagamento</span>
+            <span class="prog-label">{{ 'CART.STEP_PAYMENT' | translate }}</span>
           </div>
         </div>
       </div>
@@ -195,7 +195,7 @@ import { CartItemDto } from '../../core/models/cart.model';
           </div>
           <h2 class="text-lg font-semibold text-gray-900 mb-1">{{ 'CART.EMPTY' | translate }}</h2>
           <p class="text-gray-400 text-sm max-w-xs mx-auto mb-8">
-            Explore nosso catálogo e adicione produtos ao carrinho para continuar.
+            {{ 'CART.EMPTY_DESC' | translate }}
           </p>
           <a routerLink="/products"
              style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#f97316 0%,#ea580c 100%);color:white;border-radius:12px;padding:13px 28px;font-weight:600;font-size:14px;text-decoration:none;letter-spacing:0.01em;box-shadow:0 4px 16px rgba(249,115,22,0.32);transition:box-shadow 0.2s ease,transform 0.2s ease;"
@@ -263,7 +263,7 @@ import { CartItemDto } from '../../core/models/cart.model';
                         style="width:32px;height:32px"
                         (click)="onRemove(item)"
                         [disabled]="updatingId === item.productId"
-                        title="Remover item">
+                        [title]="'CART.REMOVE_TITLE' | translate">
                         <mat-icon style="font-size:18px;width:18px;height:18px">delete_outline</mat-icon>
                       </button>
                     </div>
@@ -288,12 +288,12 @@ import { CartItemDto } from '../../core/models/cart.model';
           <div class="lg:col-span-1">
             <div class="summary-card">
 
-              <h2 style="font-size:15px;font-weight:700;color:#111827;margin:0 0 18px">Resumo do pedido</h2>
+              <h2 style="font-size:15px;font-weight:700;color:#111827;margin:0 0 18px">{{ 'CHECKOUT.ORDER_SUMMARY' | translate }}</h2>
 
               <!-- Coupon -->
               <div style="display:flex;gap:8px;margin-bottom:20px">
-                <input class="coupon-field" type="text" placeholder="Código de cupom" />
-                <button class="coupon-apply" type="button">Aplicar</button>
+                <input class="coupon-field" type="text" [placeholder]="'CART.COUPON_PLACEHOLDER' | translate" />
+                <button class="coupon-apply" type="button">{{ 'CART.COUPON_APPLY' | translate }}</button>
               </div>
 
               <!-- Subtotals -->
@@ -307,8 +307,8 @@ import { CartItemDto } from '../../core/models/cart.model';
                   </span>
                 </div>
                 <div class="summary-row">
-                  <span style="font-size:13px;color:#6b7280">Frete</span>
-                  <span style="font-size:13px;font-weight:600;color:#10b981">Grátis</span>
+                  <span style="font-size:13px;color:#6b7280">{{ 'CHECKOUT.SHIPPING' | translate }}</span>
+                  <span style="font-size:13px;font-weight:600;color:#10b981">{{ 'CHECKOUT.FREE_SHIPPING' | translate }}</span>
                 </div>
               </div>
 
@@ -337,15 +337,15 @@ import { CartItemDto } from '../../core/models/cart.model';
               <div style="border-top:1px solid #f3f4f6;margin-top:16px;padding-top:8px">
                 <div class="trust-item">
                   <mat-icon class="trust-icon">lock</mat-icon>
-                  <span class="trust-text">Pagamento 100% seguro</span>
+                  <span class="trust-text">{{ 'CART.TRUST_SECURE' | translate }}</span>
                 </div>
                 <div class="trust-item">
                   <mat-icon class="trust-icon">local_shipping</mat-icon>
-                  <span class="trust-text">Entrega rápida e rastreável</span>
+                  <span class="trust-text">{{ 'CART.TRUST_SHIPPING' | translate }}</span>
                 </div>
                 <div class="trust-item">
                   <mat-icon class="trust-icon">replay</mat-icon>
-                  <span class="trust-text">Devolução grátis em 30 dias</span>
+                  <span class="trust-text">{{ 'CART.TRUST_RETURN' | translate }}</span>
                 </div>
               </div>
 
@@ -363,6 +363,7 @@ export class CartComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   loading = false;
   clearing = false;
@@ -375,7 +376,7 @@ export class CartComponent implements OnInit {
       next: () => { this.loading = false; },
       error: () => {
         this.loading = false;
-        this.snackBar.open('Erro ao carregar carrinho.', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('CART.ERROR_LOAD'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }
@@ -386,7 +387,7 @@ export class CartComponent implements OnInit {
       next: () => { this.updatingId = null; },
       error: () => {
         this.updatingId = null;
-        this.snackBar.open('CART.ERROR_UPDATE' , 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('CART.ERROR_UPDATE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }
@@ -401,7 +402,7 @@ export class CartComponent implements OnInit {
       next: () => { this.updatingId = null; },
       error: () => {
         this.updatingId = null;
-        this.snackBar.open('CART.ERROR_UPDATE', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('CART.ERROR_UPDATE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }
@@ -412,7 +413,7 @@ export class CartComponent implements OnInit {
       next: () => { this.updatingId = null; },
       error: () => {
         this.updatingId = null;
-        this.snackBar.open('CART.ERROR_REMOVE', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('CART.ERROR_REMOVE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }
@@ -423,7 +424,7 @@ export class CartComponent implements OnInit {
       next: () => { this.clearing = false; },
       error: () => {
         this.clearing = false;
-        this.snackBar.open('Erro ao limpar carrinho.', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('CART.ERROR_CLEAR'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }

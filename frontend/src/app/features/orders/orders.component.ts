@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { OrderService } from '../../core/services/order.service';
 
 @Component({
@@ -30,14 +30,14 @@ import { OrderService } from '../../core/services/order.service';
       <!-- Page Header -->
       <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900 tracking-tight">{{ 'ORDERS.TITLE' | translate }}</h1>
-        <p class="mt-1 text-sm text-gray-500">Acompanhe o status e o histórico dos seus pedidos</p>
+        <p class="mt-1 text-sm text-gray-500">{{ 'ORDERS.SUBTITLE' | translate }}</p>
       </div>
 
       <!-- Loading -->
       @if (loading()) {
         <div class="flex flex-col items-center justify-center py-24 gap-3">
           <mat-spinner diameter="36"></mat-spinner>
-          <p class="text-sm text-gray-400">Carregando pedidos...</p>
+          <p class="text-sm text-gray-400">{{ 'ORDERS.LOADING' | translate }}</p>
         </div>
       }
 
@@ -47,7 +47,7 @@ import { OrderService } from '../../core/services/order.service';
           <div class="mx-auto mb-5 w-16 h-16 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center">
             <mat-icon class="text-orange-400" style="font-size:32px;width:32px;height:32px;">receipt_long</mat-icon>
           </div>
-          <h2 class="text-lg font-semibold text-gray-900 mb-1">Nenhum pedido ainda</h2>
+          <h2 class="text-lg font-semibold text-gray-900 mb-1">{{ 'ORDERS.EMPTY_TITLE' | translate }}</h2>
           <p class="text-gray-400 text-sm max-w-xs mx-auto mb-8">{{ 'ORDERS.EMPTY' | translate }}</p>
           <a routerLink="/products"
              style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#f97316 0%,#ea580c 100%);color:white;border-radius:12px;padding:13px 28px;font-weight:600;font-size:14px;text-decoration:none;letter-spacing:0.01em;box-shadow:0 4px 16px rgba(249,115,22,0.32);transition:box-shadow 0.2s ease,transform 0.2s ease;"
@@ -83,7 +83,7 @@ import { OrderService } from '../../core/services/order.service';
                     <p class="text-xs text-gray-400 mt-0.5">
                       {{ order.createdAt | date:'dd/MM/yyyy · HH:mm' }}
                       &nbsp;·&nbsp;
-                      {{ order.itemCount }} {{ order.itemCount === 1 ? 'item' : 'itens' }}
+                      {{ order.itemCount }} {{ order.itemCount === 1 ? ('CART.ITEM' | translate) : ('CART.ITEMS' | translate) }}
                     </p>
                   </div>
                 </div>
@@ -94,7 +94,7 @@ import { OrderService } from '../../core/services/order.service';
                   <a [routerLink]="['/orders', order.id]"
                      class="inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors no-underline"
                      [class]="statusLinkClass(order.status)">
-                    Ver detalhes
+                    {{ 'ORDERS.VIEW_DETAIL' | translate }}
                     <mat-icon style="font-size:13px;width:13px;height:13px;line-height:1;">east</mat-icon>
                   </a>
                 </div>
@@ -112,6 +112,7 @@ import { OrderService } from '../../core/services/order.service';
 export class OrdersComponent implements OnInit {
   private readonly orderService = inject(OrderService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   readonly orders = this.orderService.orders;
   readonly loading = signal(false);
@@ -122,7 +123,7 @@ export class OrdersComponent implements OnInit {
       next: () => { this.loading.set(false); },
       error: () => {
         this.loading.set(false);
-        this.snackBar.open('Erro ao carregar pedidos.', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('ORDERS.ERROR_LOAD'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }

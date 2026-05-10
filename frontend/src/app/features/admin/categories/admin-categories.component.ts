@@ -12,7 +12,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CategoryService } from '../../../core/services/category.service';
 import { CategoryDto, CreateCategoryDto, UpdateCategoryDto } from '../../../core/models/category.model';
 
@@ -237,6 +237,7 @@ export class AdminCategoriesComponent implements OnInit {
   private readonly categoryService = inject(CategoryService);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   readonly loading = signal(false);
   readonly flatItems = signal<CategoryDto[]>([]);
@@ -261,10 +262,10 @@ export class AdminCategoriesComponent implements OnInit {
       if (!value) return;
       this.categoryService.createCategory(value as CreateCategoryDto).subscribe({
         next: () => {
-          this.snackBar.open('Categoria criada com sucesso.', 'Fechar', { duration: 3000 });
+          this.snackBar.open(this.translate.instant('ADMIN.CATEGORIES.CREATED'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
           this.loadCategories();
         },
-        error: () => this.snackBar.open('Erro ao criar categoria.', 'Fechar', { duration: 3000 }),
+        error: () => this.snackBar.open(this.translate.instant('ADMIN.CATEGORIES.ERROR_CREATE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 }),
       });
     });
   }
@@ -279,23 +280,23 @@ export class AdminCategoriesComponent implements OnInit {
       const dto: UpdateCategoryDto = { ...(value as UpdateCategoryDto), id: category.id };
       this.categoryService.updateCategory(category.id, dto).subscribe({
         next: () => {
-          this.snackBar.open('Categoria atualizada com sucesso.', 'Fechar', { duration: 3000 });
+          this.snackBar.open(this.translate.instant('ADMIN.CATEGORIES.UPDATED'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
           this.loadCategories();
         },
-        error: () => this.snackBar.open('Erro ao atualizar categoria.', 'Fechar', { duration: 3000 }),
+        error: () => this.snackBar.open(this.translate.instant('ADMIN.CATEGORIES.ERROR_UPDATE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 }),
       });
     });
   }
 
   confirmDelete(category: CategoryDto): void {
-    if (!confirm(`Deseja excluir a categoria "${category.name}"?`)) return;
+    if (!confirm(this.translate.instant('ADMIN.CATEGORIES.CONFIRM_DELETE', { name: category.name }))) return;
 
     this.categoryService.deleteCategory(category.id).subscribe({
       next: () => {
-        this.snackBar.open('Categoria excluída com sucesso.', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('ADMIN.CATEGORIES.DELETED'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
         this.loadCategories();
       },
-      error: () => this.snackBar.open('Erro ao excluir categoria. Verifique se não há subcategorias ou produtos vinculados.', 'Fechar', { duration: 5000 }),
+      error: () => this.snackBar.open(this.translate.instant('ADMIN.CATEGORIES.ERROR_DELETE'), this.translate.instant('COMMON.CLOSE'), { duration: 5000 }),
     });
   }
 
@@ -307,7 +308,7 @@ export class AdminCategoriesComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.snackBar.open('Erro ao carregar categorias.', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('ADMIN.CATEGORIES.ERROR_LOAD'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
         this.loading.set(false);
       },
     });

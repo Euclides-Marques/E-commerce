@@ -1,4 +1,7 @@
 {
+  "COMMON": {
+    "CLOSE": "Close"
+  },
   "APP": {
     "NAME": "ShopBR",
     "TAGLINE": "The best deals are here"
@@ -74,32 +77,54 @@
       "NO_RESULTS": "No products found.",
       "LOAD_MORE": "Load more",
       "NO_MORE": "All products have been loaded.",
-      "LOADING": "Loading..."
+      "LOADING": "Loading...",
+      "ERROR_LOAD": "Failed to load products.",
+      "ERROR_LOAD_MORE": "Failed to load more products."
     },
     "DETAIL": {
       "DESCRIPTION": "Product description",
-      "NOT_FOUND": "Product not found."
+      "NOT_FOUND": "Product not found.",
+      "SOLD": "sold",
+      "AVAILABLE": "available",
+      "STAR": "star",
+      "STARS": "stars"
     }
   },
   "CART": {
     "TITLE": "My Cart",
     "EMPTY": "Your cart is empty",
     "EMPTY_CTA": "Browse products",
+    "EMPTY_DESC": "Browse our catalog and add products to your cart to continue.",
     "TOTAL": "Total",
     "TOTAL_ITEMS": "{{count}} item(s)",
+    "ITEM": "item",
+    "ITEMS": "items",
     "CHECKOUT": "Checkout",
     "CONTINUE_SHOPPING": "Continue Shopping",
     "CLEAR": "Clear cart",
     "REMOVE": "Remove",
+    "REMOVE_TITLE": "Remove item",
     "QUANTITY": "Quantity",
     "UNIT_PRICE": "Unit price",
     "SUBTOTAL": "Subtotal",
+    "STEP_CART": "Cart",
+    "STEP_DATA": "Details",
+    "STEP_PAYMENT": "Payment",
+    "COUPON_PLACEHOLDER": "Coupon code",
+    "COUPON_APPLY": "Apply",
+    "TRUST_SECURE": "100% secure payment",
+    "TRUST_SHIPPING": "Fast and trackable delivery",
+    "TRUST_RETURN": "Free returns within 30 days",
     "ADDED": "added to cart",
+    "ADDED_STANDALONE": "Added to cart",
+    "PRODUCT_ADDED": "\"{{name}}\" added to cart",
     "VIEW_CART": "View cart",
     "LOGIN_REQUIRED": "Please log in to add to cart",
     "ERROR_ADD": "Error adding to cart",
     "ERROR_UPDATE": "Error updating item",
-    "ERROR_REMOVE": "Error removing item"
+    "ERROR_REMOVE": "Error removing item",
+    "ERROR_LOAD": "Failed to load cart.",
+    "ERROR_CLEAR": "Failed to clear cart."
   },
   "ORDER": {
     "STATUS": {
@@ -113,10 +138,24 @@
   },
   "ORDERS": {
     "TITLE": "My Orders",
+    "SUBTITLE": "Track the status and history of your orders",
+    "LOADING": "Loading orders...",
     "EMPTY": "You have no orders yet.",
+    "EMPTY_TITLE": "No orders yet",
     "VIEW_DETAIL": "View details",
     "DETAIL_TITLE": "Order Details",
-    "CANCEL": "Cancel order"
+    "DETAIL_LOADING": "Loading order...",
+    "CANCEL": "Cancel order",
+    "ERROR_LOAD": "Failed to load orders.",
+    "NOT_FOUND": "Order not found.",
+    "CANCELLED": "Order cancelled successfully.",
+    "ERROR_CANCEL": "Failed to cancel order.",
+    "CANCELLED_BANNER": "This order has been cancelled.",
+    "REFUNDED_BANNER": "This order has been refunded.",
+    "ITEMS_TITLE": "Order items",
+    "DISCOUNT": "Discount",
+    "TRACKING_CODE": "Tracking code",
+    "STEP_PENDING": "Order"
   },
   "PAYMENT": {
     "SELECT_METHOD": "Payment method",
@@ -147,7 +186,12 @@
     "SUCCESS_TITLE": "Order placed successfully!",
     "ORDER_NUMBER": "Order number",
     "ESTIMATED_DELIVERY": "Estimated delivery",
-    "VIEW_ORDER": "View order"
+    "VIEW_ORDER": "View order",
+    "ERROR_LOAD_ADDRESSES": "Failed to load addresses.",
+    "ERROR_SAVE_ADDRESS": "Failed to save address.",
+    "ERROR_CREATE_ORDER": "Failed to create order.",
+    "ERROR_INIT_PAYMENT": "Failed to initialize payment.",
+    "ADDRESS_DEFAULT": "default"
   },
   "ADDRESS": {
     "LABEL": "Label",
@@ -174,6 +218,7 @@
     "ERROR": "Error submitting review.",
     "DELETE": "Delete review",
     "DELETE_SUCCESS": "Review deleted.",
+    "DELETE_ERROR": "Failed to delete review.",
     "HELPFUL": "Helpful",
     "VERIFIED_PURCHASE": "Verified purchase",
     "LOGIN_REQUIRED": "Log in",
@@ -188,7 +233,11 @@
     "ADDED": "Added to wishlist",
     "REMOVED": "Removed from wishlist",
     "LOGIN_REQUIRED": "Log in to use the wishlist",
-    "VIEW": "View wishlist"
+    "VIEW": "View wishlist",
+    "ERROR_REMOVE": "Failed to remove item.",
+    "ERROR_UPDATE": "Failed to update wishlist.",
+    "SUBTITLE": "Items saved to buy later",
+    "EMPTY_DESC": "Add products you love to find them easily later."
   },
   "NOTIFICATIONS": {
     "TITLE": "Notifications",
@@ -309,6 +358,28 @@
     }
   },
   "ADMIN": {
+    "LAYOUT": {
+      "BRAND_NAME": "Admin Panel",
+      "BRAND_META": "E-commerce",
+      "GOTO_DASHBOARD": "Go to admin dashboard",
+      "NAV_EYEBROW": "Management",
+      "VIEW_STORE": "View store",
+      "OPEN_NAV": "Open navigation",
+      "TOPBAR_EYEBROW": "Admin Panel",
+      "TOPBAR_TITLE": "Store operations",
+      "ROLE": "Administrator",
+      "LOGOUT_ARIA": "Log out of panel",
+      "NAV_DASHBOARD": "Dashboard",
+      "NAV_DASHBOARD_DESC": "Overview",
+      "NAV_PRODUCTS": "Products",
+      "NAV_PRODUCTS_DESC": "Catalog and stock",
+      "NAV_ORDERS": "Orders",
+      "NAV_ORDERS_DESC": "Sales and shipping",
+      "NAV_CATEGORIES": "Categories",
+      "NAV_CATEGORIES_DESC": "Store organization",
+      "NAV_USERS": "Users",
+      "NAV_USERS_DESC": "Customers and access"
+    },
     "DASHBOARD": {
       "TITLE": "Dashboard",
       "SUBTITLE": "Store overview",
@@ -342,6 +413,9 @@
       "UPDATE_STATUS": "Update status",
       "CANCEL": "Cancel",
       "CONFIRM": "Confirm",
+      "STATUS_UPDATED": "Status updated successfully.",
+      "ERROR_UPDATE_STATUS": "Failed to update status.",
+      "ERROR_LOAD": "Failed to load orders.",
       "COLUMNS": {
         "NUMBER": "Order #",
         "CUSTOMER": "Customer",
@@ -362,6 +436,12 @@
       "ACTIVATE": "Activate user",
       "DEACTIVATE": "Deactivate user",
       "EMPTY": "No users found.",
+      "ROLE_UPDATED": "Role updated successfully.",
+      "ACTIVATED": "User activated.",
+      "DEACTIVATED": "User deactivated.",
+      "ERROR_UPDATE_ROLE": "Failed to update role.",
+      "ERROR_TOGGLE_ACTIVE": "Failed to change user status.",
+      "ERROR_LOAD": "Failed to load users.",
       "COLUMNS": {
         "NAME": "User",
         "ROLE": "Role",
@@ -381,6 +461,10 @@
       "EDIT": "Edit",
       "DELETE": "Delete",
       "MANAGE_IMAGES": "Manage images",
+      "DELETED": "Product deleted successfully.",
+      "ERROR_DELETE": "Failed to delete product.",
+      "ERROR_LOAD": "Failed to load products.",
+      "CONFIRM_DELETE": "Delete product \"{{name}}\"?",
       "COLUMNS": {
         "NAME": "Name",
         "CATEGORY": "Category",
@@ -422,7 +506,13 @@
         "SET_MAIN": "Set as main",
         "DELETE": "Delete image",
         "EMPTY": "No images registered.",
-        "CLOSE": "Close"
+        "CLOSE": "Close",
+        "CONFIRM_DELETE": "Delete this image?",
+        "DELETED": "Image deleted.",
+        "ERROR_DELETE": "Failed to delete image.",
+        "ERROR_SET_MAIN": "Failed to set main image.",
+        "ERROR_TYPE": "Only image files are allowed.",
+        "ERROR_UPLOAD": "Failed to upload image."
       }
     },
     "CATEGORIES": {
@@ -436,6 +526,14 @@
       "DELETE": "Delete",
       "EDIT_TITLE": "Edit Category",
       "CREATE_TITLE": "New Category",
+      "CREATED": "Category created successfully.",
+      "UPDATED": "Category updated successfully.",
+      "DELETED": "Category deleted successfully.",
+      "ERROR_CREATE": "Failed to create category.",
+      "ERROR_UPDATE": "Failed to update category.",
+      "ERROR_DELETE": "Failed to delete category. Check for linked subcategories or products.",
+      "ERROR_LOAD": "Failed to load categories.",
+      "CONFIRM_DELETE": "Delete category \"{{name}}\"?",
       "COLUMNS": {
         "NAME": "Name",
         "PARENT": "Parent category",

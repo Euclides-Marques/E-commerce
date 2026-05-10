@@ -12,7 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AdminService } from '../../../core/services/admin.service';
 import { AdminUserDto } from '../../../core/models/admin.model';
 import { PaginatedResult } from '../../../core/models/paginated-result.model';
@@ -168,6 +168,7 @@ import { PaginatedResult } from '../../../core/models/paginated-result.model';
 export class AdminUsersComponent implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
   private readonly fb = inject(FormBuilder);
 
   readonly loading = signal(false);
@@ -209,23 +210,23 @@ export class AdminUsersComponent implements OnInit {
   updateRole(user: AdminUserDto, role: string): void {
     this.adminService.updateUserRole(user.id, role).subscribe({
       next: () => {
-        this.snackBar.open('Papel atualizado com sucesso.', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('ADMIN.USERS.ROLE_UPDATED'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
         this.users.update(list => list.map(u => u.id === user.id ? { ...u, role } : u));
       },
-      error: () => this.snackBar.open('Erro ao atualizar papel.', 'Fechar', { duration: 3000 }),
+      error: () => this.snackBar.open(this.translate.instant('ADMIN.USERS.ERROR_UPDATE_ROLE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 }),
     });
   }
 
   toggleActive(user: AdminUserDto): void {
     this.adminService.toggleUserActive(user.id).subscribe({
       next: () => {
-        const msg = user.isActive ? 'Usuário desativado.' : 'Usuário ativado.';
-        this.snackBar.open(msg, 'Fechar', { duration: 3000 });
+        const key = user.isActive ? 'ADMIN.USERS.DEACTIVATED' : 'ADMIN.USERS.ACTIVATED';
+        this.snackBar.open(this.translate.instant(key), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
         this.users.update(list =>
           list.map(u => u.id === user.id ? { ...u, isActive: !u.isActive } : u)
         );
       },
-      error: () => this.snackBar.open('Erro ao alterar status do usuário.', 'Fechar', { duration: 3000 }),
+      error: () => this.snackBar.open(this.translate.instant('ADMIN.USERS.ERROR_TOGGLE_ACTIVE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 }),
     });
   }
 
@@ -242,7 +243,7 @@ export class AdminUsersComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.snackBar.open('Erro ao carregar usuários.', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('ADMIN.USERS.ERROR_LOAD'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
         this.loading.set(false);
       },
     });

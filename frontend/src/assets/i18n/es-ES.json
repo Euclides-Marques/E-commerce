@@ -1,4 +1,7 @@
 {
+  "COMMON": {
+    "CLOSE": "Cerrar"
+  },
   "APP": {
     "NAME": "ShopBR",
     "TAGLINE": "Las mejores ofertas están aquí"
@@ -74,32 +77,54 @@
       "NO_RESULTS": "No se encontraron productos.",
       "LOAD_MORE": "Cargar más",
       "NO_MORE": "Todos los productos han sido cargados.",
-      "LOADING": "Cargando..."
+      "LOADING": "Cargando...",
+      "ERROR_LOAD": "Error al cargar los productos.",
+      "ERROR_LOAD_MORE": "Error al cargar más productos."
     },
     "DETAIL": {
       "DESCRIPTION": "Descripción del producto",
-      "NOT_FOUND": "Producto no encontrado."
+      "NOT_FOUND": "Producto no encontrado.",
+      "SOLD": "vendidos",
+      "AVAILABLE": "disponibles",
+      "STAR": "estrella",
+      "STARS": "estrellas"
     }
   },
   "CART": {
     "TITLE": "Mi Carrito",
     "EMPTY": "Tu carrito está vacío",
     "EMPTY_CTA": "Ver productos",
+    "EMPTY_DESC": "Explora nuestro catálogo y agrega productos al carrito para continuar.",
     "TOTAL": "Total",
     "TOTAL_ITEMS": "{{count}} artículo(s)",
+    "ITEM": "artículo",
+    "ITEMS": "artículos",
     "CHECKOUT": "Finalizar compra",
     "CONTINUE_SHOPPING": "Seguir comprando",
     "CLEAR": "Vaciar carrito",
     "REMOVE": "Eliminar",
+    "REMOVE_TITLE": "Eliminar artículo",
     "QUANTITY": "Cantidad",
     "UNIT_PRICE": "Precio unitario",
     "SUBTOTAL": "Subtotal",
+    "STEP_CART": "Carrito",
+    "STEP_DATA": "Datos",
+    "STEP_PAYMENT": "Pago",
+    "COUPON_PLACEHOLDER": "Código de cupón",
+    "COUPON_APPLY": "Aplicar",
+    "TRUST_SECURE": "Pago 100% seguro",
+    "TRUST_SHIPPING": "Entrega rápida y rastreable",
+    "TRUST_RETURN": "Devolución gratis en 30 días",
     "ADDED": "agregado al carrito",
+    "ADDED_STANDALONE": "Agregado al carrito",
+    "PRODUCT_ADDED": "\"{{name}}\" agregado al carrito",
     "VIEW_CART": "Ver carrito",
     "LOGIN_REQUIRED": "Inicia sesión para agregar al carrito",
     "ERROR_ADD": "Error al agregar al carrito",
     "ERROR_UPDATE": "Error al actualizar el artículo",
-    "ERROR_REMOVE": "Error al eliminar el artículo"
+    "ERROR_REMOVE": "Error al eliminar el artículo",
+    "ERROR_LOAD": "Error al cargar el carrito.",
+    "ERROR_CLEAR": "Error al vaciar el carrito."
   },
   "ORDER": {
     "STATUS": {
@@ -113,10 +138,24 @@
   },
   "ORDERS": {
     "TITLE": "Mis Pedidos",
+    "SUBTITLE": "Sigue el estado y el historial de tus pedidos",
+    "LOADING": "Cargando pedidos...",
     "EMPTY": "Aún no tienes pedidos.",
+    "EMPTY_TITLE": "Sin pedidos todavía",
     "VIEW_DETAIL": "Ver detalles",
     "DETAIL_TITLE": "Detalles del Pedido",
-    "CANCEL": "Cancelar pedido"
+    "DETAIL_LOADING": "Cargando pedido...",
+    "CANCEL": "Cancelar pedido",
+    "ERROR_LOAD": "Error al cargar los pedidos.",
+    "NOT_FOUND": "Pedido no encontrado.",
+    "CANCELLED": "Pedido cancelado con éxito.",
+    "ERROR_CANCEL": "Error al cancelar el pedido.",
+    "CANCELLED_BANNER": "Este pedido ha sido cancelado.",
+    "REFUNDED_BANNER": "Este pedido ha sido reembolsado.",
+    "ITEMS_TITLE": "Artículos del pedido",
+    "DISCOUNT": "Descuento",
+    "TRACKING_CODE": "Código de seguimiento",
+    "STEP_PENDING": "Pedido"
   },
   "PAYMENT": {
     "SELECT_METHOD": "Forma de pago",
@@ -147,7 +186,12 @@
     "SUCCESS_TITLE": "¡Pedido realizado con éxito!",
     "ORDER_NUMBER": "Número de pedido",
     "ESTIMATED_DELIVERY": "Entrega estimada",
-    "VIEW_ORDER": "Ver pedido"
+    "VIEW_ORDER": "Ver pedido",
+    "ERROR_LOAD_ADDRESSES": "Error al cargar las direcciones.",
+    "ERROR_SAVE_ADDRESS": "Error al guardar la dirección.",
+    "ERROR_CREATE_ORDER": "Error al crear el pedido.",
+    "ERROR_INIT_PAYMENT": "Error al inicializar el pago.",
+    "ADDRESS_DEFAULT": "predeterminado"
   },
   "ADDRESS": {
     "LABEL": "Etiqueta",
@@ -174,6 +218,7 @@
     "ERROR": "Error al publicar reseña.",
     "DELETE": "Eliminar reseña",
     "DELETE_SUCCESS": "Reseña eliminada.",
+    "DELETE_ERROR": "Error al eliminar la reseña.",
     "HELPFUL": "Útil",
     "VERIFIED_PURCHASE": "Compra verificada",
     "LOGIN_REQUIRED": "Inicia sesión",
@@ -188,7 +233,11 @@
     "ADDED": "Agregado a la lista de deseos",
     "REMOVED": "Eliminado de la lista de deseos",
     "LOGIN_REQUIRED": "Inicia sesión para usar la lista de deseos",
-    "VIEW": "Ver lista de deseos"
+    "VIEW": "Ver lista de deseos",
+    "ERROR_REMOVE": "Error al eliminar el artículo.",
+    "ERROR_UPDATE": "Error al actualizar la lista de deseos.",
+    "SUBTITLE": "Artículos guardados para comprar después",
+    "EMPTY_DESC": "Agrega los productos que te encantaron para encontrarlos fácilmente después."
   },
   "NOTIFICATIONS": {
     "TITLE": "Notificaciones",
@@ -309,6 +358,28 @@
     }
   },
   "ADMIN": {
+    "LAYOUT": {
+      "BRAND_NAME": "Admin Panel",
+      "BRAND_META": "E-commerce",
+      "GOTO_DASHBOARD": "Ir al panel administrativo",
+      "NAV_EYEBROW": "Gestión",
+      "VIEW_STORE": "Ver tienda",
+      "OPEN_NAV": "Abrir navegación",
+      "TOPBAR_EYEBROW": "Panel Administrativo",
+      "TOPBAR_TITLE": "Operaciones de la tienda",
+      "ROLE": "Administrador",
+      "LOGOUT_ARIA": "Salir del panel",
+      "NAV_DASHBOARD": "Dashboard",
+      "NAV_DASHBOARD_DESC": "Visión general",
+      "NAV_PRODUCTS": "Productos",
+      "NAV_PRODUCTS_DESC": "Catálogo y stock",
+      "NAV_ORDERS": "Pedidos",
+      "NAV_ORDERS_DESC": "Ventas y envío",
+      "NAV_CATEGORIES": "Categorías",
+      "NAV_CATEGORIES_DESC": "Organización de la tienda",
+      "NAV_USERS": "Usuarios",
+      "NAV_USERS_DESC": "Clientes y acceso"
+    },
     "DASHBOARD": {
       "TITLE": "Dashboard",
       "SUBTITLE": "Resumen de la tienda",
@@ -342,6 +413,9 @@
       "UPDATE_STATUS": "Actualizar estado",
       "CANCEL": "Cancelar",
       "CONFIRM": "Confirmar",
+      "STATUS_UPDATED": "Estado actualizado con éxito.",
+      "ERROR_UPDATE_STATUS": "Error al actualizar el estado.",
+      "ERROR_LOAD": "Error al cargar los pedidos.",
       "COLUMNS": {
         "NUMBER": "Nº de Pedido",
         "CUSTOMER": "Cliente",
@@ -362,6 +436,12 @@
       "ACTIVATE": "Activar usuario",
       "DEACTIVATE": "Desactivar usuario",
       "EMPTY": "No se encontraron usuarios.",
+      "ROLE_UPDATED": "Rol actualizado con éxito.",
+      "ACTIVATED": "Usuario activado.",
+      "DEACTIVATED": "Usuario desactivado.",
+      "ERROR_UPDATE_ROLE": "Error al actualizar el rol.",
+      "ERROR_TOGGLE_ACTIVE": "Error al cambiar el estado del usuario.",
+      "ERROR_LOAD": "Error al cargar los usuarios.",
       "COLUMNS": {
         "NAME": "Usuario",
         "ROLE": "Rol",
@@ -381,6 +461,10 @@
       "EDIT": "Editar",
       "DELETE": "Eliminar",
       "MANAGE_IMAGES": "Gestionar imágenes",
+      "DELETED": "Producto eliminado con éxito.",
+      "ERROR_DELETE": "Error al eliminar el producto.",
+      "ERROR_LOAD": "Error al cargar los productos.",
+      "CONFIRM_DELETE": "¿Eliminar el producto \"{{name}}\"?",
       "COLUMNS": {
         "NAME": "Nombre",
         "CATEGORY": "Categoría",
@@ -422,7 +506,13 @@
         "SET_MAIN": "Definir como principal",
         "DELETE": "Eliminar imagen",
         "EMPTY": "No hay imágenes registradas.",
-        "CLOSE": "Cerrar"
+        "CLOSE": "Cerrar",
+        "CONFIRM_DELETE": "¿Eliminar esta imagen?",
+        "DELETED": "Imagen eliminada.",
+        "ERROR_DELETE": "Error al eliminar la imagen.",
+        "ERROR_SET_MAIN": "Error al definir la imagen principal.",
+        "ERROR_TYPE": "Solo se permiten archivos de imagen.",
+        "ERROR_UPLOAD": "Error al subir la imagen."
       }
     },
     "CATEGORIES": {
@@ -436,6 +526,14 @@
       "DELETE": "Eliminar",
       "EDIT_TITLE": "Editar Categoría",
       "CREATE_TITLE": "Nueva Categoría",
+      "CREATED": "Categoría creada con éxito.",
+      "UPDATED": "Categoría actualizada con éxito.",
+      "DELETED": "Categoría eliminada con éxito.",
+      "ERROR_CREATE": "Error al crear la categoría.",
+      "ERROR_UPDATE": "Error al actualizar la categoría.",
+      "ERROR_DELETE": "Error al eliminar la categoría. Verifique si hay subcategorías o productos vinculados.",
+      "ERROR_LOAD": "Error al cargar las categorías.",
+      "CONFIRM_DELETE": "¿Eliminar la categoría \"{{name}}\"?",
       "COLUMNS": {
         "NAME": "Nombre",
         "PARENT": "Categoría padre",

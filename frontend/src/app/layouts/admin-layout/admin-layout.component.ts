@@ -5,13 +5,14 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../core/services/auth.service';
 
 interface AdminNavItem {
-  label: string;
+  labelKey: string;
+  descKey: string;
   route: string;
   icon: string;
-  description: string;
 }
 
 @Component({
@@ -24,6 +25,7 @@ interface AdminNavItem {
     MatButtonModule,
     MatIconModule,
     MatSidenavModule,
+    TranslatePipe,
   ],
   template: `
     <mat-sidenav-container class="admin-layout admin-shell">
@@ -34,19 +36,19 @@ interface AdminNavItem {
         [fixedInViewport]="isMobile()"
         (closedStart)="sidenavOpen.set(false)">
 
-        <aside class="admin-sidebar__inner" aria-label="Navegação administrativa">
-          <a class="admin-brand" routerLink="/admin/dashboard" aria-label="Ir para o dashboard administrativo">
+        <aside class="admin-sidebar__inner" [attr.aria-label]="'ADMIN.LAYOUT.NAV_EYEBROW' | translate">
+          <a class="admin-brand" routerLink="/admin/dashboard" [attr.aria-label]="'ADMIN.LAYOUT.GOTO_DASHBOARD' | translate">
             <span class="admin-brand__mark">
               <mat-icon aria-hidden="true">storefront</mat-icon>
             </span>
             <span class="admin-brand__copy">
-              <span class="admin-brand__name">Admin Panel</span>
-              <span class="admin-brand__meta">E-commerce</span>
+              <span class="admin-brand__name">{{ 'ADMIN.LAYOUT.BRAND_NAME' | translate }}</span>
+              <span class="admin-brand__meta">{{ 'ADMIN.LAYOUT.BRAND_META' | translate }}</span>
             </span>
           </a>
 
           <nav class="admin-nav">
-            <p class="admin-nav__eyebrow">Gestão</p>
+            <p class="admin-nav__eyebrow">{{ 'ADMIN.LAYOUT.NAV_EYEBROW' | translate }}</p>
 
             @for (item of navItems; track item.route) {
               <a
@@ -59,8 +61,8 @@ interface AdminNavItem {
                   <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
                 </span>
                 <span class="admin-nav__content">
-                  <span class="admin-nav__label">{{ item.label }}</span>
-                  <span class="admin-nav__desc">{{ item.description }}</span>
+                  <span class="admin-nav__label">{{ item.labelKey | translate }}</span>
+                  <span class="admin-nav__desc">{{ item.descKey | translate }}</span>
                 </span>
               </a>
             }
@@ -69,7 +71,7 @@ interface AdminNavItem {
           <div class="admin-sidebar__footer">
             <a class="admin-sidebar__store-link" routerLink="/" (click)="closeMobileSidenav()">
               <mat-icon aria-hidden="true">arrow_outward</mat-icon>
-              <span>Ver loja</span>
+              <span>{{ 'ADMIN.LAYOUT.VIEW_STORE' | translate }}</span>
             </a>
           </div>
         </aside>
@@ -83,15 +85,15 @@ interface AdminNavItem {
                 mat-icon-button
                 type="button"
                 class="admin-topbar__menu"
-                aria-label="Abrir navegação"
+                [attr.aria-label]="'ADMIN.LAYOUT.OPEN_NAV' | translate"
                 (click)="sidenavOpen.set(true)">
                 <mat-icon>menu</mat-icon>
               </button>
             }
 
             <div>
-              <p class="admin-topbar__eyebrow">Painel Administrativo</p>
-              <h1 class="admin-topbar__title">Operação da loja</h1>
+              <p class="admin-topbar__eyebrow">{{ 'ADMIN.LAYOUT.TOPBAR_EYEBROW' | translate }}</p>
+              <h1 class="admin-topbar__title">{{ 'ADMIN.LAYOUT.TOPBAR_TITLE' | translate }}</h1>
             </div>
           </div>
 
@@ -100,7 +102,7 @@ interface AdminNavItem {
               <span class="admin-user__avatar" aria-hidden="true">{{ userInitials() }}</span>
               <span class="admin-user__meta">
                 <span class="admin-user__name">{{ userName() }}</span>
-                <span class="admin-user__role">Administrador</span>
+                <span class="admin-user__role">{{ 'ADMIN.LAYOUT.ROLE' | translate }}</span>
               </span>
             </div>
 
@@ -108,7 +110,7 @@ interface AdminNavItem {
               mat-icon-button
               type="button"
               class="admin-topbar__logout"
-              aria-label="Sair do painel"
+              [attr.aria-label]="'ADMIN.LAYOUT.LOGOUT_ARIA' | translate"
               (click)="logout()">
               <mat-icon>logout</mat-icon>
             </button>
@@ -469,34 +471,34 @@ export class AdminLayoutComponent {
 
   readonly navItems: AdminNavItem[] = [
     {
-      label: 'Dashboard',
+      labelKey: 'ADMIN.LAYOUT.NAV_DASHBOARD',
+      descKey: 'ADMIN.LAYOUT.NAV_DASHBOARD_DESC',
       route: '/admin/dashboard',
       icon: 'dashboard',
-      description: 'Visão geral',
     },
     {
-      label: 'Produtos',
+      labelKey: 'ADMIN.LAYOUT.NAV_PRODUCTS',
+      descKey: 'ADMIN.LAYOUT.NAV_PRODUCTS_DESC',
       route: '/admin/products',
       icon: 'inventory_2',
-      description: 'Catálogo e estoque',
     },
     {
-      label: 'Pedidos',
+      labelKey: 'ADMIN.LAYOUT.NAV_ORDERS',
+      descKey: 'ADMIN.LAYOUT.NAV_ORDERS_DESC',
       route: '/admin/orders',
       icon: 'receipt_long',
-      description: 'Vendas e envio',
     },
     {
-      label: 'Categorias',
+      labelKey: 'ADMIN.LAYOUT.NAV_CATEGORIES',
+      descKey: 'ADMIN.LAYOUT.NAV_CATEGORIES_DESC',
       route: '/admin/categories',
       icon: 'category',
-      description: 'Organização da loja',
     },
     {
-      label: 'Usuários',
+      labelKey: 'ADMIN.LAYOUT.NAV_USERS',
+      descKey: 'ADMIN.LAYOUT.NAV_USERS_DESC',
       route: '/admin/users',
       icon: 'people',
-      description: 'Clientes e acessos',
     },
   ];
 

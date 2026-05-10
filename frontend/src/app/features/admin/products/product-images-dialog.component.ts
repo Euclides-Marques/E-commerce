@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ProductService } from '../../../core/services/product.service';
 import { ProductDto, ProductImageDto } from '../../../core/models/product.model';
 
@@ -108,6 +108,7 @@ export class ProductImagesDialogComponent {
   private readonly productService = inject(ProductService);
   private readonly dialogRef = inject(MatDialogRef<ProductImagesDialogComponent>);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   readonly data: ProductImagesDialogData = inject(MAT_DIALOG_DATA);
 
@@ -138,26 +139,26 @@ export class ProductImagesDialogComponent {
         );
         this.changed.set(true);
       },
-      error: () => this.snackBar.open('Erro ao definir imagem principal.', 'Fechar', { duration: 3000 }),
+      error: () => this.snackBar.open(this.translate.instant('ADMIN.PRODUCTS.IMAGES.ERROR_SET_MAIN'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 }),
     });
   }
 
   deleteImage(img: ProductImageDto): void {
-    if (!confirm('Deseja excluir esta imagem?')) return;
+    if (!confirm(this.translate.instant('ADMIN.PRODUCTS.IMAGES.CONFIRM_DELETE'))) return;
 
     this.productService.deleteImage(this.product().id, img.id).subscribe({
       next: () => {
         this.images.update(list => list.filter(i => i.id !== img.id));
         this.changed.set(true);
-        this.snackBar.open('Imagem excluída.', 'Fechar', { duration: 2000 });
+        this.snackBar.open(this.translate.instant('ADMIN.PRODUCTS.IMAGES.DELETED'), this.translate.instant('COMMON.CLOSE'), { duration: 2000 });
       },
-      error: () => this.snackBar.open('Erro ao excluir imagem.', 'Fechar', { duration: 3000 }),
+      error: () => this.snackBar.open(this.translate.instant('ADMIN.PRODUCTS.IMAGES.ERROR_DELETE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 }),
     });
   }
 
   private upload(file: File): void {
     if (!file.type.startsWith('image/')) {
-      this.snackBar.open('Apenas arquivos de imagem são permitidos.', 'Fechar', { duration: 3000 });
+      this.snackBar.open(this.translate.instant('ADMIN.PRODUCTS.IMAGES.ERROR_TYPE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       return;
     }
 
@@ -172,7 +173,7 @@ export class ProductImagesDialogComponent {
       },
       error: () => {
         this.uploading.set(false);
-        this.snackBar.open('Erro ao fazer upload da imagem.', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('ADMIN.PRODUCTS.IMAGES.ERROR_UPLOAD'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }

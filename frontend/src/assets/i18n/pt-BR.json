@@ -1,4 +1,7 @@
 {
+  "COMMON": {
+    "CLOSE": "Fechar"
+  },
   "APP": {
     "NAME": "ShopBR",
     "TAGLINE": "As melhores ofertas estão aqui"
@@ -74,32 +77,54 @@
       "NO_RESULTS": "Nenhum produto encontrado.",
       "LOAD_MORE": "Carregar mais",
       "NO_MORE": "Todos os produtos foram carregados.",
-      "LOADING": "Carregando..."
+      "LOADING": "Carregando...",
+      "ERROR_LOAD": "Erro ao carregar produtos.",
+      "ERROR_LOAD_MORE": "Erro ao carregar mais produtos."
     },
     "DETAIL": {
       "DESCRIPTION": "Descrição do produto",
-      "NOT_FOUND": "Produto não encontrado."
+      "NOT_FOUND": "Produto não encontrado.",
+      "SOLD": "vendidos",
+      "AVAILABLE": "disponíveis",
+      "STAR": "estrela",
+      "STARS": "estrelas"
     }
   },
   "CART": {
     "TITLE": "Meu Carrinho",
     "EMPTY": "Seu carrinho está vazio",
     "EMPTY_CTA": "Ver produtos",
+    "EMPTY_DESC": "Explore nosso catálogo e adicione produtos ao carrinho para continuar.",
     "TOTAL": "Total",
     "TOTAL_ITEMS": "{{count}} item(s)",
+    "ITEM": "item",
+    "ITEMS": "itens",
     "CHECKOUT": "Finalizar Compra",
     "CONTINUE_SHOPPING": "Continuar Comprando",
     "CLEAR": "Limpar carrinho",
     "REMOVE": "Remover",
+    "REMOVE_TITLE": "Remover item",
     "QUANTITY": "Quantidade",
     "UNIT_PRICE": "Preço unitário",
     "SUBTOTAL": "Subtotal",
+    "STEP_CART": "Carrinho",
+    "STEP_DATA": "Dados",
+    "STEP_PAYMENT": "Pagamento",
+    "COUPON_PLACEHOLDER": "Código de cupom",
+    "COUPON_APPLY": "Aplicar",
+    "TRUST_SECURE": "Pagamento 100% seguro",
+    "TRUST_SHIPPING": "Entrega rápida e rastreável",
+    "TRUST_RETURN": "Devolução grátis em 30 dias",
     "ADDED": "adicionado ao carrinho",
+    "ADDED_STANDALONE": "Adicionado ao carrinho",
+    "PRODUCT_ADDED": "\"{{name}}\" adicionado ao carrinho",
     "VIEW_CART": "Ver carrinho",
     "LOGIN_REQUIRED": "Faça login para adicionar ao carrinho",
     "ERROR_ADD": "Erro ao adicionar ao carrinho",
     "ERROR_UPDATE": "Erro ao atualizar item",
-    "ERROR_REMOVE": "Erro ao remover item"
+    "ERROR_REMOVE": "Erro ao remover item",
+    "ERROR_LOAD": "Erro ao carregar carrinho.",
+    "ERROR_CLEAR": "Erro ao limpar carrinho."
   },
   "ORDER": {
     "STATUS": {
@@ -113,10 +138,24 @@
   },
   "ORDERS": {
     "TITLE": "Meus Pedidos",
+    "SUBTITLE": "Acompanhe o status e o histórico dos seus pedidos",
+    "LOADING": "Carregando pedidos...",
     "EMPTY": "Você ainda não tem pedidos.",
+    "EMPTY_TITLE": "Nenhum pedido ainda",
     "VIEW_DETAIL": "Ver detalhes",
     "DETAIL_TITLE": "Detalhes do Pedido",
-    "CANCEL": "Cancelar pedido"
+    "DETAIL_LOADING": "Carregando pedido...",
+    "CANCEL": "Cancelar pedido",
+    "ERROR_LOAD": "Erro ao carregar pedidos.",
+    "NOT_FOUND": "Pedido não encontrado.",
+    "CANCELLED": "Pedido cancelado com sucesso.",
+    "ERROR_CANCEL": "Erro ao cancelar pedido.",
+    "CANCELLED_BANNER": "Este pedido foi cancelado.",
+    "REFUNDED_BANNER": "Este pedido foi reembolsado.",
+    "ITEMS_TITLE": "Itens do pedido",
+    "DISCOUNT": "Desconto",
+    "TRACKING_CODE": "Código de rastreio",
+    "STEP_PENDING": "Pedido"
   },
   "PAYMENT": {
     "SELECT_METHOD": "Forma de pagamento",
@@ -147,7 +186,12 @@
     "SUCCESS_TITLE": "Pedido realizado com sucesso!",
     "ORDER_NUMBER": "Número do pedido",
     "ESTIMATED_DELIVERY": "Entrega estimada",
-    "VIEW_ORDER": "Ver pedido"
+    "VIEW_ORDER": "Ver pedido",
+    "ERROR_LOAD_ADDRESSES": "Erro ao carregar endereços.",
+    "ERROR_SAVE_ADDRESS": "Erro ao salvar endereço.",
+    "ERROR_CREATE_ORDER": "Erro ao criar pedido.",
+    "ERROR_INIT_PAYMENT": "Erro ao inicializar pagamento.",
+    "ADDRESS_DEFAULT": "padrão"
   },
   "ADDRESS": {
     "LABEL": "Rótulo",
@@ -174,6 +218,7 @@
     "ERROR": "Erro ao publicar avaliação.",
     "DELETE": "Excluir avaliação",
     "DELETE_SUCCESS": "Avaliação excluída.",
+    "DELETE_ERROR": "Erro ao excluir avaliação.",
     "HELPFUL": "Útil",
     "VERIFIED_PURCHASE": "Compra verificada",
     "LOGIN_REQUIRED": "Faça login",
@@ -188,7 +233,11 @@
     "ADDED": "Adicionado à lista de desejos",
     "REMOVED": "Removido da lista de desejos",
     "LOGIN_REQUIRED": "Faça login para usar a lista de desejos",
-    "VIEW": "Ver lista de desejos"
+    "VIEW": "Ver lista de desejos",
+    "ERROR_REMOVE": "Erro ao remover item.",
+    "ERROR_UPDATE": "Erro ao atualizar lista de desejos.",
+    "SUBTITLE": "Itens salvos para comprar depois",
+    "EMPTY_DESC": "Adicione produtos que você amou para encontrá-los facilmente depois."
   },
   "NOTIFICATIONS": {
     "TITLE": "Notificações",
@@ -309,6 +358,28 @@
     }
   },
   "ADMIN": {
+    "LAYOUT": {
+      "BRAND_NAME": "Admin Panel",
+      "BRAND_META": "E-commerce",
+      "GOTO_DASHBOARD": "Ir para o dashboard administrativo",
+      "NAV_EYEBROW": "Gestão",
+      "VIEW_STORE": "Ver loja",
+      "OPEN_NAV": "Abrir navegação",
+      "TOPBAR_EYEBROW": "Painel Administrativo",
+      "TOPBAR_TITLE": "Operação da loja",
+      "ROLE": "Administrador",
+      "LOGOUT_ARIA": "Sair do painel",
+      "NAV_DASHBOARD": "Dashboard",
+      "NAV_DASHBOARD_DESC": "Visão geral",
+      "NAV_PRODUCTS": "Produtos",
+      "NAV_PRODUCTS_DESC": "Catálogo e estoque",
+      "NAV_ORDERS": "Pedidos",
+      "NAV_ORDERS_DESC": "Vendas e envio",
+      "NAV_CATEGORIES": "Categorias",
+      "NAV_CATEGORIES_DESC": "Organização da loja",
+      "NAV_USERS": "Usuários",
+      "NAV_USERS_DESC": "Clientes e acessos"
+    },
     "DASHBOARD": {
       "TITLE": "Dashboard",
       "SUBTITLE": "Visão geral da loja",
@@ -342,6 +413,9 @@
       "UPDATE_STATUS": "Alterar status",
       "CANCEL": "Cancelar",
       "CONFIRM": "Confirmar",
+      "STATUS_UPDATED": "Status atualizado com sucesso.",
+      "ERROR_UPDATE_STATUS": "Erro ao atualizar status.",
+      "ERROR_LOAD": "Erro ao carregar pedidos.",
       "COLUMNS": {
         "NUMBER": "Nº do Pedido",
         "CUSTOMER": "Cliente",
@@ -362,6 +436,12 @@
       "ACTIVATE": "Ativar usuário",
       "DEACTIVATE": "Desativar usuário",
       "EMPTY": "Nenhum usuário encontrado.",
+      "ROLE_UPDATED": "Papel atualizado com sucesso.",
+      "ACTIVATED": "Usuário ativado.",
+      "DEACTIVATED": "Usuário desativado.",
+      "ERROR_UPDATE_ROLE": "Erro ao atualizar papel.",
+      "ERROR_TOGGLE_ACTIVE": "Erro ao alterar status do usuário.",
+      "ERROR_LOAD": "Erro ao carregar usuários.",
       "COLUMNS": {
         "NAME": "Usuário",
         "ROLE": "Papel",
@@ -381,6 +461,10 @@
       "EDIT": "Editar",
       "DELETE": "Excluir",
       "MANAGE_IMAGES": "Gerenciar imagens",
+      "DELETED": "Produto excluído com sucesso.",
+      "ERROR_DELETE": "Erro ao excluir produto.",
+      "ERROR_LOAD": "Erro ao carregar produtos.",
+      "CONFIRM_DELETE": "Deseja excluir o produto \"{{name}}\"?",
       "COLUMNS": {
         "NAME": "Nome",
         "CATEGORY": "Categoria",
@@ -422,7 +506,13 @@
         "SET_MAIN": "Definir como principal",
         "DELETE": "Excluir imagem",
         "EMPTY": "Nenhuma imagem cadastrada.",
-        "CLOSE": "Fechar"
+        "CLOSE": "Fechar",
+        "CONFIRM_DELETE": "Deseja excluir esta imagem?",
+        "DELETED": "Imagem excluída.",
+        "ERROR_DELETE": "Erro ao excluir imagem.",
+        "ERROR_SET_MAIN": "Erro ao definir imagem principal.",
+        "ERROR_TYPE": "Apenas arquivos de imagem são permitidos.",
+        "ERROR_UPLOAD": "Erro ao fazer upload da imagem."
       }
     },
     "CATEGORIES": {
@@ -436,6 +526,14 @@
       "DELETE": "Excluir",
       "EDIT_TITLE": "Editar Categoria",
       "CREATE_TITLE": "Nova Categoria",
+      "CREATED": "Categoria criada com sucesso.",
+      "UPDATED": "Categoria atualizada com sucesso.",
+      "DELETED": "Categoria excluída com sucesso.",
+      "ERROR_CREATE": "Erro ao criar categoria.",
+      "ERROR_UPDATE": "Erro ao atualizar categoria.",
+      "ERROR_DELETE": "Erro ao excluir categoria. Verifique se não há subcategorias ou produtos vinculados.",
+      "ERROR_LOAD": "Erro ao carregar categorias.",
+      "CONFIRM_DELETE": "Deseja excluir a categoria \"{{name}}\"?",
       "COLUMNS": {
         "NAME": "Nome",
         "PARENT": "Categoria pai",

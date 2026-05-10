@@ -13,7 +13,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ProductService } from '../../../core/services/product.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { ProductSummaryDto } from '../../../core/models/product.model';
@@ -177,6 +177,7 @@ export class AdminProductsComponent implements OnInit {
   private readonly categoryService = inject(CategoryService);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   readonly loading = this.productService.loading;
   readonly totalCount = this.productService.totalCount;
@@ -224,21 +225,21 @@ export class AdminProductsComponent implements OnInit {
   }
 
   confirmDelete(product: ProductSummaryDto): void {
-    if (!confirm(`Deseja excluir o produto "${product.name}"?`)) return;
+    if (!confirm(this.translate.instant('ADMIN.PRODUCTS.CONFIRM_DELETE', { name: product.name }))) return;
 
     this.productService.deleteProduct(product.id).subscribe({
       next: () => {
-        this.snackBar.open('Produto excluído com sucesso.', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('ADMIN.PRODUCTS.DELETED'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
         this.loadProducts();
       },
-      error: () => this.snackBar.open('Erro ao excluir produto.', 'Fechar', { duration: 3000 }),
+      error: () => this.snackBar.open(this.translate.instant('ADMIN.PRODUCTS.ERROR_DELETE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 }),
     });
   }
 
   private loadProducts(): void {
     this.productService.getProducts({ pageSize: 100 }).subscribe({
       next: result => this.items.set(result.items),
-      error: () => this.snackBar.open('Erro ao carregar produtos.', 'Fechar', { duration: 3000 }),
+      error: () => this.snackBar.open(this.translate.instant('ADMIN.PRODUCTS.ERROR_LOAD'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 }),
     });
   }
 }

@@ -14,7 +14,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AddressService } from '../../core/services/address.service';
 import { OrderService } from '../../core/services/order.service';
 import { CartService } from '../../core/services/cart.service';
@@ -71,7 +71,7 @@ import { environment } from '../../../environments/environment';
                       <div class="flex items-center gap-2">
                         <span class="font-semibold text-gray-800">{{ addr.label }}</span>
                         @if (addr.isDefault) {
-                          <span class="text-xs bg-primary-100 text-primary-600 px-2 py-0.5 rounded-full">padrão</span>
+                          <span class="text-xs bg-primary-100 text-primary-600 px-2 py-0.5 rounded-full">{{ 'CHECKOUT.ADDRESS_DEFAULT' | translate }}</span>
                         }
                       </div>
                       <p class="text-sm text-gray-600 mt-1">{{ addr.recipient }}</p>
@@ -306,6 +306,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   readonly cartService = inject(CartService);
   private readonly paymentService = inject(PaymentService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   readonly addresses = this.addressService.addresses;
   readonly loadingAddresses = signal(false);
@@ -349,7 +350,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.loadingAddresses.set(false);
-        this.snackBar.open('Erro ao carregar endereços.', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('CHECKOUT.ERROR_LOAD_ADDRESSES'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
 
@@ -376,7 +377,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.savingAddress.set(false);
-        this.snackBar.open('Erro ao salvar endereço.', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('CHECKOUT.ERROR_SAVE_ADDRESS'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }
@@ -399,8 +400,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       await this.initPayment(order.id);
     } catch (err: any) {
       this.placing.set(false);
-      const msg = err?.error?.errors?.[0] ?? 'Erro ao criar pedido.';
-      this.snackBar.open(msg, 'Fechar', { duration: 4000 });
+      const msg = err?.error?.errors?.[0] ?? this.translate.instant('CHECKOUT.ERROR_CREATE_ORDER');
+      this.snackBar.open(msg, this.translate.instant('COMMON.CLOSE'), { duration: 4000 });
     }
   }
 
@@ -418,7 +419,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         this.mpInitPoint.set(res.initPoint);
       }
     } catch {
-      this.snackBar.open('Erro ao inicializar pagamento.', 'Fechar', { duration: 4000 });
+      this.snackBar.open(this.translate.instant('CHECKOUT.ERROR_INIT_PAYMENT'), this.translate.instant('COMMON.CLOSE'), { duration: 4000 });
     } finally {
       this.loadingPayment.set(false);
     }

@@ -4,7 +4,7 @@ import { RouterLink, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { WishlistService } from '../../core/services/wishlist.service';
 import { CartService } from '../../core/services/cart.service';
 
@@ -33,7 +33,7 @@ import { CartService } from '../../core/services/cart.service';
           }
         </div>
         @if (wishlistService.count() > 0) {
-          <p class="wl-header__sub">Itens salvos para comprar depois</p>
+          <p class="wl-header__sub">{{ 'WISHLIST.SUBTITLE' | translate }}</p>
         }
       </div>
 
@@ -61,7 +61,7 @@ import { CartService } from '../../core/services/cart.service';
           </div>
           <h2 class="text-lg font-semibold text-gray-900 mb-1">{{ 'WISHLIST.EMPTY' | translate }}</h2>
           <p class="text-gray-400 text-sm max-w-xs mx-auto mb-8">
-            Adicione produtos que você amou para encontrá-los facilmente depois.
+            {{ 'WISHLIST.EMPTY_DESC' | translate }}
           </p>
           <a routerLink="/products"
              style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#f97316 0%,#ea580c 100%);color:white;border-radius:12px;padding:13px 28px;font-weight:600;font-size:14px;text-decoration:none;letter-spacing:0.01em;box-shadow:0 4px 16px rgba(249,115,22,0.32);transition:box-shadow 0.2s ease,transform 0.2s ease;"
@@ -102,7 +102,7 @@ import { CartService } from '../../core/services/cart.service';
                 <!-- Remove button -->
                 <button class="wl-card__remove-btn"
                         (click)="onRemove(item.productId)"
-                        aria-label="Remover da lista de desejos">
+                        [attr.aria-label]="'WISHLIST.REMOVE' | translate">
                   <mat-icon>favorite</mat-icon>
                 </button>
 
@@ -373,6 +373,7 @@ export class WishlistComponent implements OnInit {
   private readonly cartService = inject(CartService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   readonly loading = signal(false);
   readonly addingToCart = signal<string | null>(null);
@@ -393,10 +394,10 @@ export class WishlistComponent implements OnInit {
   onRemove(productId: string): void {
     this.wishlistService.toggle(productId).subscribe({
       next: () => {
-        this.snackBar.open('Removido da lista de desejos', 'Fechar', { duration: 2000 });
+        this.snackBar.open(this.translate.instant('WISHLIST.REMOVED'), this.translate.instant('COMMON.CLOSE'), { duration: 2000 });
       },
       error: () => {
-        this.snackBar.open('Erro ao remover item', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('WISHLIST.ERROR_REMOVE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }
@@ -406,15 +407,15 @@ export class WishlistComponent implements OnInit {
     this.cartService.addToCart(productId).subscribe({
       next: () => {
         this.addingToCart.set(null);
-        this.snackBar.open('Adicionado ao carrinho', 'Ver carrinho', {
+        this.snackBar.open(this.translate.instant('CART.ADDED_STANDALONE'), this.translate.instant('CART.VIEW_CART'), {
           duration: 3000,
           panelClass: 'snackbar-success',
         }).onAction().subscribe(() => this.router.navigate(['/cart']));
       },
       error: (err) => {
         this.addingToCart.set(null);
-        const msg = err?.error?.errors?.[0] ?? 'Erro ao adicionar ao carrinho';
-        this.snackBar.open(msg, 'Fechar', { duration: 3000 });
+        const msg = err?.error?.errors?.[0] ?? this.translate.instant('CART.ERROR_ADD');
+        this.snackBar.open(msg, this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }

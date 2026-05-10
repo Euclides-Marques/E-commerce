@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ProductSummaryDto } from '../../../core/models/product.model';
 import { WishlistItemDto } from '../../../core/models/wishlist.model';
 import { WishlistService } from '../../../core/services/wishlist.service';
@@ -103,11 +103,12 @@ export class ProductCardComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   onToggleWishlist(event: Event): void {
     event.stopPropagation();
     if (!this.authService.isAuthenticated()) {
-      this.snackBar.open('Faça login para usar a lista de desejos', 'Entrar', { duration: 4000 })
+      this.snackBar.open(this.translate.instant('WISHLIST.LOGIN_REQUIRED'), this.translate.instant('NAV.LOGIN'), { duration: 4000 })
         .onAction().subscribe(() => this.router.navigate(['/auth/login']));
       return;
     }
@@ -128,9 +129,9 @@ export class ProductCardComponent {
             addedAt: new Date().toISOString(),
           };
           this.wishlistService.refreshAfterAdd(p.id, item);
-          this.snackBar.open('Adicionado à lista de desejos', 'Fechar', { duration: 2000, panelClass: 'snackbar-success' });
+          this.snackBar.open(this.translate.instant('WISHLIST.ADDED'), this.translate.instant('COMMON.CLOSE'), { duration: 2000, panelClass: 'snackbar-success' });
         } else {
-          this.snackBar.open('Removido da lista de desejos', 'Fechar', { duration: 2000 });
+          this.snackBar.open(this.translate.instant('WISHLIST.REMOVED'), this.translate.instant('COMMON.CLOSE'), { duration: 2000 });
         }
       },
     });

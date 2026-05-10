@@ -9,7 +9,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ProductService } from '../../../core/services/product.service';
 import { CartService } from '../../../core/services/cart.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -41,7 +41,7 @@ import { ReviewSummaryDto } from '../../../core/models/review.model';
     <div class="animate-fade-in">
       <!-- Breadcrumb -->
       <nav class="text-sm text-gray-500 mb-6">
-        <a routerLink="/" class="hover:text-primary-500">Início</a>
+        <a routerLink="/" class="hover:text-primary-500">{{ 'NAV.HOME' | translate }}</a>
         <span class="mx-2">/</span>
         <a routerLink="/products" class="hover:text-primary-500">{{ 'NAV.PRODUCTS' | translate }}</a>
         @if (product()) {
@@ -116,7 +116,7 @@ import { ReviewSummaryDto } from '../../../core/models/review.model';
                   {{ product()!.averageRating | number:'1.1-1' }}
                   ({{ product()!.reviewCount }} {{ 'PRODUCT.REVIEWS' | translate }})
                 </span>
-                <span class="text-sm text-gray-400">· {{ product()!.soldCount }} vendidos</span>
+                <span class="text-sm text-gray-400">· {{ product()!.soldCount }} {{ 'PRODUCT.DETAIL.SOLD' | translate }}</span>
               </div>
             }
 
@@ -142,7 +142,7 @@ import { ReviewSummaryDto } from '../../../core/models/review.model';
               @if (product()!.stockQuantity > 0) {
                 <mat-icon class="text-green-500 text-sm">check_circle</mat-icon>
                 <span class="text-sm text-green-600 font-medium">{{ 'PRODUCT.IN_STOCK' | translate }}</span>
-                <span class="text-sm text-gray-400">({{ product()!.stockQuantity }} disponíveis)</span>
+                <span class="text-sm text-gray-400">({{ product()!.stockQuantity }} {{ 'PRODUCT.DETAIL.AVAILABLE' | translate }})</span>
               } @else {
                 <mat-icon class="text-red-400 text-sm">cancel</mat-icon>
                 <span class="text-sm text-red-500 font-medium">{{ 'PRODUCT.OUT_OF_STOCK' | translate }}</span>
@@ -226,7 +226,7 @@ import { ReviewSummaryDto } from '../../../core/models/review.model';
                 <div class="flex-1 space-y-1.5">
                   @for (s of [5, 4, 3, 2, 1]; track s) {
                     <div class="flex items-center gap-2 text-sm">
-                      <span class="w-16 shrink-0 text-gray-600">{{ s }} estrela{{ s > 1 ? 's' : '' }}</span>
+                      <span class="w-16 shrink-0 text-gray-600">{{ s }} {{ s > 1 ? ('PRODUCT.DETAIL.STARS' | translate) : ('PRODUCT.DETAIL.STAR' | translate) }}</span>
                       <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
                         <div class="h-full bg-yellow-400 rounded-full transition-all" [style.width.%]="getStarPercent(s)"></div>
                       </div>
@@ -388,6 +388,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
   private readonly fb = inject(FormBuilder);
 
   readonly product = this.productService.currentProduct;
@@ -450,7 +451,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     if (!p) return;
 
     if (!this.authService.isAuthenticated()) {
-      this.snackBar.open('Faça login para adicionar ao carrinho', 'Entrar', { duration: 4000 })
+      this.snackBar.open(this.translate.instant('CART.LOGIN_REQUIRED'), this.translate.instant('NAV.LOGIN'), { duration: 4000 })
         .onAction().subscribe(() => this.router.navigate(['/auth/login']));
       return;
     }
@@ -459,15 +460,15 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     this.cartService.addToCart(p.id).subscribe({
       next: () => {
         this.addingToCart.set(false);
-        this.snackBar.open(`"${p.name}" adicionado ao carrinho`, 'Ver carrinho', {
+        this.snackBar.open(this.translate.instant('CART.PRODUCT_ADDED', { name: p.name }), this.translate.instant('CART.VIEW_CART'), {
           duration: 3000,
           panelClass: 'snackbar-success',
         }).onAction().subscribe(() => this.router.navigate(['/cart']));
       },
       error: (err) => {
         this.addingToCart.set(false);
-        const msg = err?.error?.errors?.[0] ?? 'Erro ao adicionar ao carrinho';
-        this.snackBar.open(msg, 'Fechar', { duration: 3000 });
+        const msg = err?.error?.errors?.[0] ?? this.translate.instant('CART.ERROR_ADD');
+        this.snackBar.open(msg, this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }
@@ -477,7 +478,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     if (!p) return;
 
     if (!this.authService.isAuthenticated()) {
-      this.snackBar.open('Faça login para usar a lista de desejos', 'Entrar', { duration: 4000 })
+      this.snackBar.open(this.translate.instant('WISHLIST.LOGIN_REQUIRED'), this.translate.instant('NAV.LOGIN'), { duration: 4000 })
         .onAction().subscribe(() => this.router.navigate(['/auth/login']));
       return;
     }
@@ -500,15 +501,15 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             addedAt: new Date().toISOString(),
           };
           this.wishlistService.refreshAfterAdd(p.id, item);
-          this.snackBar.open('Adicionado à lista de desejos', 'Ver lista', { duration: 3000 })
+          this.snackBar.open(this.translate.instant('WISHLIST.ADDED'), this.translate.instant('WISHLIST.VIEW'), { duration: 3000 })
             .onAction().subscribe(() => this.router.navigate(['/wishlist']));
         } else {
-          this.snackBar.open('Removido da lista de desejos', 'Fechar', { duration: 2000 });
+          this.snackBar.open(this.translate.instant('WISHLIST.REMOVED'), this.translate.instant('COMMON.CLOSE'), { duration: 2000 });
         }
       },
       error: () => {
         this.wishlistLoading.set(false);
-        this.snackBar.open('Erro ao atualizar lista de desejos', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('WISHLIST.ERROR_UPDATE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }
@@ -529,7 +530,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.userReviewId.set(review.id);
         this.reviewForm.reset();
         this.selectedRating.set(0);
-        this.snackBar.open('Avaliação publicada com sucesso!', 'Fechar', {
+        this.snackBar.open(this.translate.instant('REVIEW.SUCCESS'), this.translate.instant('COMMON.CLOSE'), {
           duration: 3000,
           panelClass: 'snackbar-success',
         });
@@ -537,8 +538,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.submittingReview.set(false);
-        const msg = err?.error?.errors?.[0] ?? 'Erro ao publicar avaliação';
-        this.snackBar.open(msg, 'Fechar', { duration: 3000 });
+        const msg = err?.error?.errors?.[0] ?? this.translate.instant('REVIEW.ERROR');
+        this.snackBar.open(msg, this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }
@@ -547,11 +548,11 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     this.reviewService.deleteReview(reviewId).subscribe({
       next: () => {
         this.userReviewId.set(null);
-        this.snackBar.open('Avaliação excluída.', 'Fechar', { duration: 2000 });
+        this.snackBar.open(this.translate.instant('REVIEW.DELETE_SUCCESS'), this.translate.instant('COMMON.CLOSE'), { duration: 2000 });
         this.loadReviews(this.currentReviewPage());
       },
       error: () => {
-        this.snackBar.open('Erro ao excluir avaliação', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('REVIEW.DELETE_ERROR'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }
@@ -581,7 +582,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.loading.set(false);
-        this.snackBar.open('Produto não encontrado.', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('PRODUCT.DETAIL.NOT_FOUND'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       },
     });
   }

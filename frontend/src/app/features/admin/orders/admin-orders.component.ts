@@ -12,7 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AdminService } from '../../../core/services/admin.service';
 import { AdminOrderSummaryDto } from '../../../core/models/admin.model';
 import { PaginatedResult } from '../../../core/models/paginated-result.model';
@@ -33,7 +33,7 @@ interface StatusDialogData { currentStatus: string; orderId: string; }
         <mat-label>{{ 'ADMIN.ORDERS.STATUS' | translate }}</mat-label>
         <mat-select [(value)]="selected">
           @for (s of statuses; track s.value) {
-            <mat-option [value]="s.value">{{ s.label }}</mat-option>
+            <mat-option [value]="s.value">{{ s.labelKey | translate }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -51,12 +51,12 @@ export class UpdateStatusDialogComponent {
   readonly data: StatusDialogData = inject(MAT_DIALOG_DATA);
   selected = this.data.currentStatus;
   readonly statuses = [
-    { value: 'Pending',   label: 'Pendente' },
-    { value: 'Paid',      label: 'Pago' },
-    { value: 'Shipped',   label: 'Enviado' },
-    { value: 'Delivered', label: 'Entregue' },
-    { value: 'Cancelled', label: 'Cancelado' },
-    { value: 'Refunded',  label: 'Reembolsado' },
+    { value: 'Pending',   labelKey: 'ORDER.STATUS.PENDING' },
+    { value: 'Paid',      labelKey: 'ORDER.STATUS.PAID' },
+    { value: 'Shipped',   labelKey: 'ORDER.STATUS.SHIPPED' },
+    { value: 'Delivered', labelKey: 'ORDER.STATUS.DELIVERED' },
+    { value: 'Cancelled', labelKey: 'ORDER.STATUS.CANCELLED' },
+    { value: 'Refunded',  labelKey: 'ORDER.STATUS.REFUNDED' },
   ];
 }
 
@@ -107,7 +107,7 @@ export class UpdateStatusDialogComponent {
           <mat-select [formControl]="statusCtrl" (selectionChange)="applyFilter()">
             <mat-option value="">{{ 'ADMIN.ORDERS.ALL_STATUSES' | translate }}</mat-option>
             @for (s of statuses; track s.value) {
-              <mat-option [value]="s.value">{{ s.label }}</mat-option>
+              <mat-option [value]="s.value">{{ s.labelKey | translate }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
@@ -224,6 +224,7 @@ export class AdminOrdersComponent implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
   private readonly fb = inject(FormBuilder);
 
   readonly loading = signal(false);
@@ -241,12 +242,12 @@ export class AdminOrdersComponent implements OnInit {
   readonly displayedColumns = ['orderNumber', 'customer', 'status', 'items', 'total', 'date', 'actions'];
 
   readonly statuses = [
-    { value: 'Pending',   label: 'Pendente' },
-    { value: 'Paid',      label: 'Pago' },
-    { value: 'Shipped',   label: 'Enviado' },
-    { value: 'Delivered', label: 'Entregue' },
-    { value: 'Cancelled', label: 'Cancelado' },
-    { value: 'Refunded',  label: 'Reembolsado' },
+    { value: 'Pending',   labelKey: 'ORDER.STATUS.PENDING' },
+    { value: 'Paid',      labelKey: 'ORDER.STATUS.PAID' },
+    { value: 'Shipped',   labelKey: 'ORDER.STATUS.SHIPPED' },
+    { value: 'Delivered', labelKey: 'ORDER.STATUS.DELIVERED' },
+    { value: 'Cancelled', labelKey: 'ORDER.STATUS.CANCELLED' },
+    { value: 'Refunded',  labelKey: 'ORDER.STATUS.REFUNDED' },
   ];
 
   ngOnInit(): void {
@@ -282,10 +283,10 @@ export class AdminOrdersComponent implements OnInit {
       if (!newStatus || newStatus === order.status) return;
       this.adminService.updateOrderStatus(order.id, newStatus).subscribe({
         next: () => {
-          this.snackBar.open('Status atualizado com sucesso.', 'Fechar', { duration: 3000 });
+          this.snackBar.open(this.translate.instant('ADMIN.ORDERS.STATUS_UPDATED'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
           this.load();
         },
-        error: () => this.snackBar.open('Erro ao atualizar status.', 'Fechar', { duration: 3000 }),
+        error: () => this.snackBar.open(this.translate.instant('ADMIN.ORDERS.ERROR_UPDATE_STATUS'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 }),
       });
     });
   }
@@ -303,15 +304,7 @@ export class AdminOrdersComponent implements OnInit {
   }
 
   statusLabel(status: string): string {
-    const map: Record<string, string> = {
-      Pending:   'Pendente',
-      Paid:      'Pago',
-      Shipped:   'Enviado',
-      Delivered: 'Entregue',
-      Cancelled: 'Cancelado',
-      Refunded:  'Reembolsado',
-    };
-    return map[status] ?? status;
+    return this.translate.instant(`ORDER.STATUS.${status.toUpperCase()}`);
   }
 
   private load(): void {
@@ -330,7 +323,7 @@ export class AdminOrdersComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.snackBar.open('Erro ao carregar pedidos.', 'Fechar', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('ADMIN.ORDERS.ERROR_LOAD'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
         this.loading.set(false);
       },
     });

@@ -11,7 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ProductService } from '../../../core/services/product.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
@@ -265,6 +265,7 @@ export class ProductListComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   // Cursor mode: ativo quando não há sortBy custom
   readonly useCursor = computed(() => !this.sortBy);
@@ -357,7 +358,7 @@ export class ProductListComponent implements OnInit {
   loadMore(): void {
     const params = this.buildCursorParams();
     this.productService.loadMoreCursor(params).subscribe({
-      error: () => this.snackBar.open('Erro ao carregar mais produtos.', 'Fechar', { duration: 3000 }),
+      error: () => this.snackBar.open(this.translate.instant('PRODUCT.LIST.ERROR_LOAD_MORE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 }),
     });
   }
 
@@ -375,8 +376,8 @@ export class ProductListComponent implements OnInit {
 
   onAddToCart(product: ProductSummaryDto): void {
     this.snackBar.open(
-      `"${product.name}" adicionado ao carrinho`,
-      'Ver carrinho',
+      this.translate.instant('CART.PRODUCT_ADDED', { name: product.name }),
+      this.translate.instant('CART.VIEW_CART'),
       { duration: 3000, panelClass: 'snackbar-success' }
     );
   }
@@ -385,7 +386,7 @@ export class ProductListComponent implements OnInit {
     if (this.useCursor()) {
       this.productService.resetCursor();
       this.productService.getProductsCursor(this.buildCursorParams()).subscribe({
-        error: () => this.snackBar.open('Erro ao carregar produtos.', 'Fechar', { duration: 3000 }),
+        error: () => this.snackBar.open(this.translate.instant('PRODUCT.LIST.ERROR_LOAD'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 }),
       });
     } else {
       this.loadProductsOffset();
@@ -423,7 +424,7 @@ export class ProductListComponent implements OnInit {
     };
 
     this.productService.getProducts(params).subscribe({
-      error: () => this.snackBar.open('Erro ao carregar produtos.', 'Fechar', { duration: 3000 }),
+      error: () => this.snackBar.open(this.translate.instant('PRODUCT.LIST.ERROR_LOAD'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 }),
     });
   }
 

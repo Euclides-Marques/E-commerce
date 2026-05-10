@@ -99,12 +99,19 @@ import { ProductImagesDialogComponent } from './product-images-dialog.component'
     .search-input {
       flex: 1;
       background: none;
-      border: none;
-      outline: none;
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
       padding: 10px 0;
       font-size: 14px;
       color: var(--text-primary);
       font-family: var(--font-sans);
+    }
+    .search-input:focus,
+    .search-input:focus-visible {
+      outline: none !important;
+      box-shadow: none !important;
+      border: none !important;
     }
     .search-input::placeholder { color: var(--text-placeholder); }
     .search-clear {

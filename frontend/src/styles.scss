@@ -156,6 +156,13 @@ a {
   outline-offset: 2px;
 }
 
+// Inputs nativos (ex: campo de busca) não devem exibir outline de foco
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
 // Scrollbar
 ::-webkit-scrollbar        { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track  { background: #f1f1f1; }
@@ -176,6 +183,20 @@ a {
   .mat-mdc-dialog-content {
     padding: 0 !important;
     margin: 0 !important;
+  }
+}
+
+// ── Admin Generic Dialog Panel ────────────────────────────────────────────────
+.admin-dialog {
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+    overflow: hidden;
+  }
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    border-radius: var(--radius-xl, 16px) !important;
+    overflow: hidden;
+    box-shadow: 0 18px 56px rgba(15, 23, 42, .14), 0 4px 16px rgba(15, 23, 42, .07) !important;
+    border: 1px solid var(--admin-border);
   }
 }
 
@@ -335,6 +356,14 @@ a {
 .ui-badge--danger { background: var(--color-danger-soft); color: var(--color-danger); }
 .ui-badge--neutral { background: var(--bg-surface-soft); color: var(--text-secondary); }
 .ui-badge--violet { background: var(--color-violet-soft); color: var(--color-violet); }
+
+.ui-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
 
 .ui-table-wrap {
   overflow: hidden;

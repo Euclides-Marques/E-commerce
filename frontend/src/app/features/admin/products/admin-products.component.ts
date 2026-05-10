@@ -424,7 +424,8 @@ export class AdminProductsComponent implements OnInit {
 
   openCreateDialog(): void {
     const ref = this.dialog.open(ProductFormDialogComponent, {
-      width: '640px',
+      width: '600px',
+      panelClass: 'pfd-panel',
       data: { product: null, categories: this.categoryService.categories() },
     });
     ref.afterClosed().subscribe(result => {
@@ -435,7 +436,8 @@ export class AdminProductsComponent implements OnInit {
   openEditDialog(product: ProductSummaryDto): void {
     this.productService.getProductById(product.id).subscribe(full => {
       const ref = this.dialog.open(ProductFormDialogComponent, {
-        width: '640px',
+        width: '600px',
+        panelClass: 'pfd-panel',
         data: { product: full, categories: this.categoryService.categories() },
       });
       ref.afterClosed().subscribe(result => {

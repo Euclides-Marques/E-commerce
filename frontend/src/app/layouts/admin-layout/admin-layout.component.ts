@@ -5,7 +5,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../core/services/auth.service';
@@ -33,23 +32,23 @@ interface AdminNavItem {
     RouterLinkActive,
     MatButtonModule,
     MatIconModule,
-    MatSidenavModule,
     MatTooltipModule,
     TranslatePipe,
   ],
   template: `
-    <mat-sidenav-container class="admin-layout admin-shell">
-      <mat-sidenav
+    @if (isMobile() && sidenavOpen()) {
+      <div class="admin-backdrop" (click)="sidenavOpen.set(false)"></div>
+    }
+
+    <div class="admin-shell">
+      <aside
         class="admin-sidebar"
         [class.admin-sidebar--collapsed]="isCollapsed()"
+        [class.admin-sidebar--mobile-open]="isMobile() && sidenavOpen()"
         [@sidebarWidth]="!isMobile() ? (isCollapsed() ? 'collapsed' : 'expanded') : null"
-        [mode]="isMobile() ? 'over' : 'side'"
-        [opened]="!isMobile() || sidenavOpen()"
-        [fixedInViewport]="isMobile()"
-        (closedStart)="sidenavOpen.set(false)">
+        [attr.aria-label]="'ADMIN.LAYOUT.NAV_EYEBROW' | translate">
 
-        <aside class="admin-sidebar__inner" [attr.aria-label]="'ADMIN.LAYOUT.NAV_EYEBROW' | translate">
-
+        <div class="admin-sidebar__inner">
           <div
             class="admin-brand"
             [class.admin-brand--clickable]="!isMobile()"
@@ -104,10 +103,10 @@ interface AdminNavItem {
               <span class="admin-sidebar__store-text">{{ 'ADMIN.LAYOUT.VIEW_STORE' | translate }}</span>
             </a>
           </div>
-        </aside>
-      </mat-sidenav>
+        </div>
+      </aside>
 
-      <mat-sidenav-content class="admin-content">
+      <div class="admin-content">
         <header class="admin-topbar">
           <div class="admin-topbar__left">
             @if (isMobile()) {
@@ -120,7 +119,6 @@ interface AdminNavItem {
                 <mat-icon>menu</mat-icon>
               </button>
             }
-
             <div>
               <p class="admin-topbar__eyebrow">{{ 'ADMIN.LAYOUT.TOPBAR_EYEBROW' | translate }}</p>
               <h1 class="admin-topbar__title">{{ 'ADMIN.LAYOUT.TOPBAR_TITLE' | translate }}</h1>
@@ -135,7 +133,6 @@ interface AdminNavItem {
                 <span class="admin-user__role">{{ 'ADMIN.LAYOUT.ROLE' | translate }}</span>
               </span>
             </div>
-
             <button
               mat-icon-button
               type="button"
@@ -150,8 +147,8 @@ interface AdminNavItem {
         <main class="admin-main">
           <router-outlet />
         </main>
-      </mat-sidenav-content>
-    </mat-sidenav-container>
+      </div>
+    </div>
   `,
   styles: [`
     :host {
@@ -159,21 +156,34 @@ interface AdminNavItem {
       min-height: 100vh;
     }
 
-    .admin-layout {
+    /* ── Shell (flex row) ── */
+    .admin-shell {
+      display: flex;
       min-height: 100vh;
+    }
+
+    /* ── Backdrop mobile ── */
+    .admin-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: rgba(0, 0, 0, 0.45);
     }
 
     /* ── Sidebar ── */
     .admin-sidebar {
+      flex-shrink: 0;
       width: 280px;
+      overflow: hidden;
       border-right: 1px solid var(--admin-border);
       background: var(--admin-surface);
-      color: var(--admin-text);
-      overflow: hidden;
       will-change: width;
     }
 
+    /* ── Content (fills remaining space automatically) ── */
     .admin-content {
+      flex: 1;
+      min-width: 0;
       min-height: 100vh;
       background: var(--admin-bg);
     }
@@ -182,12 +192,12 @@ interface AdminNavItem {
     .admin-sidebar__inner {
       display: flex;
       flex-direction: column;
-      min-height: 100%;
+      height: 100%;
       padding: 18px;
       background:
         linear-gradient(180deg, var(--admin-accent-soft) 0%, rgba(255, 255, 255, 0) 34%),
         var(--admin-surface);
-      transition: padding 260ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: padding 320ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .admin-sidebar--collapsed .admin-sidebar__inner {
@@ -240,12 +250,6 @@ interface AdminNavItem {
       transition: color 200ms;
     }
 
-    .admin-user__meta {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
     .admin-brand__copy {
       display: flex;
       flex-direction: column;
@@ -254,8 +258,8 @@ interface AdminNavItem {
       max-width: 220px;
       opacity: 1;
       white-space: nowrap;
-      transition: max-width 280ms cubic-bezier(0.4, 0, 0.2, 1),
-                  opacity 200ms ease;
+      transition: max-width 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 220ms ease;
     }
 
     .admin-sidebar--collapsed .admin-brand__copy {
@@ -297,7 +301,7 @@ interface AdminNavItem {
       letter-spacing: .1em;
       text-transform: uppercase;
       white-space: nowrap;
-      transition: opacity 200ms ease;
+      transition: opacity 220ms ease;
     }
 
     .admin-sidebar--collapsed .admin-nav__eyebrow {
@@ -385,8 +389,8 @@ interface AdminNavItem {
       max-width: 180px;
       opacity: 1;
       white-space: nowrap;
-      transition: max-width 280ms cubic-bezier(0.4, 0, 0.2, 1),
-                  opacity 200ms ease;
+      transition: max-width 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 220ms ease;
     }
 
     .admin-sidebar--collapsed .admin-nav__content {
@@ -458,8 +462,8 @@ interface AdminNavItem {
       max-width: 160px;
       opacity: 1;
       white-space: nowrap;
-      transition: max-width 280ms cubic-bezier(0.4, 0, 0.2, 1),
-                  opacity 180ms ease;
+      transition: max-width 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 200ms ease;
     }
 
     .admin-sidebar--collapsed .admin-sidebar__store-text {
@@ -548,6 +552,12 @@ interface AdminNavItem {
       font-weight: 900;
     }
 
+    .admin-user__meta {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
     .admin-user__name {
       max-width: 150px;
       overflow: hidden;
@@ -571,10 +581,21 @@ interface AdminNavItem {
       padding: 28px;
     }
 
-    /* ── Responsive ── */
+    /* ── Mobile ── */
     @media (max-width: 899px) {
       .admin-sidebar {
-        width: min(86vw, 320px);
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 100;
+        width: min(86vw, 320px) !important;
+        transform: translateX(-100%);
+        transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .admin-sidebar--mobile-open {
+        transform: translateX(0);
       }
 
       .admin-topbar {

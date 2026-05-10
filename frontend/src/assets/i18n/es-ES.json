@@ -378,7 +378,9 @@
       "NAV_CATEGORIES": "Categorías",
       "NAV_CATEGORIES_DESC": "Organización de la tienda",
       "NAV_USERS": "Usuarios",
-      "NAV_USERS_DESC": "Clientes y acceso"
+      "NAV_USERS_DESC": "Clientes y acceso",
+      "COLLAPSE_NAV": "Contraer menú",
+      "EXPAND_NAV": "Expandir menú"
     },
     "DASHBOARD": {
       "TITLE": "Dashboard",

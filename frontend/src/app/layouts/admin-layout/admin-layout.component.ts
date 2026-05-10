@@ -1,10 +1,12 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -18,6 +20,13 @@ interface AdminNavItem {
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
+  animations: [
+    trigger('sidebarWidth', [
+      state('expanded', style({ width: '280px' })),
+      state('collapsed', style({ width: '72px' })),
+      transition('expanded <=> collapsed', animate('320ms cubic-bezier(0.4, 0, 0.2, 1)')),
+    ]),
+  ],
   imports: [
     RouterOutlet,
     RouterLink,
@@ -25,19 +34,31 @@ interface AdminNavItem {
     MatButtonModule,
     MatIconModule,
     MatSidenavModule,
+    MatTooltipModule,
     TranslatePipe,
   ],
   template: `
     <mat-sidenav-container class="admin-layout admin-shell">
       <mat-sidenav
         class="admin-sidebar"
+        [class.admin-sidebar--collapsed]="isCollapsed()"
+        [@sidebarWidth]="!isMobile() ? (isCollapsed() ? 'collapsed' : 'expanded') : null"
         [mode]="isMobile() ? 'over' : 'side'"
         [opened]="!isMobile() || sidenavOpen()"
         [fixedInViewport]="isMobile()"
         (closedStart)="sidenavOpen.set(false)">
 
         <aside class="admin-sidebar__inner" [attr.aria-label]="'ADMIN.LAYOUT.NAV_EYEBROW' | translate">
-          <a class="admin-brand" routerLink="/admin/dashboard" [attr.aria-label]="'ADMIN.LAYOUT.GOTO_DASHBOARD' | translate">
+
+          <div
+            class="admin-brand"
+            [class.admin-brand--clickable]="!isMobile()"
+            (click)="toggleCollapse()"
+            [attr.role]="!isMobile() ? 'button' : null"
+            [attr.aria-expanded]="!isMobile() ? !isCollapsed() : null"
+            [attr.aria-label]="!isMobile()
+              ? (isCollapsed() ? ('ADMIN.LAYOUT.EXPAND_NAV' | translate) : ('ADMIN.LAYOUT.COLLAPSE_NAV' | translate))
+              : ('ADMIN.LAYOUT.BRAND_NAME' | translate)">
             <span class="admin-brand__mark">
               <mat-icon aria-hidden="true">storefront</mat-icon>
             </span>
@@ -45,7 +66,7 @@ interface AdminNavItem {
               <span class="admin-brand__name">{{ 'ADMIN.LAYOUT.BRAND_NAME' | translate }}</span>
               <span class="admin-brand__meta">{{ 'ADMIN.LAYOUT.BRAND_META' | translate }}</span>
             </span>
-          </a>
+          </div>
 
           <nav class="admin-nav">
             <p class="admin-nav__eyebrow">{{ 'ADMIN.LAYOUT.NAV_EYEBROW' | translate }}</p>
@@ -56,6 +77,9 @@ interface AdminNavItem {
                 [routerLink]="item.route"
                 routerLinkActive="admin-nav__item--active"
                 [routerLinkActiveOptions]="{ exact: true }"
+                [matTooltip]="item.labelKey | translate"
+                matTooltipPosition="right"
+                [matTooltipDisabled]="!isCollapsed()"
                 (click)="closeMobileSidenav()">
                 <span class="admin-nav__icon">
                   <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
@@ -69,9 +93,15 @@ interface AdminNavItem {
           </nav>
 
           <div class="admin-sidebar__footer">
-            <a class="admin-sidebar__store-link" routerLink="/" (click)="closeMobileSidenav()">
+            <a
+              class="admin-sidebar__store-link"
+              routerLink="/"
+              [matTooltip]="'ADMIN.LAYOUT.VIEW_STORE' | translate"
+              matTooltipPosition="right"
+              [matTooltipDisabled]="!isCollapsed()"
+              (click)="closeMobileSidenav()">
               <mat-icon aria-hidden="true">arrow_outward</mat-icon>
-              <span>{{ 'ADMIN.LAYOUT.VIEW_STORE' | translate }}</span>
+              <span class="admin-sidebar__store-text">{{ 'ADMIN.LAYOUT.VIEW_STORE' | translate }}</span>
             </a>
           </div>
         </aside>
@@ -133,13 +163,22 @@ interface AdminNavItem {
       min-height: 100vh;
     }
 
+    /* ── Sidebar ── */
     .admin-sidebar {
       width: 280px;
       border-right: 1px solid var(--admin-border);
       background: var(--admin-surface);
       color: var(--admin-text);
+      overflow: hidden;
+      will-change: width;
     }
 
+    .admin-content {
+      min-height: 100vh;
+      background: var(--admin-bg);
+    }
+
+    /* ── Sidebar inner ── */
     .admin-sidebar__inner {
       display: flex;
       flex-direction: column;
@@ -148,8 +187,14 @@ interface AdminNavItem {
       background:
         linear-gradient(180deg, var(--admin-accent-soft) 0%, rgba(255, 255, 255, 0) 34%),
         var(--admin-surface);
+      transition: padding 260ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
+    .admin-sidebar--collapsed .admin-sidebar__inner {
+      padding: 18px 8px;
+    }
+
+    /* ── Brand ── */
     .admin-brand {
       display: flex;
       align-items: center;
@@ -157,6 +202,21 @@ interface AdminNavItem {
       padding: 10px 8px 22px;
       color: var(--text-heading);
       text-decoration: none;
+    }
+
+    .admin-brand--clickable {
+      cursor: pointer;
+      border-radius: 14px;
+      user-select: none;
+    }
+
+    .admin-brand--clickable:hover .admin-brand__mark {
+      background: var(--brand-primary);
+      box-shadow: 0 8px 18px rgba(240, 78, 35, .25);
+    }
+
+    .admin-brand--clickable:hover .admin-brand__mark mat-icon {
+      color: #fff;
     }
 
     .admin-brand__mark {
@@ -168,6 +228,8 @@ interface AdminNavItem {
       border-radius: 13px;
       background: var(--admin-accent-soft);
       box-shadow: inset 0 0 0 1px rgba(240, 78, 35, .14);
+      flex: 0 0 auto;
+      transition: background 200ms, box-shadow 200ms;
     }
 
     .admin-brand__mark mat-icon {
@@ -175,14 +237,31 @@ interface AdminNavItem {
       font-size: 21px;
       width: 21px;
       height: 21px;
+      transition: color 200ms;
     }
 
-    .admin-brand__copy,
-    .admin-nav__content,
     .admin-user__meta {
       display: flex;
       flex-direction: column;
       min-width: 0;
+    }
+
+    .admin-brand__copy {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+      max-width: 220px;
+      opacity: 1;
+      white-space: nowrap;
+      transition: max-width 280ms cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 200ms ease;
+    }
+
+    .admin-sidebar--collapsed .admin-brand__copy {
+      max-width: 0;
+      opacity: 0;
+      pointer-events: none;
     }
 
     .admin-brand__name {
@@ -199,21 +278,31 @@ interface AdminNavItem {
       font-weight: 600;
     }
 
+    /* ── Nav ── */
     .admin-nav {
       display: flex;
       flex-direction: column;
       gap: 5px;
       padding-top: 8px;
       border-top: 1px solid var(--admin-border);
+      width: 100%;
     }
 
     .admin-nav__eyebrow {
+      opacity: 1;
       margin: 8px 8px 10px;
       color: var(--text-placeholder);
       font-size: 11px;
       font-weight: 800;
       letter-spacing: .1em;
       text-transform: uppercase;
+      white-space: nowrap;
+      transition: opacity 200ms ease;
+    }
+
+    .admin-sidebar--collapsed .admin-nav__eyebrow {
+      opacity: 0;
+      pointer-events: none;
     }
 
     .admin-nav__item {
@@ -226,13 +315,22 @@ interface AdminNavItem {
       border-radius: 14px;
       color: var(--text-secondary);
       text-decoration: none;
-      transition: background var(--motion-fast), color var(--motion-fast), transform var(--motion-fast);
+      transition: background var(--motion-fast), color var(--motion-fast),
+                  transform var(--motion-fast), padding 320ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .admin-nav__item:hover {
       background: var(--bg-surface-soft);
       color: var(--text-heading);
       transform: translateX(2px);
+    }
+
+    .admin-sidebar--collapsed .admin-nav__item {
+      padding: 10px;
+    }
+
+    .admin-sidebar--collapsed .admin-nav__item:hover {
+      transform: none;
     }
 
     .admin-nav__item--active {
@@ -249,6 +347,11 @@ interface AdminNavItem {
       width: 3px;
       border-radius: 999px;
       background: var(--brand-primary);
+    }
+
+    .admin-sidebar--collapsed .admin-nav__item--active::before {
+      top: 8px;
+      bottom: 8px;
     }
 
     .admin-nav__icon {
@@ -274,6 +377,24 @@ interface AdminNavItem {
       height: 19px;
     }
 
+    .admin-nav__content {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+      max-width: 180px;
+      opacity: 1;
+      white-space: nowrap;
+      transition: max-width 280ms cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 200ms ease;
+    }
+
+    .admin-sidebar--collapsed .admin-nav__content {
+      max-width: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
     .admin-nav__label {
       font-size: 14px;
       font-weight: 800;
@@ -291,9 +412,11 @@ interface AdminNavItem {
       color: var(--brand-hover);
     }
 
+    /* ── Footer ── */
     .admin-sidebar__footer {
       margin-top: auto;
       padding-top: 18px;
+      width: 100%;
     }
 
     .admin-sidebar__store-link {
@@ -309,7 +432,12 @@ interface AdminNavItem {
       font-size: 13px;
       font-weight: 800;
       text-decoration: none;
-      transition: background var(--motion-fast), color var(--motion-fast), border-color var(--motion-fast);
+      transition: background var(--motion-fast), color var(--motion-fast),
+                  border-color var(--motion-fast), padding 320ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .admin-sidebar--collapsed .admin-sidebar__store-link {
+      padding: 10px;
     }
 
     .admin-sidebar__store-link:hover {
@@ -322,13 +450,25 @@ interface AdminNavItem {
       font-size: 18px;
       width: 18px;
       height: 18px;
+      flex: 0 0 auto;
     }
 
-    .admin-content {
-      min-height: 100vh;
-      background: var(--admin-bg);
+    .admin-sidebar__store-text {
+      overflow: hidden;
+      max-width: 160px;
+      opacity: 1;
+      white-space: nowrap;
+      transition: max-width 280ms cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 180ms ease;
     }
 
+    .admin-sidebar--collapsed .admin-sidebar__store-text {
+      max-width: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ── Topbar ── */
     .admin-topbar {
       position: sticky;
       top: 0;
@@ -426,10 +566,12 @@ interface AdminNavItem {
       line-height: 1.2;
     }
 
+    /* ── Main ── */
     .admin-main {
       padding: 28px;
     }
 
+    /* ── Responsive ── */
     @media (max-width: 899px) {
       .admin-sidebar {
         width: min(86vw, 320px);
@@ -468,6 +610,9 @@ export class AdminLayoutComponent {
 
   readonly isMobile = signal(false);
   readonly sidenavOpen = signal(false);
+  readonly collapsed = signal(false);
+
+  readonly isCollapsed = computed(() => this.collapsed() && !this.isMobile());
 
   readonly navItems: AdminNavItem[] = [
     {
@@ -508,8 +653,16 @@ export class AdminLayoutComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(result => {
         this.isMobile.set(result.matches);
-        this.sidenavOpen.set(!result.matches);
+        if (result.matches) {
+          this.sidenavOpen.set(false);
+        }
       });
+  }
+
+  toggleCollapse(): void {
+    if (!this.isMobile()) {
+      this.collapsed.update(v => !v);
+    }
   }
 
   closeMobileSidenav(): void {

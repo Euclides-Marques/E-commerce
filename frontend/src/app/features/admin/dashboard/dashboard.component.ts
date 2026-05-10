@@ -103,8 +103,8 @@ type DonutChartOptions = {
           <mat-label>{{ 'ADMIN.DASHBOARD.PERIOD' | translate }}</mat-label>
           <mat-select [value]="daysBack()" (selectionChange)="changePeriod($event.value)">
             <mat-option [value]="7">{{ 'ADMIN.DASHBOARD.LAST_7' | translate }}</mat-option>
+            <mat-option [value]="15">{{ 'ADMIN.DASHBOARD.LAST_15' | translate }}</mat-option>
             <mat-option [value]="30">{{ 'ADMIN.DASHBOARD.LAST_30' | translate }}</mat-option>
-            <mat-option [value]="90">{{ 'ADMIN.DASHBOARD.LAST_90' | translate }}</mat-option>
           </mat-select>
         </mat-form-field>
       </header>

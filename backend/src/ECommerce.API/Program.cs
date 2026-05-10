@@ -1,6 +1,7 @@
 using System.Text;
 using ECommerce.Application;
 using ECommerce.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using ECommerce.API.Middleware;
 using ECommerce.API.Hubs;
 using ECommerce.Application.Common.Interfaces;
@@ -122,6 +123,13 @@ builder.Services.AddCors(options =>
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
+
+// Aplicar migrations automaticamente na inicialização
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ECommerce.Infrastructure.Persistence.ApplicationDbContext>();
+    await db.Database.MigrateAsync();
+}
 
 // Pipeline
 app.UseSwagger();

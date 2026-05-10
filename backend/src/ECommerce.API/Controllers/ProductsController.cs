@@ -28,10 +28,14 @@ public class ProductsController : BaseController
         [FromQuery] bool? isFeatured = null,
         [FromQuery] string? sortBy = null,
         [FromQuery] bool sortDescending = false,
+        [FromQuery] decimal? priceMin = null,
+        [FromQuery] decimal? priceMax = null,
+        [FromQuery] double? ratingMin = null,
+        [FromQuery] bool? inStockOnly = null,
         CancellationToken cancellationToken = default)
     {
         var result = await Mediator.Send(
-            new GetProductsQuery(page, pageSize, search, categoryId, isActive, isFeatured, sortBy, sortDescending),
+            new GetProductsQuery(page, pageSize, search, categoryId, isActive, isFeatured, sortBy, sortDescending, priceMin, priceMax, ratingMin, inStockOnly),
             cancellationToken);
 
         if (!result.Succeeded)

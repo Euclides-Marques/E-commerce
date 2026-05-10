@@ -60,7 +60,13 @@ public class UploadProductImageCommandHandler : IRequestHandler<UploadProductIma
         await _cache.RemoveAsync($"products:id:{product.Id}", cancellationToken);
         await _cache.RemoveAsync($"products:slug:{product.Slug}", cancellationToken);
 
-        return Result<ProductImageDto>.Success(
-            new ProductImageDto(image.Id, image.Url, image.AltText, image.IsMain, image.DisplayOrder));
+        return Result<ProductImageDto>.Success(new ProductImageDto
+        {
+            Id = image.Id,
+            Url = image.Url,
+            AltText = image.AltText,
+            IsMain = image.IsMain,
+            DisplayOrder = image.DisplayOrder,
+        });
     }
 }

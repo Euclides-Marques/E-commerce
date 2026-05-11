@@ -3,7 +3,6 @@ using ECommerce.Application.Features.Auth.Commands.ConfirmEmail;
 using ECommerce.Application.Features.Auth.Commands.Login;
 using ECommerce.Application.Features.Auth.Commands.RefreshToken;
 using ECommerce.Application.Features.Auth.Commands.Register;
-using ECommerce.Application.Features.Auth.Commands.SendTestEmail;
 using ECommerce.Application.Features.Auth.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -47,15 +46,6 @@ public class AuthController : BaseController
         if (!result.Succeeded)
             return BadRequest(new { errors = result.Errors });
         return Ok(new { message = "E-mail confirmado com sucesso!" });
-    }
-
-    [HttpPost("test-email")]
-    public async Task<IActionResult> TestEmail([FromBody] SendTestEmailCommand command)
-    {
-        var result = await Mediator.Send(command);
-        if (!result.Succeeded)
-            return BadRequest(new { error = result.Errors[0] });
-        return Ok(new { message = result.Data });
     }
 
     [Authorize]

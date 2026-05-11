@@ -28,7 +28,7 @@ public class EmailService : IEmailService
         _port = int.TryParse(smtp["Port"], out var p) ? p : 587;
         _username = smtp["Username"] ?? string.Empty;
         _password = smtp["Password"] ?? string.Empty;
-        _fromEmail = smtp["FromEmail"] ?? "noreply@shopbr.com";
+        _fromEmail = smtp["FromEmail"] ?? "euclidesmarques270@gmail.com";
         _fromName = smtp["FromName"] ?? "ShopBR";
         _frontendUrl = smtp["FrontendUrl"] ?? "https://novastore-smoky.vercel.app";
 

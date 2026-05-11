@@ -38,7 +38,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthResp
         await _context.SaveChangesAsync(cancellationToken);
 
         var userDto = new UserDto(user.Id, user.FirstName, user.LastName, user.Email,
-            user.Role.ToString(), user.AvatarUrl, user.PreferredLanguage);
+            user.Role.ToString(), user.AvatarUrl, user.PreferredLanguage, user.EmailConfirmed);
 
         return Result<AuthResponseDto>.Success(new AuthResponseDto(accessToken, refreshToken, userDto));
     }

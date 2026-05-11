@@ -68,7 +68,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
         var accessToken = _tokenService.GenerateAccessToken(user);
 
         var userDto = new UserDto(user.Id, user.FirstName, user.LastName, user.Email,
-            user.Role.ToString(), user.AvatarUrl, user.PreferredLanguage);
+            user.Role.ToString(), user.AvatarUrl, user.PreferredLanguage, user.EmailConfirmed);
 
         // Disparar email de confirmação e notificação in-app (fire-and-forget seguro)
         _ = Task.Run(async () =>

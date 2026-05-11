@@ -7,5 +7,6 @@ public record UserDto(
     string Email,
     string Role,
     string? AvatarUrl,
-    string PreferredLanguage
+    string PreferredLanguage,
+    bool EmailConfirmed
 );

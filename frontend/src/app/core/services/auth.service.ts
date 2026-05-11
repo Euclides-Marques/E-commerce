@@ -10,7 +10,7 @@ export interface RegisterRequest { firstName: string; lastName: string; email: s
 export interface AuthResponse { accessToken: string; refreshToken: string; user: UserProfile; }
 export interface UserProfile {
   id: string; firstName: string; lastName: string; email: string;
-  role: string; avatarUrl?: string; preferredLanguage: string;
+  role: string; avatarUrl?: string; preferredLanguage: string; emailConfirmed: boolean;
 }
 
 @Injectable({ providedIn: 'root' })

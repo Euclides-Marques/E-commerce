@@ -33,12 +33,22 @@ import { ProfileFavoritesComponent } from './tabs/profile-favorites.component';
         <div class="profile-hero__meta">
           <h1 class="profile-hero__name">{{ fullName() }}</h1>
           <p class="profile-hero__email">{{ user()?.email }}</p>
-          <span class="profile-hero__badge" [class.profile-hero__badge--admin]="isAdmin()">
-            <mat-icon class="profile-hero__badge-icon">
-              {{ isAdmin() ? 'admin_panel_settings' : 'verified_user' }}
-            </mat-icon>
-            {{ (isAdmin() ? 'PROFILE.BADGE_ADMIN' : 'PROFILE.BADGE_VERIFIED') | translate }}
-          </span>
+          @if (isAdmin()) {
+            <span class="profile-hero__badge profile-hero__badge--admin">
+              <mat-icon class="profile-hero__badge-icon">admin_panel_settings</mat-icon>
+              {{ 'PROFILE.BADGE_ADMIN' | translate }}
+            </span>
+          } @else if (user()?.emailConfirmed) {
+            <span class="profile-hero__badge">
+              <mat-icon class="profile-hero__badge-icon">verified_user</mat-icon>
+              {{ 'PROFILE.BADGE_VERIFIED' | translate }}
+            </span>
+          } @else {
+            <span class="profile-hero__badge profile-hero__badge--unverified">
+              <mat-icon class="profile-hero__badge-icon">mark_email_unread</mat-icon>
+              {{ 'PROFILE.BADGE_UNVERIFIED' | translate }}
+            </span>
+          }
         </div>
       </div>
 
@@ -166,6 +176,11 @@ import { ProfileFavoritesComponent } from './tabs/profile-favorites.component';
       background: rgba(99, 102, 241, .07);
       color: #6366F1;
       border-color: rgba(99, 102, 241, .18);
+    }
+    .profile-hero__badge--unverified {
+      background: rgba(234, 179, 8, .08);
+      color: #b45309;
+      border-color: rgba(234, 179, 8, .25);
     }
     .profile-hero__badge-icon {
       font-size: 14px !important;

@@ -578,6 +578,7 @@
     "TAB_FAVORITES": "Favoritos",
     "BADGE_ADMIN": "Administrador",
     "BADGE_VERIFIED": "Cliente verificado",
+    "BADGE_UNVERIFIED": "E-mail não confirmado",
     "PERSONAL": {
       "SECTION_INFO": "Informações Pessoais",
       "SECTION_SECURITY": "Segurança",

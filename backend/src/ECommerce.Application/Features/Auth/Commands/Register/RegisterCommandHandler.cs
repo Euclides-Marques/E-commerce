@@ -5,6 +5,7 @@ using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace ECommerce.Application.Features.Auth.Commands.Register;
@@ -15,7 +16,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
     private readonly ITokenService _tokenService;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IEmailService _emailService;
-    private readonly INotificationService _notificationService;
+    private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<RegisterCommandHandler> _logger;
 
     public RegisterCommandHandler(
@@ -23,14 +24,14 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
         ITokenService tokenService,
         IPasswordHasher passwordHasher,
         IEmailService emailService,
-        INotificationService notificationService,
+        IServiceScopeFactory scopeFactory,
         ILogger<RegisterCommandHandler> logger)
     {
         _context = context;
         _tokenService = tokenService;
         _passwordHasher = passwordHasher;
         _emailService = emailService;
-        _notificationService = notificationService;
+        _scopeFactory = scopeFactory;
         _logger = logger;
     }
 
@@ -70,22 +71,28 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
         var userDto = new UserDto(user.Id, user.FirstName, user.LastName, user.Email,
             user.Role.ToString(), user.AvatarUrl, user.PreferredLanguage, user.EmailConfirmed);
 
-        // Disparar email de confirmação e notificação in-app (fire-and-forget seguro)
+        var userId = user.Id;
+        var firstName = user.FirstName;
+        var email = user.Email;
+
         _ = Task.Run(async () =>
         {
             try
             {
-                await _emailService.SendEmailConfirmationAsync(user.Email, user.FirstName, confirmationToken, CancellationToken.None);
-                await _notificationService.CreateAsync(
-                    user.Id,
+                await _emailService.SendEmailConfirmationAsync(email, firstName, confirmationToken, CancellationToken.None);
+
+                using var scope = _scopeFactory.CreateScope();
+                var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+                await notificationService.CreateAsync(
+                    userId,
                     "Bem-vindo ao ShopBR!",
-                    $"Olá {user.FirstName}, sua conta foi criada! Confirme seu e-mail para aproveitar todos os recursos.",
+                    $"Olá {firstName}, sua conta foi criada! Confirme seu e-mail para aproveitar todos os recursos.",
                     NotificationType.Welcome,
                     cancellationToken: CancellationToken.None);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao enviar confirmação de e-mail para {Email}", user.Email);
+                _logger.LogError(ex, "Erro ao enviar confirmação de e-mail para {Email}", email);
             }
         });
 

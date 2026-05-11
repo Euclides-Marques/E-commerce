@@ -43,9 +43,8 @@ public class EmailService : IEmailService
     {
         if (!_isConfigured)
         {
-            _logger.LogInformation(
-                "[Email] SMTP não configurado. Para {Email}: {Subject}", toEmail, subject);
-            return;
+            throw new InvalidOperationException(
+                "SMTP não configurado: Host, Username ou Password ausentes nas configurações.");
         }
 
         var message = new MimeMessage();
@@ -55,19 +54,12 @@ public class EmailService : IEmailService
         message.Body = new BodyBuilder { HtmlBody = htmlBody }.ToMessageBody();
 
         using var client = new SmtpClient();
-        try
-        {
-            await client.ConnectAsync(_host, _port, SecureSocketOptions.StartTls, cancellationToken);
-            await client.AuthenticateAsync(_username, _password, cancellationToken);
-            await client.SendAsync(message, cancellationToken);
-            await client.DisconnectAsync(true, cancellationToken);
+        await client.ConnectAsync(_host, _port, SecureSocketOptions.StartTls, cancellationToken);
+        await client.AuthenticateAsync(_username, _password, cancellationToken);
+        await client.SendAsync(message, cancellationToken);
+        await client.DisconnectAsync(true, cancellationToken);
 
-            _logger.LogInformation("[Email] Enviado para {Email}: {Subject}", toEmail, subject);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "[Email] Falha ao enviar para {Email}: {Subject}", toEmail, subject);
-        }
+        _logger.LogInformation("[Email] Enviado para {Email}: {Subject}", toEmail, subject);
     }
 
     public Task SendWelcomeAsync(string email, string name, CancellationToken cancellationToken = default)

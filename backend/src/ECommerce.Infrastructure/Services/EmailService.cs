@@ -16,6 +16,7 @@ public class EmailService : IEmailService
     private readonly string _password;
     private readonly string _fromEmail;
     private readonly string _fromName;
+    private readonly string _frontendUrl;
     private readonly bool _isConfigured;
 
     public EmailService(IConfiguration configuration, ILogger<EmailService> logger)
@@ -29,6 +30,7 @@ public class EmailService : IEmailService
         _password = smtp["Password"] ?? string.Empty;
         _fromEmail = smtp["FromEmail"] ?? "noreply@shopbr.com";
         _fromName = smtp["FromName"] ?? "ShopBR";
+        _frontendUrl = smtp["FrontendUrl"] ?? "https://novastore-smoky.vercel.app";
 
         _isConfigured = !string.IsNullOrWhiteSpace(_host)
             && !string.IsNullOrWhiteSpace(_username)
@@ -72,8 +74,11 @@ public class EmailService : IEmailService
         => SendAsync(email, name, "Bem-vindo ao ShopBR!", EmailTemplates.Welcome(name), cancellationToken);
 
     public Task SendEmailConfirmationAsync(string email, string name, string token, CancellationToken cancellationToken = default)
-        => SendAsync(email, name, "Confirme seu e-mail — ShopBR",
-            EmailTemplates.PasswordReset(name, token), cancellationToken);
+    {
+        var confirmUrl = $"{_frontendUrl}/auth/confirm-email?token={token}";
+        return SendAsync(email, name, "Confirme seu e-mail — ShopBR",
+            EmailTemplates.EmailConfirmation(name, confirmUrl), cancellationToken);
+    }
 
     public Task SendPasswordResetAsync(string email, string name, string token, CancellationToken cancellationToken = default)
         => SendAsync(email, name, "Recuperação de senha — ShopBR",

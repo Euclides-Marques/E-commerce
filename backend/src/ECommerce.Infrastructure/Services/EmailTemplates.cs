@@ -140,6 +140,26 @@ internal static class EmailTemplates
         Responda diretamente para: <a href=""mailto:{email}"" style=""color:{Primary};"">{email}</a>
       </p>");
 
+    public static string EmailConfirmation(string name, string confirmUrl) => Layout("Confirme seu e-mail", $@"
+      <h2 style=""color:#333;margin-top:0;"">Confirme seu e-mail 📧</h2>
+      <p style=""color:#555;line-height:1.6;"">Olá, <strong>{name}</strong>! Bem-vindo ao ShopBR!</p>
+      <p style=""color:#555;line-height:1.6;"">
+        Sua conta foi criada com sucesso. Clique no botão abaixo para confirmar seu e-mail e ativar todos os recursos da plataforma.
+      </p>
+      <div style=""text-align:center;margin:28px 0;"">
+        <a href=""{confirmUrl}""
+           style=""background:{Primary};color:#fff;padding:14px 32px;border-radius:6px;text-decoration:none;font-weight:bold;display:inline-block;font-size:16px;"">
+          Confirmar E-mail
+        </a>
+      </div>
+      <p style=""color:#888;font-size:13px;"">
+        Este link expira em <strong>24 horas</strong>. Se você não criou uma conta no ShopBR, ignore este e-mail.
+      </p>
+      <p style=""color:#888;font-size:12px;word-break:break-all;"">
+        Ou copie e cole este link no navegador:<br/>
+        <a href=""{confirmUrl}"" style=""color:{Primary};"">{confirmUrl}</a>
+      </p>");
+
     public static string PasswordReset(string name, string token) => Layout("Recuperação de senha", $@"
       <h2 style=""color:#333;margin-top:0;"">Recuperação de senha 🔒</h2>
       <p style=""color:#555;line-height:1.6;"">Olá, <strong>{name}</strong>.</p>

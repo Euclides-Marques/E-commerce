@@ -1,4 +1,5 @@
 using ECommerce.Application.Features.Auth.Commands.ChangePassword;
+using ECommerce.Application.Features.Auth.Commands.ConfirmEmail;
 using ECommerce.Application.Features.Auth.Commands.Login;
 using ECommerce.Application.Features.Auth.Commands.RefreshToken;
 using ECommerce.Application.Features.Auth.Commands.Register;
@@ -36,6 +37,15 @@ public class AuthController : BaseController
         if (!result.Succeeded)
             return Unauthorized(new { errors = result.Errors });
         return Ok(result.Data);
+    }
+
+    [HttpPost("confirm-email")]
+    public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailCommand command)
+    {
+        var result = await Mediator.Send(command);
+        if (!result.Succeeded)
+            return BadRequest(new { errors = result.Errors });
+        return Ok(new { message = "E-mail confirmado com sucesso!" });
     }
 
     [Authorize]

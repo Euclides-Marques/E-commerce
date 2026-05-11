@@ -47,6 +47,21 @@
     "ERROR": {
       "INVALID_CREDENTIALS": "Credenciales inválidas.",
       "REGISTER_FAILED": "Error al registrarse."
+    },
+    "VERIFY_EMAIL": {
+      "TITLE": "Verifica tu correo",
+      "SENT_TO": "Enviamos un enlace de confirmación a:",
+      "CHECK_INBOX": "Revisa tu bandeja de entrada y haz clic en el enlace de confirmación.",
+      "EXPIRES_IN": "El enlace expira en 24 horas.",
+      "BROWSE_PRODUCTS": "Ver productos",
+      "SPAM_HINT": "¿No lo recibiste? Revisa tu carpeta de spam o correo no deseado."
+    },
+    "CONFIRM_EMAIL": {
+      "VERIFYING": "Verificando tu correo...",
+      "SUCCESS_TITLE": "¡Correo confirmado!",
+      "SUCCESS_MESSAGE": "Tu cuenta está activa. Inicia sesión para comenzar a comprar.",
+      "ERROR_TITLE": "No se pudo confirmar",
+      "ERROR_HINT": "El enlace puede haber expirado. Intenta crear una nueva cuenta."
     }
   },
   "PRODUCT": {

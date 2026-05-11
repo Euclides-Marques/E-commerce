@@ -14,6 +14,7 @@ public class User : AuditableEntity
     public UserRole Role { get; set; } = UserRole.Customer;
     public bool EmailConfirmed { get; set; } = false;
     public string? EmailConfirmationToken { get; set; }
+    public DateTime? EmailConfirmationTokenExpiry { get; set; }
     public string? PasswordResetToken { get; set; }
     public DateTime? PasswordResetTokenExpiry { get; set; }
     public string? RefreshToken { get; set; }

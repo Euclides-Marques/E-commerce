@@ -117,8 +117,9 @@ export class RegisterComponent {
   onSubmit(): void {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.isLoading.set(true);
+    const email = this.form.value.email ?? '';
     this.authService.register(this.form.value as any).subscribe({
-      next: () => this.router.navigate(['/']),
+      next: () => this.router.navigate(['/auth/verify-email'], { state: { email } }),
       error: (err) => {
         this.errorMessage.set(err?.error?.errors?.[0] ?? 'Erro ao cadastrar.');
         this.isLoading.set(false);

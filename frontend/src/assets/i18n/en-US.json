@@ -47,6 +47,21 @@
     "ERROR": {
       "INVALID_CREDENTIALS": "Invalid credentials.",
       "REGISTER_FAILED": "Registration failed."
+    },
+    "VERIFY_EMAIL": {
+      "TITLE": "Verify your email",
+      "SENT_TO": "We sent a confirmation link to:",
+      "CHECK_INBOX": "Check your inbox and click the confirmation link.",
+      "EXPIRES_IN": "The link expires in 24 hours.",
+      "BROWSE_PRODUCTS": "Browse products",
+      "SPAM_HINT": "Didn't receive it? Check your spam or junk folder."
+    },
+    "CONFIRM_EMAIL": {
+      "VERIFYING": "Verifying your email...",
+      "SUCCESS_TITLE": "Email confirmed!",
+      "SUCCESS_MESSAGE": "Your account is active. Sign in to start shopping.",
+      "ERROR_TITLE": "Could not confirm",
+      "ERROR_HINT": "The link may have expired. Try creating a new account."
     }
   },
   "PRODUCT": {

@@ -47,6 +47,21 @@
     "ERROR": {
       "INVALID_CREDENTIALS": "Credenciais inválidas.",
       "REGISTER_FAILED": "Erro ao cadastrar."
+    },
+    "VERIFY_EMAIL": {
+      "TITLE": "Verifique seu e-mail",
+      "SENT_TO": "Enviamos um link de confirmação para:",
+      "CHECK_INBOX": "Verifique sua caixa de entrada e clique no link de confirmação.",
+      "EXPIRES_IN": "O link expira em 24 horas.",
+      "BROWSE_PRODUCTS": "Ver produtos",
+      "SPAM_HINT": "Não recebeu? Verifique a pasta de spam ou lixo eletrônico."
+    },
+    "CONFIRM_EMAIL": {
+      "VERIFYING": "Verificando seu e-mail...",
+      "SUCCESS_TITLE": "E-mail confirmado!",
+      "SUCCESS_MESSAGE": "Sua conta está ativa. Faça login para começar a comprar.",
+      "ERROR_TITLE": "Não foi possível confirmar",
+      "ERROR_HINT": "O link pode ter expirado. Tente criar uma nova conta."
     }
   },
   "PRODUCT": {

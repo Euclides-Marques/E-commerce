@@ -45,6 +45,8 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
 
         var refreshToken = _tokenService.GenerateRefreshToken();
 
+        var confirmationToken = Guid.NewGuid().ToString("N");
+
         var user = new User
         {
             FirstName = request.FirstName.Trim(),
@@ -54,6 +56,8 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
             Role = UserRole.Customer,
             RefreshToken = refreshToken,
             RefreshTokenExpiry = DateTime.UtcNow.AddDays(_tokenService.RefreshTokenExpirationDays),
+            EmailConfirmationToken = confirmationToken,
+            EmailConfirmationTokenExpiry = DateTime.UtcNow.AddHours(24),
             IsActive = true,
             PreferredLanguage = "pt-BR"
         };
@@ -66,22 +70,22 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
         var userDto = new UserDto(user.Id, user.FirstName, user.LastName, user.Email,
             user.Role.ToString(), user.AvatarUrl, user.PreferredLanguage);
 
-        // Disparar email de boas-vindas e notificação in-app (fire-and-forget seguro)
+        // Disparar email de confirmação e notificação in-app (fire-and-forget seguro)
         _ = Task.Run(async () =>
         {
             try
             {
-                await _emailService.SendWelcomeAsync(user.Email, user.FirstName, CancellationToken.None);
+                await _emailService.SendEmailConfirmationAsync(user.Email, user.FirstName, confirmationToken, CancellationToken.None);
                 await _notificationService.CreateAsync(
                     user.Id,
                     "Bem-vindo ao ShopBR!",
-                    $"Olá {user.FirstName}, sua conta foi criada com sucesso. Aproveite as melhores ofertas!",
+                    $"Olá {user.FirstName}, sua conta foi criada! Confirme seu e-mail para aproveitar todos os recursos.",
                     NotificationType.Welcome,
                     cancellationToken: CancellationToken.None);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao enviar boas-vindas para {Email}", user.Email);
+                _logger.LogError(ex, "Erro ao enviar confirmação de e-mail para {Email}", user.Email);
             }
         });
 

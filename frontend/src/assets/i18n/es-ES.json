@@ -62,6 +62,17 @@
       "SUCCESS_MESSAGE": "Tu cuenta está activa. Inicia sesión para comenzar a comprar.",
       "ERROR_TITLE": "No se pudo confirmar",
       "ERROR_HINT": "El enlace puede haber expirado. Intenta crear una nueva cuenta."
+    },
+    "RESET_PASSWORD": {
+      "TITLE": "Restablecer contraseña",
+      "SUBTITLE": "Ingresa tu nueva contraseña a continuación.",
+      "NEW_PASSWORD": "Nueva contraseña",
+      "CONFIRM_PASSWORD": "Confirmar nueva contraseña",
+      "PASSWORDS_MISMATCH": "Las contraseñas no coinciden.",
+      "SUBMIT": "Restablecer contraseña",
+      "SUCCESS": "¡Contraseña restablecida con éxito! Inicia sesión con tu nueva contraseña.",
+      "INVALID_LINK": "Enlace inválido o expirado. Solicita un nuevo enlace de recuperación.",
+      "REQUEST_NEW": "Solicitar nuevo enlace"
     }
   },
   "PRODUCT": {

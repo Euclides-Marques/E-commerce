@@ -73,8 +73,11 @@ public class EmailService : IEmailService
     }
 
     public Task SendPasswordResetAsync(string email, string name, string token, CancellationToken cancellationToken = default)
-        => SendAsync(email, name, "Recuperação de senha — ShopBR",
-            EmailTemplates.PasswordReset(name, token), cancellationToken);
+    {
+        var resetUrl = $"{_frontendUrl}/auth/reset-password?token={token}";
+        return SendAsync(email, name, "Recuperação de senha — ShopBR",
+            EmailTemplates.PasswordReset(name, resetUrl), cancellationToken);
+    }
 
     public Task SendOrderConfirmationAsync(string email, string name, string orderNumber, decimal total,
         CancellationToken cancellationToken = default)

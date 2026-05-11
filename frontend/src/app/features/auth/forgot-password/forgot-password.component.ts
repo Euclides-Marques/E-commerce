@@ -5,7 +5,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -17,6 +19,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatProgressSpinnerModule,
     TranslatePipe,
   ],
   template: `
@@ -40,8 +43,17 @@ import { TranslatePipe } from '@ngx-translate/core';
             }
           </mat-form-field>
 
-          <button mat-flat-button color="primary" type="submit" class="w-full auth-submit">
-            {{ 'AUTH.SEND_INSTRUCTIONS' | translate }}
+          @if (error()) {
+            <p class="text-sm text-red-600 -mt-2">{{ error() }}</p>
+          }
+
+          <button mat-flat-button color="primary" type="submit" class="w-full auth-submit"
+                  [disabled]="loading()">
+            @if (loading()) {
+              <mat-spinner diameter="20" color="accent" style="display:inline-block" />
+            } @else {
+              {{ 'AUTH.SEND_INSTRUCTIONS' | translate }}
+            }
           </button>
         </form>
       } @else {
@@ -63,11 +75,28 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class ForgotPasswordComponent {
   private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+
   readonly sent = signal(false);
+  readonly loading = signal(false);
+  readonly error = signal<string | null>(null);
 
   form = this.fb.group({ email: ['', [Validators.required, Validators.email]] });
 
   onSubmit(): void {
-    if (this.form.valid) this.sent.set(true);
+    if (this.form.invalid) return;
+    this.loading.set(true);
+    this.error.set(null);
+
+    this.authService.forgotPassword(this.form.value.email!).subscribe({
+      next: () => {
+        this.sent.set(true);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.error.set(err?.error?.errors?.[0] ?? 'Erro ao enviar instruções. Tente novamente.');
+        this.loading.set(false);
+      },
+    });
   }
 }

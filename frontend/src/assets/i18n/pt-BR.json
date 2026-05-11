@@ -62,6 +62,17 @@
       "SUCCESS_MESSAGE": "Sua conta está ativa. Faça login para começar a comprar.",
       "ERROR_TITLE": "Não foi possível confirmar",
       "ERROR_HINT": "O link pode ter expirado. Tente criar uma nova conta."
+    },
+    "RESET_PASSWORD": {
+      "TITLE": "Redefinir senha",
+      "SUBTITLE": "Digite sua nova senha abaixo.",
+      "NEW_PASSWORD": "Nova senha",
+      "CONFIRM_PASSWORD": "Confirmar nova senha",
+      "PASSWORDS_MISMATCH": "As senhas não coincidem.",
+      "SUBMIT": "Redefinir senha",
+      "SUCCESS": "Senha redefinida com sucesso! Faça login com sua nova senha.",
+      "INVALID_LINK": "Link inválido ou expirado. Solicite um novo link de recuperação.",
+      "REQUEST_NEW": "Solicitar novo link"
     }
   },
   "PRODUCT": {

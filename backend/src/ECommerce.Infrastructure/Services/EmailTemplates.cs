@@ -319,9 +319,9 @@ internal static class EmailTemplates
 
       {InfoBox("Seu pedido está sendo preparado para envio. Você receberá atualizações em breve.")}");
 
-    public static string PasswordReset(string name, string token) => Layout(
+    public static string PasswordReset(string name, string resetUrl) => Layout(
         "Recuperação de senha — ShopBR",
-        "Você solicitou a redefinição de senha. Use o código abaixo.",
+        "Clique no botão abaixo para redefinir sua senha. O link expira em 1 hora.",
         $@"
       <!-- Icon -->
       <div style=""text-align:center;margin-bottom:28px;"">
@@ -338,20 +338,11 @@ internal static class EmailTemplates
 
       <p style=""margin:0 0 28px;font-size:15px;color:{TextBody};line-height:1.65;text-align:center;"">
         Olá, <strong style=""color:{TextPrimary};"">{name}</strong>.<br/>
-        Use o código abaixo para redefinir sua senha.<br/>
-        <span style=""font-size:13px;color:{TextMuted};"">Válido por 1 hora.</span>
+        Clique no botão abaixo para criar uma nova senha.<br/>
+        <span style=""font-size:13px;color:{TextMuted};"">Este link expira em <strong>1 hora</strong>.</span>
       </p>
 
-      <!-- Code Block -->
-      <div style=""text-align:center;margin-bottom:28px;"">
-        <div style=""display:inline-block;background:{BgSubtle};border:2px dashed {Primary};
-                     border-radius:12px;padding:16px 36px;"">
-          <span style=""font-size:28px;font-weight:800;color:{Primary};
-                        letter-spacing:8px;font-family:'Courier New',monospace;"">
-            {token}
-          </span>
-        </div>
-      </div>
+      {Button(resetUrl, "Redefinir senha")}
 
       {InfoBox("Se você não solicitou a redefinição de senha, ignore este e-mail. Sua senha permanece a mesma.")}");
 

@@ -1,8 +1,10 @@
 using ECommerce.Application.Features.Auth.Commands.ChangePassword;
 using ECommerce.Application.Features.Auth.Commands.ConfirmEmail;
+using ECommerce.Application.Features.Auth.Commands.ForgotPassword;
 using ECommerce.Application.Features.Auth.Commands.Login;
 using ECommerce.Application.Features.Auth.Commands.RefreshToken;
 using ECommerce.Application.Features.Auth.Commands.Register;
+using ECommerce.Application.Features.Auth.Commands.ResetPassword;
 using ECommerce.Application.Features.Auth.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -46,6 +48,24 @@ public class AuthController : BaseController
         if (!result.Succeeded)
             return BadRequest(new { errors = result.Errors });
         return Ok(new { message = "E-mail confirmado com sucesso!" });
+    }
+
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordCommand command)
+    {
+        var result = await Mediator.Send(command);
+        if (!result.Succeeded)
+            return BadRequest(new { errors = result.Errors });
+        return Ok(new { message = "Se o e-mail estiver cadastrado, você receberá as instruções em breve." });
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command)
+    {
+        var result = await Mediator.Send(command);
+        if (!result.Succeeded)
+            return BadRequest(new { errors = result.Errors });
+        return Ok(new { message = "Senha redefinida com sucesso!" });
     }
 
     [Authorize]

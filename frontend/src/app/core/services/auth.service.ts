@@ -59,6 +59,14 @@ export class AuthService {
     return this.http.post<void>(`${environment.apiUrl}/auth/confirm-email`, { token });
   }
 
+  forgotPassword(email: string): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/auth/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/auth/reset-password`, { token, newPassword });
+  }
+
   changePassword(currentPassword: string, newPassword: string): Observable<void> {
     return this.http.post<void>(`${environment.apiUrl}/auth/change-password`, { currentPassword, newPassword });
   }

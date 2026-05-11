@@ -62,6 +62,17 @@
       "SUCCESS_MESSAGE": "Your account is active. Sign in to start shopping.",
       "ERROR_TITLE": "Could not confirm",
       "ERROR_HINT": "The link may have expired. Try creating a new account."
+    },
+    "RESET_PASSWORD": {
+      "TITLE": "Reset password",
+      "SUBTITLE": "Enter your new password below.",
+      "NEW_PASSWORD": "New password",
+      "CONFIRM_PASSWORD": "Confirm new password",
+      "PASSWORDS_MISMATCH": "Passwords do not match.",
+      "SUBMIT": "Reset password",
+      "SUCCESS": "Password reset successfully! Sign in with your new password.",
+      "INVALID_LINK": "Invalid or expired link. Request a new recovery link.",
+      "REQUEST_NEW": "Request new link"
     }
   },
   "PRODUCT": {

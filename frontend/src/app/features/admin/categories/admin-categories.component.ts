@@ -15,6 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CategoryService } from '../../../core/services/category.service';
 import { CategoryDto, CreateCategoryDto, UpdateCategoryDto } from '../../../core/models/category.model';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 // ── Dialog ────────────────────────────────────────────────────────────────────
 
@@ -872,14 +873,25 @@ export class AdminCategoriesComponent implements OnInit {
   }
 
   confirmDelete(category: CategoryDto): void {
-    if (!confirm(this.translate.instant('ADMIN.CATEGORIES.CONFIRM_DELETE', { name: category.name }))) return;
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '460px',
+      panelClass: 'pfd-panel',
+      data: {
+        title: this.translate.instant('ADMIN.CATEGORIES.DELETE_TITLE'),
+        message: this.translate.instant('ADMIN.CATEGORIES.CONFIRM_DELETE_MSG'),
+        itemName: category.name,
+      } satisfies ConfirmDialogData,
+    });
 
-    this.categoryService.deleteCategory(category.id).subscribe({
-      next: () => {
-        this.snackBar.open(this.translate.instant('ADMIN.CATEGORIES.DELETED'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
-        this.loadCategories();
-      },
-      error: () => this.snackBar.open(this.translate.instant('ADMIN.CATEGORIES.ERROR_DELETE'), this.translate.instant('COMMON.CLOSE'), { duration: 5000 }),
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+      this.categoryService.deleteCategory(category.id).subscribe({
+        next: () => {
+          this.snackBar.open(this.translate.instant('ADMIN.CATEGORIES.DELETED'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
+          this.loadCategories();
+        },
+        error: () => this.snackBar.open(this.translate.instant('ADMIN.CATEGORIES.ERROR_DELETE'), this.translate.instant('COMMON.CLOSE'), { duration: 5000 }),
+      });
     });
   }
 

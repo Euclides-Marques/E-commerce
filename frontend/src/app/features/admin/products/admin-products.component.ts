@@ -19,6 +19,7 @@ import { CategoryService } from '../../../core/services/category.service';
 import { ProductSummaryDto } from '../../../core/models/product.model';
 import { ProductFormDialogComponent } from './product-form-dialog.component';
 import { ProductImagesDialogComponent } from './product-images-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-admin-products',
@@ -466,14 +467,25 @@ export class AdminProductsComponent implements OnInit {
   }
 
   confirmDelete(product: ProductSummaryDto): void {
-    if (!confirm(this.translate.instant('ADMIN.PRODUCTS.CONFIRM_DELETE', { name: product.name }))) return;
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '460px',
+      panelClass: 'pfd-panel',
+      data: {
+        title: this.translate.instant('ADMIN.PRODUCTS.DELETE_TITLE'),
+        message: this.translate.instant('ADMIN.PRODUCTS.CONFIRM_DELETE_MSG'),
+        itemName: product.name,
+      } satisfies ConfirmDialogData,
+    });
 
-    this.productService.deleteProduct(product.id).subscribe({
-      next: () => {
-        this.snackBar.open(this.translate.instant('ADMIN.PRODUCTS.DELETED'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
-        this.loadProducts();
-      },
-      error: () => this.snackBar.open(this.translate.instant('ADMIN.PRODUCTS.ERROR_DELETE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 }),
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+      this.productService.deleteProduct(product.id).subscribe({
+        next: () => {
+          this.snackBar.open(this.translate.instant('ADMIN.PRODUCTS.DELETED'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
+          this.loadProducts();
+        },
+        error: () => this.snackBar.open(this.translate.instant('ADMIN.PRODUCTS.ERROR_DELETE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 }),
+      });
     });
   }
 

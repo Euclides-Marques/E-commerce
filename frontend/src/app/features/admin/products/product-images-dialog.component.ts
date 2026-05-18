@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogModule, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ProductService } from '../../../core/services/product.service';
 import { ProductDto, ProductImageDto } from '../../../core/models/product.model';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 export interface ProductImagesDialogData {
   product: ProductDto;
@@ -388,6 +389,7 @@ export interface ProductImagesDialogData {
 })
 export class ProductImagesDialogComponent {
   private readonly productService = inject(ProductService);
+  private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
 
@@ -438,23 +440,33 @@ export class ProductImagesDialogComponent {
   }
 
   deleteImage(img: ProductImageDto): void {
-    if (!confirm(this.translate.instant('ADMIN.PRODUCTS.IMAGES.CONFIRM_DELETE'))) return;
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '460px',
+      panelClass: 'pfd-panel',
+      data: {
+        title: this.translate.instant('ADMIN.PRODUCTS.IMAGES.DELETE_TITLE'),
+        message: this.translate.instant('ADMIN.PRODUCTS.IMAGES.CONFIRM_DELETE_MSG'),
+      } satisfies ConfirmDialogData,
+    });
 
-    this.productService.deleteImage(this.product().id, img.id).subscribe({
-      next: () => {
-        this.images.update(list => list.filter(i => i.id !== img.id));
-        this.changed.set(true);
-        this.snackBar.open(
-          this.translate.instant('ADMIN.PRODUCTS.IMAGES.DELETED'),
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+      this.productService.deleteImage(this.product().id, img.id).subscribe({
+        next: () => {
+          this.images.update(list => list.filter(i => i.id !== img.id));
+          this.changed.set(true);
+          this.snackBar.open(
+            this.translate.instant('ADMIN.PRODUCTS.IMAGES.DELETED'),
+            this.translate.instant('COMMON.CLOSE'),
+            { duration: 2000 },
+          );
+        },
+        error: () => this.snackBar.open(
+          this.translate.instant('ADMIN.PRODUCTS.IMAGES.ERROR_DELETE'),
           this.translate.instant('COMMON.CLOSE'),
-          { duration: 2000 },
-        );
-      },
-      error: () => this.snackBar.open(
-        this.translate.instant('ADMIN.PRODUCTS.IMAGES.ERROR_DELETE'),
-        this.translate.instant('COMMON.CLOSE'),
-        { duration: 3000 },
-      ),
+          { duration: 3000 },
+        ),
+      });
     });
   }
 

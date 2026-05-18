@@ -2,6 +2,12 @@
   "COMMON": {
     "CLOSE": "Close"
   },
+  "CONFIRM_DIALOG": {
+    "SUBTITLE": "Confirm the action before proceeding",
+    "WARNING": "This action cannot be undone.",
+    "CANCEL": "Cancel",
+    "CONFIRM": "Delete"
+  },
   "APP": {
     "NAME": "ShopBR",
     "TAGLINE": "The best deals are here"
@@ -493,6 +499,8 @@
       "ERROR_DELETE": "Failed to delete product.",
       "ERROR_LOAD": "Failed to load products.",
       "CONFIRM_DELETE": "Delete product \"{{name}}\"?",
+      "DELETE_TITLE": "Delete Product",
+      "CONFIRM_DELETE_MSG": "Are you sure you want to delete this product?",
       "COLUMNS": {
         "NAME": "Name",
         "CATEGORY": "Category",
@@ -536,6 +544,8 @@
         "EMPTY": "No images registered.",
         "CLOSE": "Close",
         "CONFIRM_DELETE": "Delete this image?",
+        "DELETE_TITLE": "Delete Image",
+        "CONFIRM_DELETE_MSG": "Are you sure you want to delete this image?",
         "DELETED": "Image deleted.",
         "ERROR_DELETE": "Failed to delete image.",
         "ERROR_SET_MAIN": "Failed to set main image.",
@@ -562,6 +572,8 @@
       "ERROR_DELETE": "Failed to delete category. Check for linked subcategories or products.",
       "ERROR_LOAD": "Failed to load categories.",
       "CONFIRM_DELETE": "Delete category \"{{name}}\"?",
+      "DELETE_TITLE": "Delete Category",
+      "CONFIRM_DELETE_MSG": "Are you sure you want to delete this category?",
       "COLUMNS": {
         "NAME": "Name",
         "PARENT": "Parent category",

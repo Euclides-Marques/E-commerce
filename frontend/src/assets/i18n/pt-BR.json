@@ -2,6 +2,12 @@
   "COMMON": {
     "CLOSE": "Fechar"
   },
+  "CONFIRM_DIALOG": {
+    "SUBTITLE": "Confirme a ação antes de prosseguir",
+    "WARNING": "Esta ação não pode ser desfeita.",
+    "CANCEL": "Cancelar",
+    "CONFIRM": "Excluir"
+  },
   "APP": {
     "NAME": "ShopBR",
     "TAGLINE": "As melhores ofertas estão aqui"
@@ -493,6 +499,8 @@
       "ERROR_DELETE": "Erro ao excluir produto.",
       "ERROR_LOAD": "Erro ao carregar produtos.",
       "CONFIRM_DELETE": "Deseja excluir o produto \"{{name}}\"?",
+      "DELETE_TITLE": "Excluir Produto",
+      "CONFIRM_DELETE_MSG": "Tem certeza que deseja excluir este produto?",
       "COLUMNS": {
         "NAME": "Nome",
         "CATEGORY": "Categoria",
@@ -536,6 +544,8 @@
         "EMPTY": "Nenhuma imagem cadastrada.",
         "CLOSE": "Fechar",
         "CONFIRM_DELETE": "Deseja excluir esta imagem?",
+        "DELETE_TITLE": "Excluir Imagem",
+        "CONFIRM_DELETE_MSG": "Tem certeza que deseja excluir esta imagem?",
         "DELETED": "Imagem excluída.",
         "ERROR_DELETE": "Erro ao excluir imagem.",
         "ERROR_SET_MAIN": "Erro ao definir imagem principal.",
@@ -562,6 +572,8 @@
       "ERROR_DELETE": "Erro ao excluir categoria. Verifique se não há subcategorias ou produtos vinculados.",
       "ERROR_LOAD": "Erro ao carregar categorias.",
       "CONFIRM_DELETE": "Deseja excluir a categoria \"{{name}}\"?",
+      "DELETE_TITLE": "Excluir Categoria",
+      "CONFIRM_DELETE_MSG": "Tem certeza que deseja excluir esta categoria?",
       "COLUMNS": {
         "NAME": "Nome",
         "PARENT": "Categoria pai",

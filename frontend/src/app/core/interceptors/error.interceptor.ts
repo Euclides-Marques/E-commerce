@@ -13,7 +13,11 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401 && !req.url.includes('/auth/')) {
+      const isAuthUrl = req.url.includes('/auth/');
+      const isHubUrl = req.url.includes('/hubs/');
+      const hasRefreshToken = !!localStorage.getItem('refresh_token');
+
+      if (error.status === 401 && !isAuthUrl && !isHubUrl && hasRefreshToken) {
         return handle401(req, next, authService, router);
       }
       if (error.status === 403) {

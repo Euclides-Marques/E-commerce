@@ -45,7 +45,9 @@ export class AuthService {
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');
     this._currentUser.set(null);
-    this.router.navigate(['/auth/login']);
+    if (!this.router.url?.startsWith('/auth')) {
+      this.router.navigate(['/auth/login']);
+    }
   }
 
   refreshToken(): Observable<AuthResponse> {
@@ -82,14 +84,30 @@ export class AuthService {
     this._currentUser.set(response.user);
   }
 
+  private isTokenExpired(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp * 1000 < Date.now();
+    } catch {
+      return true;
+    }
+  }
+
   private loadUserFromStorage(): void {
     const userJson = localStorage.getItem('user');
-    if (userJson) {
-      try {
-        this._currentUser.set(JSON.parse(userJson));
-      } catch {
-        this.logout();
-      }
+    const accessToken = localStorage.getItem('access_token');
+
+    if (!userJson || !accessToken || this.isTokenExpired(accessToken)) {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user');
+      return;
+    }
+
+    try {
+      this._currentUser.set(JSON.parse(userJson));
+    } catch {
+      this.logout();
     }
   }
 }

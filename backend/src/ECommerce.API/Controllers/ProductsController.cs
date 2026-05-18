@@ -51,6 +51,7 @@ public class ProductsController : BaseController
         [FromQuery] int pageSize = 20,
         [FromQuery] string? search = null,
         [FromQuery] Guid? categoryId = null,
+        [FromQuery] bool? isFeatured = null,
         [FromQuery] decimal? priceMin = null,
         [FromQuery] decimal? priceMax = null,
         [FromQuery] double? ratingMin = null,
@@ -58,7 +59,7 @@ public class ProductsController : BaseController
         CancellationToken cancellationToken = default)
     {
         var result = await Mediator.Send(
-            new GetProductsCursorQuery(cursor, pageSize, search, categoryId, priceMin, priceMax, ratingMin, inStockOnly),
+            new GetProductsCursorQuery(cursor, pageSize, search, categoryId, isFeatured, priceMin, priceMax, ratingMin, inStockOnly),
             cancellationToken);
 
         if (!result.Succeeded)

@@ -60,6 +60,9 @@ public class GetProductsCursorQueryHandler
         if (request.RatingMin.HasValue)
             query = query.Where(p => p.AverageRating >= request.RatingMin.Value);
 
+        if (request.IsFeatured.HasValue)
+            query = query.Where(p => p.IsFeatured == request.IsFeatured.Value);
+
         if (request.InStockOnly == true)
             query = query.Where(p => p.StockQuantity > 0);
 

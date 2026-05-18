@@ -1,6 +1,7 @@
 using ECommerce.Application.Features.Categories.Commands.CreateCategory;
 using ECommerce.Application.Features.Categories.Commands.DeleteCategory;
 using ECommerce.Application.Features.Categories.Commands.UpdateCategory;
+using ECommerce.Application.Features.Categories.Commands.UploadCategoryImage;
 using ECommerce.Application.Features.Categories.DTOs;
 using ECommerce.Application.Features.Categories.Queries.GetCategories;
 using ECommerce.Application.Features.Categories.Queries.GetCategoriesHierarchy;
@@ -64,6 +65,27 @@ public class CategoriesController : BaseController
             return BadRequest(new { errors = new[] { "Id da URL não corresponde ao Id do corpo da requisição." } });
 
         var result = await Mediator.Send(command, cancellationToken);
+
+        if (!result.Succeeded)
+            return BadRequest(new { errors = result.Errors });
+
+        return Ok(result.Data);
+    }
+
+    [HttpPost("{id:guid}/image")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult<CategoryDto>> UploadImage(
+        Guid id,
+        IFormFile file,
+        CancellationToken cancellationToken = default)
+    {
+        if (file is null || file.Length == 0)
+            return BadRequest(new { errors = new[] { "Arquivo inválido." } });
+
+        using var stream = file.OpenReadStream();
+        var result = await Mediator.Send(
+            new UploadCategoryImageCommand(id, stream, file.FileName),
+            cancellationToken);
 
         if (!result.Succeeded)
             return BadRequest(new { errors = result.Errors });

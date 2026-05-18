@@ -38,6 +38,7 @@ interface CategoryDialogData {
     MatSelectModule,
     MatSlideToggleModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
     TranslatePipe,
   ],
   styles: [`
@@ -283,6 +284,59 @@ interface CategoryDialogData {
       box-shadow: 0 2px 8px rgba(240, 78, 35, 0.18);
     }
 
+    /* Image upload */
+    .cfd__img-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0 4px;
+    }
+    .cfd__img-preview {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1.5px solid var(--admin-border, #E5E7EB);
+      flex-shrink: 0;
+    }
+    .cfd__img-placeholder {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+      background: var(--bg-surface-soft, #F8FAFC);
+      border: 1.5px dashed var(--admin-border, #E5E7EB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--text-placeholder, #CBD5E1);
+    }
+    .cfd__img-placeholder mat-icon { font-size: 30px !important; width: 30px !important; height: 30px !important; }
+    .cfd__img-actions { display: flex; flex-direction: column; gap: 6px; }
+    .cfd__img-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 7px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid var(--admin-border, #E5E7EB);
+      background: var(--admin-surface, #fff);
+      color: var(--text-secondary, #64748B);
+      font-family: inherit;
+      transition: all 140ms ease;
+    }
+    .cfd__img-btn:hover:not(:disabled) {
+      background: var(--bg-surface-soft, #F8FAFC);
+      border-color: var(--border-strong, #CBD5E1);
+      color: var(--text-heading, #111827);
+    }
+    .cfd__img-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .cfd__img-btn mat-icon { font-size: 15px !important; width: 15px !important; height: 15px !important; }
+    .cfd__img-hint { font-size: 11px; color: var(--admin-muted, #9CA3AF); line-height: 1.4; margin: 0; }
+
     /* Responsive */
     @media (max-width: 540px) {
       .cfd__row { grid-template-columns: 1fr; }
@@ -336,6 +390,45 @@ interface CategoryDialogData {
                 placeholder="Descreva brevemente esta categoria…"></textarea>
             </mat-form-field>
           </section>
+
+          <!-- Imagem (somente no modo edição) -->
+          @if (data.category) {
+            <hr class="cfd__divider" />
+            <section class="cfd__section">
+              <span class="cfd__section-label">Imagem da categoria</span>
+              <div class="cfd__img-wrap">
+                @if (previewUrl()) {
+                  <img class="cfd__img-preview" [src]="previewUrl()!" alt="Imagem da categoria" />
+                } @else {
+                  <div class="cfd__img-placeholder">
+                    <mat-icon>image</mat-icon>
+                  </div>
+                }
+                <div class="cfd__img-actions">
+                  <button
+                    class="cfd__img-btn"
+                    type="button"
+                    [disabled]="uploading()"
+                    (click)="fileInput.click()">
+                    @if (uploading()) {
+                      <mat-spinner diameter="14"></mat-spinner>
+                      Enviando...
+                    } @else {
+                      <mat-icon>upload</mat-icon>
+                      {{ previewUrl() ? 'Trocar imagem' : 'Adicionar imagem' }}
+                    }
+                  </button>
+                  <p class="cfd__img-hint">JPG, PNG ou WebP · máx. 5 MB</p>
+                </div>
+              </div>
+              <input
+                #fileInput
+                type="file"
+                accept="image/*"
+                style="display:none"
+                (change)="onFileSelected($event)" />
+            </section>
+          }
 
           <hr class="cfd__divider" />
 
@@ -401,6 +494,8 @@ export class CategoryFormDialogComponent {
   readonly dialogRef = inject(MatDialogRef<CategoryFormDialogComponent>);
   readonly data: CategoryDialogData = inject(MAT_DIALOG_DATA);
   private readonly fb = inject(FormBuilder);
+  private readonly categoryService = inject(CategoryService);
+  private readonly snackBar = inject(MatSnackBar);
 
   readonly form = this.fb.group({
     name: [this.data.category?.name ?? '', [Validators.required, Validators.maxLength(100)]],
@@ -413,6 +508,27 @@ export class CategoryFormDialogComponent {
   readonly availableParents = signal(
     this.data.flatCategories.filter(c => c.id !== this.data.category?.id)
   );
+
+  readonly previewUrl = signal<string | null>(this.data.category?.imageUrl ?? null);
+  readonly uploading = signal(false);
+
+  onFileSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file || !this.data.category) return;
+
+    this.uploading.set(true);
+    this.categoryService.uploadCategoryImage(this.data.category.id, file).subscribe({
+      next: updated => {
+        this.previewUrl.set(updated.imageUrl ?? null);
+        this.uploading.set(false);
+        this.snackBar.open('Imagem atualizada com sucesso.', 'Fechar', { duration: 2500, panelClass: 'snackbar-success' });
+      },
+      error: () => {
+        this.uploading.set(false);
+        this.snackBar.open('Erro ao fazer upload da imagem.', 'Fechar', { duration: 3000 });
+      },
+    });
+  }
 
   submit(): void {
     if (this.form.invalid) return;

@@ -9,6 +9,7 @@ public record GetProductsCursorQuery(
     int PageSize = 20,
     string? Search = null,
     Guid? CategoryId = null,
+    bool? IsFeatured = null,
     decimal? PriceMin = null,
     decimal? PriceMax = null,
     double? RatingMin = null,

@@ -3,6 +3,7 @@ using ECommerce.Application.Features.Products.Commands.CreateProduct;
 using ECommerce.Application.Features.Products.Commands.DeleteProduct;
 using ECommerce.Application.Features.Products.Commands.DeleteProductImage;
 using ECommerce.Application.Features.Products.Commands.SetMainImage;
+using ECommerce.Application.Features.Products.Commands.SetProductFeatured;
 using ECommerce.Application.Features.Products.Commands.UpdateProduct;
 using ECommerce.Application.Features.Products.Commands.UploadProductImage;
 using ECommerce.Application.Features.Products.DTOs;
@@ -117,6 +118,21 @@ public class ProductsController : BaseController
             return BadRequest(new { errors = new[] { "O Id da rota não corresponde ao Id do body." } });
 
         var result = await Mediator.Send(command, cancellationToken);
+
+        if (!result.Succeeded)
+            return BadRequest(new { errors = result.Errors });
+
+        return Ok(result.Data);
+    }
+
+    [HttpPatch("{id:guid}/featured")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult<ProductSummaryDto>> SetFeatured(
+        Guid id,
+        [FromBody] bool isFeatured,
+        CancellationToken cancellationToken)
+    {
+        var result = await Mediator.Send(new SetProductFeaturedCommand(id, isFeatured), cancellationToken);
 
         if (!result.Succeeded)
             return BadRequest(new { errors = result.Errors });

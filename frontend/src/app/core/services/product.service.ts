@@ -142,6 +142,10 @@ export class ProductService {
     return this.http.put<void>(`${this.baseUrl}/${productId}/images/${imageId}/main`, {});
   }
 
+  setFeatured(productId: string, isFeatured: boolean): Observable<ProductSummaryDto> {
+    return this.http.patch<ProductSummaryDto>(`${this.baseUrl}/${productId}/featured`, isFeatured);
+  }
+
   clearCurrentProduct(): void {
     this._currentProduct.set(null);
   }

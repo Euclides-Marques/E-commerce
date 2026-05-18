@@ -161,6 +161,18 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/compo
     .action-btn--danger:hover         { background: var(--color-danger-soft); color: var(--color-danger);  }
     .action-btn mat-icon { font-size: 18px !important; width: 18px !important; height: 18px !important; }
 
+    /* ── Featured star ─────────────────────────────────────────────── */
+    .star-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 6px; border: none;
+      background: transparent; cursor: pointer;
+      color: var(--admin-muted);
+      transition: background var(--motion-fast), color var(--motion-fast);
+    }
+    .star-btn:hover { background: #fff8e1; color: #f59e0b; }
+    .star-btn--on { color: #f59e0b; }
+    .star-btn mat-icon { font-size: 20px !important; width: 20px !important; height: 20px !important; }
+
     /* ── Empty state ───────────────────────────────────────────────── */
     .empty-icon {
       display: flex; align-items: center; justify-content: center;
@@ -353,6 +365,20 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/compo
               </td>
             </ng-container>
 
+            <!-- Destaque -->
+            <ng-container matColumnDef="featured">
+              <th mat-header-cell *matHeaderCellDef style="width:48px" matTooltip="Destaque na home">
+                <mat-icon style="font-size:16px;width:16px;height:16px;color:var(--admin-muted)">star</mat-icon>
+              </th>
+              <td mat-cell *matCellDef="let p">
+                <button class="star-btn" [class.star-btn--on]="p.isFeatured"
+                        [matTooltip]="p.isFeatured ? 'Remover destaque' : 'Marcar como destaque'"
+                        (click)="toggleFeatured(p)" type="button">
+                  <mat-icon>{{ p.isFeatured ? 'star' : 'star_outline' }}</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
             <!-- Ações -->
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef></th>
@@ -423,7 +449,7 @@ export class AdminProductsComponent implements OnInit {
     );
   });
 
-  readonly displayedColumns = ['image', 'name', 'category', 'price', 'stock', 'status', 'actions'];
+  readonly displayedColumns = ['image', 'name', 'category', 'price', 'stock', 'status', 'featured', 'actions'];
 
   ngOnInit(): void {
     this.categoryService.getCategories().subscribe();
@@ -486,6 +512,18 @@ export class AdminProductsComponent implements OnInit {
         },
         error: () => this.snackBar.open(this.translate.instant('ADMIN.PRODUCTS.ERROR_DELETE'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 }),
       });
+    });
+  }
+
+  toggleFeatured(product: ProductSummaryDto): void {
+    const newValue = !product.isFeatured;
+    this.productService.setFeatured(product.id, newValue).subscribe({
+      next: updated => {
+        this.items.update(list => list.map(p => p.id === updated.id ? { ...p, isFeatured: updated.isFeatured } : p));
+        const msg = newValue ? 'Produto marcado como destaque.' : 'Destaque removido do produto.';
+        this.snackBar.open(msg, 'Fechar', { duration: 2500, panelClass: newValue ? 'snackbar-success' : undefined });
+      },
+      error: () => this.snackBar.open('Erro ao atualizar destaque.', 'Fechar', { duration: 3000 }),
     });
   }
 

@@ -307,7 +307,12 @@
       "LIVROS": "Books"
     },
     "FEATURED_EYEBROW": "Weekly picks",
-    "FEATURED_TITLE": "Featured products"
+    "FEATURED_TITLE": "Featured products",
+    "ALL_PRODUCTS_EYEBROW": "Explore the catalog",
+    "ALL_PRODUCTS_TITLE": "All products",
+    "VIEW_ALL": "View all",
+    "CATEGORIES_EMPTY": "No categories available at the moment.",
+    "PRODUCTS_EMPTY": "No products available at the moment."
   },
   "FOOTER": {
     "TAGLINE": "Your trusted marketplace with the best deals in Brazil.",

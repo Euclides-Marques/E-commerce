@@ -307,7 +307,12 @@
       "LIVROS": "Libros"
     },
     "FEATURED_EYEBROW": "Selección de la semana",
-    "FEATURED_TITLE": "Productos destacados"
+    "FEATURED_TITLE": "Productos destacados",
+    "ALL_PRODUCTS_EYEBROW": "Explora el catálogo",
+    "ALL_PRODUCTS_TITLE": "Todos los productos",
+    "VIEW_ALL": "Ver todos",
+    "CATEGORIES_EMPTY": "No hay categorías disponibles en este momento.",
+    "PRODUCTS_EMPTY": "No hay productos disponibles en este momento."
   },
   "FOOTER": {
     "TAGLINE": "Tu marketplace de confianza con las mejores ofertas de Brasil.",

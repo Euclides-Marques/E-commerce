@@ -307,7 +307,12 @@
       "LIVROS": "Livros"
     },
     "FEATURED_EYEBROW": "Seleção da semana",
-    "FEATURED_TITLE": "Produtos em destaque"
+    "FEATURED_TITLE": "Produtos em destaque",
+    "ALL_PRODUCTS_EYEBROW": "Explore o catálogo",
+    "ALL_PRODUCTS_TITLE": "Todos os produtos",
+    "VIEW_ALL": "Ver todos",
+    "CATEGORIES_EMPTY": "Nenhuma categoria disponível no momento.",
+    "PRODUCTS_EMPTY": "Nenhum produto disponível no momento."
   },
   "FOOTER": {
     "TAGLINE": "Seu marketplace de confiança com as melhores ofertas do Brasil.",

@@ -313,6 +313,7 @@ export class ProductListComponent implements OnInit {
   sortBy = '';
   currentPage = 1;
   pageSize = 20;
+  isFeatured: boolean | undefined = undefined;
   priceMin: number | null = null;
   priceMax: number | null = null;
   ratingMin: number | null = null;
@@ -327,6 +328,7 @@ export class ProductListComponent implements OnInit {
       this.sortBy = params['sortBy'] ?? '';
       this.currentPage = Number(params['page'] ?? 1);
       this.pageSize = Number(params['pageSize'] ?? 20);
+      this.isFeatured = params['isFeatured'] === 'true' ? true : params['isFeatured'] === 'false' ? false : undefined;
       this.priceMin = params['priceMin'] ? Number(params['priceMin']) : null;
       this.priceMax = params['priceMax'] ? Number(params['priceMax']) : null;
       this.ratingMin = params['ratingMin'] ? Number(params['ratingMin']) : null;
@@ -373,6 +375,7 @@ export class ProductListComponent implements OnInit {
   clearFilters(): void {
     this.selectedCategory = '';
     this.searchQuery = '';
+    this.isFeatured = undefined;
     this.priceMin = null;
     this.priceMax = null;
     this.ratingMin = null;
@@ -406,6 +409,7 @@ export class ProductListComponent implements OnInit {
       pageSize: 20,
       search: this.searchQuery || undefined,
       categoryId: this.selectedCategory || undefined,
+      isFeatured: this.isFeatured,
       priceMin: this.priceMin ?? undefined,
       priceMax: this.priceMax ?? undefined,
       ratingMin: this.ratingMin ?? undefined,
@@ -423,6 +427,7 @@ export class ProductListComponent implements OnInit {
       search: this.searchQuery || undefined,
       categoryId: this.selectedCategory || undefined,
       isActive: true,
+      isFeatured: this.isFeatured,
       sortBy: sortByField,
       sortDescending,
       priceMin: this.priceMin ?? undefined,
@@ -445,6 +450,7 @@ export class ProductListComponent implements OnInit {
         sortBy: this.sortBy || null,
         page: (!this.sortBy && this.currentPage > 1) ? this.currentPage : null,
         pageSize: this.pageSize !== 20 ? this.pageSize : null,
+        isFeatured: this.isFeatured ?? null,
         priceMin: this.priceMin ?? null,
         priceMax: this.priceMax ?? null,
         ratingMin: this.ratingMin ?? null,

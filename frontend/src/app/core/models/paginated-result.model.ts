@@ -17,6 +17,7 @@ export interface GetProductsCursorParams {
   pageSize?: number;
   search?: string;
   categoryId?: string;
+  isFeatured?: boolean;
   priceMin?: number;
   priceMax?: number;
   ratingMin?: number;

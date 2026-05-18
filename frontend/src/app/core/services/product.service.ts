@@ -77,6 +77,8 @@ export class ProductService {
     if (params.ratingMin !== undefined) httpParams = httpParams.set('ratingMin', params.ratingMin);
     if (params.inStockOnly) httpParams = httpParams.set('inStockOnly', params.inStockOnly);
 
+    if (params.isFeatured !== undefined) httpParams = httpParams.set('isFeatured', params.isFeatured);
+
     this._cursorLoading.set(true);
     return this.http.get<CursorPaginatedResult<ProductSummaryDto>>(`${this.baseUrl}/cursor`, { params: httpParams }).pipe(
       tap({
